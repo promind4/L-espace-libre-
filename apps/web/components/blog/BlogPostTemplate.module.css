@@ -1,0 +1,237 @@
+/* ============================================================
+   BlogPostTemplate — gabarit des 10 pages d'article.
+   ============================================================ */
+
+.hero {
+  background: var(--cr-navy-900);
+  color: var(--fg-on-dark);
+  padding-block: var(--space-9);
+}
+
+.heroContainer {
+  max-width: 1200px;
+  margin-inline: auto;
+  padding-inline: var(--space-5);
+}
+
+@media (min-width: 768px) {
+  .heroContainer {
+    padding-inline: var(--space-6);
+  }
+}
+
+.heroMeta {
+  display: inline-flex;
+  flex-wrap: wrap;
+  gap: var(--space-3);
+  font-size: var(--fs-12);
+  font-weight: 600;
+  letter-spacing: var(--tracking-eyebrow);
+  text-transform: uppercase;
+  color: var(--cr-emerald-300);
+  margin-bottom: var(--space-4);
+}
+
+.heroMeta span {
+  display: inline-flex;
+  align-items: center;
+  gap: var(--space-2);
+}
+
+.heroSep {
+  color: rgba(255, 255, 255, 0.3);
+}
+
+.heroTitle {
+  font-size: clamp(var(--fs-30), 4vw + 1rem, var(--fs-48));
+  font-weight: 800;
+  letter-spacing: var(--tracking-tight);
+  line-height: var(--lh-tight);
+  color: var(--fg-on-dark);
+  margin: 0 0 var(--space-4);
+  text-wrap: balance;
+  max-width: 24ch;
+}
+
+.heroExcerpt {
+  font-size: var(--fs-18);
+  line-height: var(--lh-relaxed);
+  color: var(--fg-on-dark-muted);
+  max-width: 64ch;
+  margin: 0;
+}
+
+/* ===== Fil d'Ariane ===== */
+.breadcrumb {
+  font-size: var(--fs-13);
+  color: var(--cr-pearl-500);
+  padding-block: var(--space-4);
+}
+
+.breadcrumb a {
+  color: var(--cr-navy-800);
+  text-decoration: none;
+}
+
+.breadcrumb a:hover {
+  color: var(--cr-emerald-600);
+  text-decoration: underline;
+}
+
+.breadcrumbSep {
+  margin: 0 var(--space-2);
+  color: var(--cr-pearl-400);
+}
+
+/* ===== Article ===== */
+.article {
+  padding-block: var(--space-8);
+}
+
+.articleContainer {
+  max-width: 1200px;
+  margin-inline: auto;
+  padding-inline: var(--space-5);
+}
+
+@media (min-width: 768px) {
+  .articleContainer {
+    padding-inline: var(--space-6);
+  }
+}
+
+.tags {
+  display: flex;
+  flex-wrap: wrap;
+  gap: var(--space-2);
+  margin: var(--space-7) auto var(--space-3);
+  max-width: 68ch;
+}
+
+.tag {
+  display: inline-flex;
+  align-items: center;
+  padding: var(--space-1) var(--space-3);
+  background: var(--cr-pearl-100);
+  color: var(--cr-navy-700);
+  border-radius: var(--radius-pill);
+  font-size: var(--fs-13);
+  font-weight: 500;
+}
+
+/* ===== Articles connexes ===== */
+.related {
+  background: var(--bg-sunken);
+  padding-block: var(--space-8);
+}
+
+.relatedHead {
+  text-align: center;
+  margin-bottom: var(--space-6);
+}
+
+.relatedEyebrow {
+  font-size: var(--fs-12);
+  font-weight: 600;
+  letter-spacing: var(--tracking-eyebrow);
+  text-transform: uppercase;
+  color: var(--cr-navy-700);
+  display: block;
+  margin-bottom: var(--space-3);
+}
+
+.relatedGrid {
+  display: grid;
+  grid-template-columns: 1fr;
+  gap: var(--space-4);
+}
+
+@media (min-width: 768px) {
+  .relatedGrid {
+    grid-template-columns: repeat(3, 1fr);
+  }
+}
+
+.relatedCard {
+  display: flex;
+  flex-direction: column;
+  gap: var(--space-2);
+  padding: var(--space-5);
+  background: var(--bg-surface);
+  border: 1px solid var(--border-subtle);
+  border-radius: var(--radius-lg);
+  text-decoration: none;
+  color: inherit;
+  transition:
+    transform var(--dur-base) var(--ease-out),
+    box-shadow var(--dur-base) var(--ease-out),
+    border-color var(--dur-base) var(--ease-out);
+}
+
+.relatedCard:hover {
+  transform: translateY(-2px);
+  box-shadow: var(--shadow-md);
+  border-color: var(--cr-navy-300);
+}
+
+.relatedCard:focus-visible {
+  outline: none;
+  box-shadow: var(--shadow-focus-brand);
+}
+
+.relatedCategory {
+  font-size: var(--fs-12);
+  font-weight: 600;
+  letter-spacing: var(--tracking-eyebrow);
+  text-transform: uppercase;
+  color: var(--cr-emerald-600);
+}
+
+.relatedTitle {
+  font-size: var(--fs-16);
+  font-weight: 600;
+  color: var(--fg-strong);
+  margin: 0;
+  line-height: var(--lh-snug);
+}
+
+.relatedExcerpt {
+  font-size: var(--fs-13);
+  color: var(--fg-default);
+  line-height: var(--lh-relaxed);
+  margin: 0;
+}
+
+/* ===== Bandeau de fermeture ===== */
+.closing {
+  padding-block: var(--space-8);
+  text-align: center;
+}
+
+.closing h3 {
+  margin-bottom: var(--space-3);
+}
+
+.closing p {
+  color: var(--fg-default);
+  max-width: 56ch;
+  margin: 0 auto var(--space-5);
+}
+
+.closingCta {
+  display: inline-flex;
+  align-items: center;
+  gap: var(--space-2);
+  padding: var(--space-3) var(--space-6);
+  background: var(--cr-emerald-600);
+  color: var(--cr-white);
+  border-radius: var(--radius-pill);
+  font-weight: 600;
+  text-decoration: none;
+  min-height: 44px;
+  transition: background var(--dur-fast) var(--ease-out);
+}
+
+.closingCta:hover {
+  background: var(--cr-emerald-700);
+}

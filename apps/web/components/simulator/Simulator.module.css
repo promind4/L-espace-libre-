@@ -1,0 +1,414 @@
+/* ============================================================
+   Simulator — styles mobile-first, hérités strictement des tokens.
+   Aucune valeur en dur (Constitution P1.1).
+   ============================================================ */
+
+.section {
+  background: var(--bg-sunken);
+  padding-block: var(--space-9);
+}
+
+.head {
+  margin-bottom: var(--space-7);
+  text-align: center;
+}
+
+.head h2 {
+  margin-bottom: var(--space-3);
+}
+
+.lead {
+  color: var(--fg-default);
+  max-width: 56ch;
+  margin: 0 auto;
+}
+
+.card {
+  background: var(--bg-surface);
+  border: 1px solid var(--border-subtle);
+  border-radius: var(--radius-2xl);
+  box-shadow: var(--shadow-lg);
+  padding: var(--space-6);
+  max-width: 720px;
+  margin-inline: auto;
+}
+
+@media (min-width: 768px) {
+  .card {
+    padding: var(--space-7);
+  }
+}
+
+/* Plein écran sur mobile (< 480 px) — Constitution III.1 */
+@media (max-width: 479px) {
+  .card {
+    border-radius: 0;
+    border-inline: none;
+    margin-inline: calc(var(--space-5) * -1);
+    box-shadow: var(--shadow-sm);
+    padding-inline: var(--space-5);
+  }
+}
+
+/* Barre de progression */
+.steps {
+  display: flex;
+  gap: var(--space-2);
+  margin-bottom: var(--space-6);
+}
+
+.stepBar {
+  flex: 1;
+  height: 4px;
+  background: var(--cr-pearl-200);
+  border-radius: var(--radius-pill);
+  transition: background var(--dur-base) var(--ease-out);
+}
+
+.stepBarActive {
+  background: var(--cr-emerald-600);
+}
+
+.eyebrow {
+  font-size: var(--fs-12);
+  font-weight: 600;
+  letter-spacing: var(--tracking-eyebrow);
+  text-transform: uppercase;
+  color: var(--cr-navy-700);
+  display: block;
+  margin-bottom: var(--space-3);
+}
+
+.question {
+  font-size: var(--fs-24);
+  font-weight: 700;
+  letter-spacing: var(--tracking-tight);
+  line-height: var(--lh-tight);
+  color: var(--fg-strong);
+  margin: 0 0 var(--space-5);
+}
+
+/* ===== Étape 1 — sélecteur de type ===== */
+.types {
+  display: grid;
+  grid-template-columns: 1fr;
+  gap: var(--space-3);
+}
+
+@media (min-width: 480px) {
+  .types {
+    grid-template-columns: repeat(3, 1fr);
+  }
+}
+
+.typeOption {
+  display: flex;
+  flex-direction: column;
+  align-items: flex-start;
+  gap: var(--space-2);
+  padding: var(--space-5);
+  background: var(--bg-surface);
+  border: 2px solid var(--border-subtle);
+  border-radius: var(--radius-lg);
+  cursor: pointer;
+  text-align: left;
+  transition:
+    border-color var(--dur-base) var(--ease-out),
+    transform var(--dur-base) var(--ease-out),
+    box-shadow var(--dur-base) var(--ease-out);
+}
+
+.typeOption:hover {
+  border-color: var(--cr-emerald-500);
+  transform: translateY(-2px);
+  box-shadow: var(--shadow-md);
+}
+
+.typeOption:focus-visible {
+  outline: none;
+  box-shadow: var(--shadow-focus);
+}
+
+.typeOptionSelected {
+  border-color: var(--cr-emerald-600);
+  background: var(--cr-emerald-100);
+}
+
+.typeOptionLabel {
+  font-size: var(--fs-16);
+  font-weight: 600;
+  color: var(--fg-strong);
+}
+
+.typeOptionSub {
+  font-size: var(--fs-13);
+  color: var(--fg-muted);
+}
+
+/* ===== Étape 2 — surface + étage ===== */
+.field {
+  margin-bottom: var(--space-6);
+}
+
+.label {
+  display: block;
+  font-size: var(--fs-14);
+  font-weight: 600;
+  color: var(--fg-strong);
+  margin-bottom: var(--space-3);
+}
+
+.rangeValue {
+  display: flex;
+  align-items: baseline;
+  gap: var(--space-2);
+  font-size: var(--fs-48);
+  font-weight: 800;
+  color: var(--cr-navy-900);
+  letter-spacing: var(--tracking-tight);
+  line-height: 1;
+  margin-bottom: var(--space-3);
+}
+
+.rangeUnit {
+  font-size: var(--fs-18);
+  font-weight: 500;
+  color: var(--fg-muted);
+}
+
+.rangeVolume {
+  font-size: var(--fs-13);
+  color: var(--fg-muted);
+  margin-top: var(--space-1);
+}
+
+.slider {
+  width: 100%;
+  margin-block: var(--space-3);
+  accent-color: var(--cr-emerald-600);
+}
+
+.slider:focus-visible {
+  outline: none;
+}
+
+.ticks {
+  display: flex;
+  justify-content: space-between;
+  font-size: var(--fs-12);
+  color: var(--fg-muted);
+}
+
+.select {
+  width: 100%;
+  padding: var(--space-3) var(--space-4);
+  font-size: var(--fs-16);
+  border: 1px solid var(--border-default);
+  border-radius: var(--radius-md);
+  background: var(--bg-surface);
+  color: var(--fg-strong);
+  transition: border-color var(--dur-fast) var(--ease-out);
+}
+
+.select:hover {
+  border-color: var(--cr-pearl-500);
+}
+
+.select:focus-visible {
+  outline: none;
+  border-color: var(--cr-navy-700);
+  box-shadow: var(--shadow-focus-brand);
+}
+
+/* ===== Étape 3 — e-mail + RGPD ===== */
+.input {
+  width: 100%;
+  padding: var(--space-3) var(--space-4);
+  font-size: var(--fs-16);
+  border: 1px solid var(--border-default);
+  border-radius: var(--radius-md);
+  background: var(--bg-surface);
+  color: var(--fg-strong);
+}
+
+.input:focus-visible {
+  outline: none;
+  border-color: var(--cr-navy-700);
+  box-shadow: var(--shadow-focus-brand);
+}
+
+.inputError {
+  border-color: var(--cr-danger);
+}
+
+.errorText {
+  color: var(--cr-danger);
+  font-size: var(--fs-13);
+  margin-top: var(--space-2);
+}
+
+.consent {
+  display: flex;
+  align-items: flex-start;
+  gap: var(--space-3);
+  margin-top: var(--space-4);
+  font-size: var(--fs-14);
+  color: var(--fg-default);
+  line-height: var(--lh-normal);
+}
+
+.consent input[type="checkbox"] {
+  margin-top: 3px;
+  width: 18px;
+  height: 18px;
+  accent-color: var(--cr-emerald-600);
+  flex-shrink: 0;
+}
+
+.consent a {
+  color: var(--cr-navy-800);
+  text-underline-offset: 3px;
+}
+
+.helper {
+  font-size: var(--fs-13);
+  color: var(--fg-muted);
+  margin-top: var(--space-3);
+}
+
+/* Honeypot — invisible aux humains, attire les bots. */
+.honeypot {
+  position: absolute;
+  left: -9999px;
+  width: 1px;
+  height: 1px;
+  overflow: hidden;
+}
+
+/* ===== Navigation ===== */
+.nav {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  gap: var(--space-3);
+  margin-top: var(--space-6);
+}
+
+.btn {
+  display: inline-flex;
+  align-items: center;
+  gap: var(--space-2);
+  padding: var(--space-3) var(--space-5);
+  font-size: var(--fs-16);
+  font-weight: 600;
+  border-radius: var(--radius-pill);
+  cursor: pointer;
+  transition:
+    background var(--dur-fast) var(--ease-out),
+    color var(--dur-fast) var(--ease-out),
+    transform var(--dur-fast) var(--ease-out);
+  min-height: 44px; /* Cible tactile WCAG */
+}
+
+.btn:focus-visible {
+  outline: none;
+  box-shadow: var(--shadow-focus);
+}
+
+.btn:active:not(:disabled) {
+  transform: scale(0.985);
+}
+
+.btn:disabled {
+  opacity: 0.5;
+  cursor: not-allowed;
+}
+
+.btnPrimary {
+  background: var(--cr-emerald-600);
+  color: var(--cr-white);
+}
+
+.btnPrimary:hover:not(:disabled) {
+  background: var(--cr-emerald-700);
+}
+
+.btnGhost {
+  background: transparent;
+  color: var(--cr-navy-800);
+  border: 1px solid transparent;
+}
+
+.btnGhost:hover:not(:disabled) {
+  border-color: var(--border-default);
+}
+
+.btnInvisible {
+  visibility: hidden;
+}
+
+/* ===== Résultat ===== */
+.result {
+  text-align: center;
+}
+
+.resultEyebrow {
+  font-size: var(--fs-12);
+  font-weight: 600;
+  letter-spacing: var(--tracking-eyebrow);
+  text-transform: uppercase;
+  color: var(--cr-emerald-600);
+  display: block;
+  margin-bottom: var(--space-3);
+}
+
+.resultPrice {
+  font-size: clamp(var(--fs-36), 5vw + 1rem, var(--fs-64));
+  font-weight: 800;
+  letter-spacing: var(--tracking-tight);
+  color: var(--cr-navy-900);
+  line-height: var(--lh-tight);
+  margin: 0 0 var(--space-4);
+}
+
+.resultPriceUnit {
+  font-size: 0.5em;
+  font-weight: 500;
+  color: var(--fg-muted);
+}
+
+.resultNote {
+  color: var(--fg-default);
+  max-width: 52ch;
+  margin: 0 auto var(--space-6);
+  line-height: var(--lh-relaxed);
+}
+
+.resultActions {
+  display: flex;
+  flex-wrap: wrap;
+  justify-content: center;
+  gap: var(--space-3);
+}
+
+.submittedSpinner {
+  display: inline-block;
+  width: 14px;
+  height: 14px;
+  border: 2px solid var(--cr-white);
+  border-top-color: transparent;
+  border-radius: 50%;
+  animation: spin 0.8s linear infinite;
+}
+
+@keyframes spin {
+  to {
+    transform: rotate(360deg);
+  }
+}
+
+@media (prefers-reduced-motion: reduce) {
+  .submittedSpinner {
+    animation: none;
+  }
+}

@@ -1,0 +1,1155 @@
+/* =====================================================================
+   tiers.css — système de rythme en bandeaux + utilitaires Sparkle
+   Concepts A (rythme), B (sparkle), C (édito), D partie 1 (cartes
+   numérotées sans icône).
+   ===================================================================== */
+
+/* ============================================================
+   1.  Base tier — padding, position, label dev
+   ============================================================ */
+.tier {
+  position: relative;
+  padding-block: 96px;
+}
+@media (max-width: 880px) {
+  .tier { padding-block: 64px; }
+}
+
+/* ============================================================
+   2.  Tier — Light
+   Le tier par défaut : fond bg-page, texte navy-950.
+   ============================================================ */
+.tier-light {
+  background-color: var(--bg-page);
+  color: var(--cr-navy-950);
+}
+
+/* ============================================================
+   3.  Tier — Paper
+   Grille SVG 40×40 navy-300 @ opacité 0.35. Data-URI inline.
+   ============================================================ */
+.tier-paper {
+  background-color: var(--bg-page);
+  background-image: url("data:image/svg+xml;utf8,<svg xmlns='http://www.w3.org/2000/svg' width='40' height='40'><path d='M40 0H0v40' fill='none' stroke='%23B7C4D6' stroke-opacity='0.35' stroke-width='1'/></svg>");
+  color: var(--cr-navy-950);
+}
+
+/* ============================================================
+   4.  Tier — Deep
+   Navy-950 + highlight radiale subtile en haut à droite.
+   ============================================================ */
+.tier-deep {
+  background-color: var(--cr-navy-950);
+  color: var(--fg-on-dark);
+  background-image:
+    radial-gradient(ellipse 80% 60% at 90% 0%, rgba(255, 255, 255, 0.05), transparent 60%),
+    url("data:image/svg+xml;utf8,<svg xmlns='http://www.w3.org/2000/svg' width='40' height='40'><path d='M40 0H0v40' fill='none' stroke='white' stroke-opacity='0.04' stroke-width='1'/></svg>");
+}
+.tier-deep h1,
+.tier-deep h2,
+.tier-deep h3,
+.tier-deep h4,
+.tier-deep h5,
+.tier-deep h6 {
+  color: #fff;
+}
+.tier-deep p,
+.tier-deep .section__lead,
+.tier-deep .tier__lead {
+  color: rgba(255, 255, 255, 0.78);
+}
+.tier-deep .section__eyebrow,
+.tier-deep .tier__eyebrow {
+  color: var(--cr-emerald-300);
+}
+
+/* ============================================================
+   5.  Tier — Editorial
+   Pearl-100 + filet vertical émeraude 1px à 64px du bord du
+   container (max-width 1200px). Sur mobile : filet à 48px.
+   ============================================================ */
+.tier-editorial {
+  background-color: var(--cr-pearl-100);
+  color: var(--cr-navy-950);
+  position: relative;
+}
+.tier-editorial::before {
+  content: "";
+  position: absolute;
+  left: max(32px, calc(50% - 600px + 64px));
+  top: 0;
+  bottom: 0;
+  width: 1px;
+  background: linear-gradient(
+    180deg,
+    transparent 0%,
+    var(--cr-emerald-500) 12%,
+    var(--cr-emerald-500) 88%,
+    transparent 100%
+  );
+  pointer-events: none;
+}
+.tier-editorial > .container {
+  /* Le contenu démarre à 128px (au-delà du filet à 64px) */
+  padding-left: max(96px, calc(50% - 600px + 128px));
+}
+@media (max-width: 880px) {
+  /* Sur mobile, le filet vertical émeraude chevauchait le texte
+     (notamment dans WhyPro avec l'image asymétrique à droite).
+     On le masque entièrement et on rétablit le padding standard
+     du container — le contenu peut respirer sur toute la largeur. */
+  .tier-editorial::before { display: none; }
+  .tier-editorial > .container { padding-left: 24px; padding-right: 24px; }
+}
+
+/* ============================================================
+   6.  Spark — glyphe de signature (Concept B)
+   ============================================================ */
+.spark {
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  flex-shrink: 0;
+  color: var(--cr-emerald-600);
+  line-height: 0;
+}
+.spark--light {
+  color: var(--cr-emerald-300);
+}
+.spark svg {
+  display: block;
+}
+
+/* Usage 5 : hover de lien.
+   À appliquer sur un élément `<a class="link-spark">` qui contient
+   un `<span class="link__spark">` puis le texte. */
+.link-spark {
+  position: relative;
+  display: inline-flex;
+  align-items: center;
+  gap: 8px;
+  padding-left: 0;
+  color: inherit;
+  text-decoration: none;
+  font-weight: 600;
+  transition:
+    padding-left var(--dur-base) var(--ease-out),
+    color var(--dur-fast) var(--ease-out);
+}
+.link-spark .link__spark {
+  position: absolute;
+  left: -6px;
+  opacity: 0;
+  transform: translateX(-6px);
+  transition:
+    opacity var(--dur-base) var(--ease-out),
+    transform var(--dur-base) var(--ease-out);
+  line-height: 0;
+}
+.link-spark:hover,
+.link-spark:focus-visible {
+  padding-left: 26px;
+  color: var(--cr-emerald-700);
+  outline: none;
+}
+.tier-deep .link-spark:hover,
+.tier-deep .link-spark:focus-visible {
+  color: var(--cr-emerald-300);
+}
+.link-spark:hover .link__spark,
+.link-spark:focus-visible .link__spark {
+  opacity: 1;
+  transform: translateX(0);
+}
+
+/* Usage 3 : séparateur de titre (rare).
+   Filets émeraude + sparkle au centre. */
+.spark-sep {
+  display: flex;
+  align-items: center;
+  gap: 14px;
+  margin: 0 auto;
+  max-width: 320px;
+  color: var(--cr-emerald-600);
+}
+.spark-sep::before,
+.spark-sep::after {
+  content: "";
+  flex: 1;
+  height: 1px;
+  background: currentColor;
+  opacity: 0.4;
+}
+.tier-deep .spark-sep { color: var(--cr-emerald-300); }
+
+/* Usage 4 : marqueur de fin d'article / section. */
+.spark-end {
+  display: flex;
+  justify-content: center;
+  padding: 24px 0 8px;
+}
+
+/* Usage 2 : bullet de liste (ul à la place du `•`).
+   Appliquer la classe `.bullets-spark` sur un `<ul>`. */
+.bullets-spark {
+  list-style: none;
+  padding: 0;
+  margin: 24px 0 0;
+  display: flex;
+  flex-direction: column;
+  gap: 14px;
+}
+.bullets-spark li {
+  display: flex;
+  align-items: flex-start;
+  gap: 12px;
+  font-size: 15px;
+  line-height: 1.55;
+  color: var(--cr-pearl-900);
+}
+.bullets-spark .spark {
+  margin-top: 4px;
+}
+.tier-deep .bullets-spark li {
+  color: rgba(255, 255, 255, 0.92);
+}
+
+/* ============================================================
+   7.  Chapter label (Concept C) — `01 / NOTRE ANCRAGE` + filet
+   ============================================================ */
+.chapter {
+  display: flex;
+  align-items: center;
+  gap: 16px;
+  font-family: var(--font-mono);
+  font-size: 13px;
+  color: var(--cr-emerald-700);
+  letter-spacing: 0.08em;
+  margin-bottom: 32px;
+}
+.chapter__num { font-weight: 700; }
+.chapter__line {
+  flex: 1;
+  height: 1px;
+  background: var(--cr-emerald-500);
+  opacity: 0.5;
+}
+.tier-deep .chapter { color: var(--cr-emerald-300); }
+.tier-deep .chapter__line { background: var(--cr-emerald-300); opacity: 0.4; }
+
+/* ============================================================
+   8.  Pull-quote XL (Concept C, tier Editorial)
+   ============================================================ */
+.pullquote {
+  padding-block: 128px;
+}
+.pullquote__sep {
+  display: flex;
+  align-items: center;
+  gap: 14px;
+  color: var(--cr-emerald-600);
+  max-width: 240px;
+  margin-bottom: 24px;
+}
+.pullquote__sep::before,
+.pullquote__sep::after {
+  content: "";
+  flex: 1;
+  height: 1px;
+  background: currentColor;
+  opacity: 0.4;
+}
+.pullquote blockquote {
+  font-size: clamp(28px, 3vw + 1rem, 44px);
+  font-weight: 500;
+  font-style: italic;
+  line-height: 1.25;
+  letter-spacing: -0.02em;
+  color: var(--cr-navy-950);
+  max-width: 24ch;
+  margin: 0 0 32px;
+  text-wrap: balance;
+}
+.pullquote__attr {
+  font-size: 13px;
+  font-weight: 600;
+  letter-spacing: 0.08em;
+  text-transform: uppercase;
+  color: var(--cr-emerald-700);
+}
+@media (max-width: 880px) {
+  .pullquote { padding-block: 80px; }
+}
+
+/* ============================================================
+   9.  Sidenav (Concept C — page À propos)
+   ============================================================ */
+.sidenav {
+  list-style: none;
+  padding: 0;
+  margin: 0;
+  border-left: 1px solid var(--cr-pearl-200);
+  max-width: 320px;
+}
+.sidenav li {
+  position: relative;
+  padding: 12px 0 12px 24px;
+  font-size: 14px;
+  color: var(--cr-pearl-500);
+}
+.sidenav li.active {
+  color: var(--cr-navy-950);
+  font-weight: 600;
+}
+.sidenav li.active::before {
+  content: "";
+  position: absolute;
+  left: -1px;
+  top: 0;
+  bottom: 0;
+  width: 2px;
+  background: var(--cr-emerald-600);
+}
+.sidenav .spark {
+  position: absolute;
+  left: 4px;
+  top: 50%;
+  transform: translateY(-50%);
+  opacity: 0;
+}
+.sidenav li.active .spark { opacity: 1; }
+.sidenav__num {
+  font-family: var(--font-mono);
+  font-size: 11px;
+  margin-right: 10px;
+  color: var(--cr-pearl-500);
+}
+.sidenav li a {
+  color: inherit;
+  text-decoration: none;
+}
+.sidenav li a:hover {
+  color: var(--cr-navy-950);
+}
+
+/* ============================================================
+   10. Cartes services numérotées (Concept D variante 1)
+   Grille 2×2 stricte sur desktop (jamais 3+1).
+   Une seule colonne sur mobile.
+   ============================================================ */
+
+/* Wrapper : grille 2 colonnes desktop, 1 colonne mobile. */
+.services-grid {
+  display: grid;
+  grid-template-columns: repeat(2, 1fr);
+  gap: 16px;
+}
+@media (max-width: 720px) {
+  .services-grid { grid-template-columns: 1fr; }
+}
+
+.service-card-num {
+  background: var(--bg-surface);
+  border: 1px solid var(--border-subtle);
+  border-radius: 18px;
+  padding: 26px;
+  display: flex;
+  gap: 18px;
+  align-items: flex-start;
+  transition:
+    transform var(--dur-base) var(--ease-out),
+    box-shadow var(--dur-base) var(--ease-out),
+    border-color var(--dur-base) var(--ease-out);
+  text-decoration: none;
+  color: inherit;
+  /* Hauteur égale entre cartes pour préserver une grille 2×2 parfaite. */
+  height: 100%;
+}
+.service-card-num:hover {
+  transform: translateY(-2px);
+  box-shadow: var(--shadow-md);
+  border-color: var(--cr-pearl-300);
+}
+.service-card-num:focus-visible {
+  outline: none;
+  box-shadow: var(--shadow-focus-brand);
+}
+.service-card-num__num {
+  font-family: var(--font-mono);
+  font-size: 13px;
+  font-weight: 700;
+  color: var(--cr-emerald-600);
+  letter-spacing: 0.06em;
+  flex-shrink: 0;
+  padding-top: 4px;
+}
+.service-card-num__body {
+  flex: 1;
+  display: flex;
+  flex-direction: column;
+  min-width: 0;
+}
+.service-card-num h3 {
+  font-size: 19px;
+  font-weight: 700;
+  color: var(--cr-navy-950);
+  margin: 0 0 6px;
+  letter-spacing: -0.01em;
+  /* Animation discrète : le titre s'surligne en émeraude pâle au hover. */
+  background-image: linear-gradient(180deg, transparent 60%, var(--cr-emerald-100) 60%);
+  background-size: 0% 100%;
+  background-repeat: no-repeat;
+  background-position: 0 0;
+  transition: background-size var(--dur-base) var(--ease-out);
+  display: inline;
+}
+.service-card-num:hover h3 {
+  background-size: 100% 100%;
+}
+.service-card-num p {
+  font-size: 14px;
+  line-height: 1.55;
+  color: var(--cr-pearl-700);
+  margin: 0 0 14px;
+}
+.service-card-num__link {
+  font-size: 13px;
+  font-weight: 600;
+  color: var(--cr-emerald-600);
+  display: inline-flex;
+  align-items: center;
+  gap: 6px;
+  margin-top: auto;
+}
+
+@media (max-width: 480px) {
+  .service-card-num {
+    padding: 22px;
+    gap: 14px;
+  }
+}
+
+/* ============================================================
+   10d. WhyPro asymetric — image verticale pleine hauteur à droite
+   La section Editorial reste contraintment par son `.container`
+   (max-width 1200px, padding gauche grâce au filet émeraude).
+   L'image déborde à droite jusqu'au bord de l'écran via une
+   technique « break-out » : position absolue, hauteur 100% du
+   parent (.tier-editorial). Le texte reste centré dans sa zone.
+   ============================================================ */
+.why-pro-asymetric {
+  /* Le tier-editorial parent fournit padding-block et filet émeraude */
+  position: relative;
+  overflow: hidden;
+}
+.why-pro-asymetric .container {
+  /* Garde la marge gauche du tier-editorial (max(96px, …))
+     mais limite à droite pour laisser place à l'image. */
+  position: relative;
+  z-index: 2;
+  /* Padding-right ajusté pour ne pas chevaucher l'image. */
+  padding-right: 0;
+  max-width: 720px;
+}
+.why-pro-asymetric__image {
+  position: absolute;
+  top: 0;
+  bottom: 0;
+  right: 0;
+  /* L'image occupe 38% de la largeur du tier — asymétrique. */
+  width: 38%;
+  /* Hauteur 100% du tier (qui a son propre padding-block). */
+  height: 100%;
+  z-index: 1;
+}
+.why-pro-asymetric__image > * {
+  width: 100%;
+  height: 100%;
+}
+.why-pro-asymetric__image .img-ph,
+.why-pro-asymetric__image .img-real {
+  /* Pas de bordure ni rayon — l'image colle au bord d'écran. */
+  border-radius: 0;
+  border: 0;
+  box-shadow: none;
+}
+
+@media (max-width: 1080px) {
+  /* Sur écrans étroits : image en bas, pleine largeur, hauteur fixe.
+     Le texte reprend sa pleine largeur au-dessus. */
+  .why-pro-asymetric .container {
+    max-width: 100%;
+    padding-right: var(--space-5);
+  }
+  .why-pro-asymetric__image {
+    position: relative;
+    width: 100%;
+    height: 280px;
+    margin-top: var(--space-7);
+  }
+}
+
+/* ============================================================
+   10c. Expert columns (HomeSEOText — « Votre expert local »)
+   Grille 3 colonnes desktop avec alignement vertical strict :
+   h3 sur la même ligne, paragraphes alignés en haut, hauteur
+   égale entre colonnes via display:flex column.
+   ============================================================ */
+.expert-cols {
+  display: grid;
+  grid-template-columns: repeat(3, 1fr);
+  gap: 40px;
+  align-items: start;
+}
+.expert-col {
+  display: flex;
+  flex-direction: column;
+}
+.expert-col h3 {
+  font-size: var(--fs-20);
+  font-weight: 700;
+  letter-spacing: -0.01em;
+  line-height: 1.3;
+  color: var(--cr-navy-950);
+  margin: 0 0 var(--space-3);
+  /* Hauteur minimale pour aligner les paragraphes même si les titres
+     font 1 ou 2 lignes. Calculé : 2 lignes × line-height 1.3 × fs-20. */
+  min-height: calc(var(--fs-20) * 1.3 * 2);
+}
+.expert-col p {
+  line-height: var(--lh-relaxed);
+  color: var(--cr-pearl-700);
+  margin: 0;
+}
+
+@media (max-width: 880px) {
+  .expert-cols { grid-template-columns: 1fr; gap: 32px; }
+  .expert-col h3 { min-height: 0; }
+}
+
+/* ============================================================
+   10b. Manifesto signature (utilisé par WhyPro dans tier Editorial)
+   ============================================================ */
+.manifesto__quote {
+  font-size: clamp(22px, 2vw + 1rem, 28px);
+  font-weight: 500;
+  line-height: 1.45;
+  color: var(--cr-navy-900);
+  max-width: 42ch;
+  margin: 32px 0 24px;
+  letter-spacing: -0.01em;
+}
+.manifesto__sign {
+  display: flex;
+  align-items: center;
+  gap: 14px;
+}
+.manifesto__sign-portrait {
+  width: 52px;
+  height: 52px;
+  border-radius: 50%;
+  background: linear-gradient(135deg, var(--cr-navy-700), var(--cr-navy-900));
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  color: #fff;
+  font-weight: 700;
+  font-size: 18px;
+  flex-shrink: 0;
+}
+.manifesto__sign-name {
+  font-weight: 700;
+  color: var(--cr-navy-950);
+}
+.manifesto__sign-role {
+  font-size: 13px;
+  color: var(--cr-pearl-700);
+}
+
+/* ============================================================
+   11. Stats band (Concept A) — bandeau de 4 indicateurs
+   Utilise la texture Paper, séparateurs verticaux navy-200,
+   chiffres en 40px navy-950.
+   ============================================================ */
+.stats-band {
+  display: grid;
+  grid-template-columns: repeat(4, 1fr);
+  gap: 1px;
+  background: var(--cr-pearl-200);
+  border: 1px solid var(--cr-pearl-200);
+  border-radius: 18px;
+  overflow: hidden;
+}
+.stats-band__item {
+  background: rgba(255, 255, 255, 0.92);
+  backdrop-filter: blur(8px);
+  -webkit-backdrop-filter: blur(8px);
+  padding: 28px 24px;
+  display: flex;
+  flex-direction: column;
+  gap: 4px;
+}
+.stats-band__num {
+  font-size: 40px;
+  font-weight: 800;
+  color: var(--cr-navy-950);
+  letter-spacing: -0.02em;
+  line-height: 1;
+  display: inline-flex;
+  align-items: baseline;
+  gap: 4px;
+}
+.stats-band__num small {
+  font-size: 18px;
+  font-weight: 600;
+  color: var(--cr-emerald-600);
+}
+.stats-band__num--icon {
+  display: inline-flex;
+  align-items: center;
+  gap: 10px;
+  font-size: 22px;
+}
+.stats-band__num--icon svg {
+  color: var(--cr-emerald-600);
+  width: 32px;
+  height: 32px;
+}
+.stats-band__label {
+  font-size: 13px;
+  color: var(--cr-pearl-700);
+  line-height: 1.45;
+  margin-top: 4px;
+}
+.stats-band__label strong {
+  color: var(--cr-navy-900);
+  font-weight: 700;
+}
+.stats-band__label-sub {
+  display: block;
+  font-size: 12px;
+  color: var(--cr-pearl-500);
+  margin-top: 2px;
+}
+
+@media (max-width: 880px) {
+  .stats-band { grid-template-columns: repeat(2, 1fr); }
+}
+@media (max-width: 480px) {
+  .stats-band { grid-template-columns: 1fr; }
+}
+
+/* ============================================================
+   11b. Contact quote form (Concept D — formulaire plat)
+   Grille 1.5fr 1fr (form principal + aside sticky).
+   ============================================================ */
+.cqf-wrap {
+  display: grid;
+  grid-template-columns: 1.5fr 1fr;
+  gap: 40px;
+  max-width: 1080px;
+  margin: 0 auto;
+  align-items: start;
+}
+@media (max-width: 880px) {
+  .cqf-wrap { grid-template-columns: 1fr; gap: 32px; }
+}
+
+.cqf {
+  background: var(--bg-surface);
+  border-radius: 24px;
+  box-shadow: var(--shadow-lg);
+  padding: 40px 40px 32px;
+}
+/* Espacement vertical entre sections (v3 — arbitrage subtil
+   après retour PO 17-mai-2026).
+   Stratégie d'équilibre :
+     - padding-bottom 24 px (espace entre dernier champ et bordure)
+     - margin-top 28 px sur la section suivante (souffle mesuré)
+     - margin-bottom du label 16 px (proximité du premier champ)
+   Bilan :
+     - au-dessus du label : 24 + 28 = 52 px
+     - en-dessous du label : 16 px
+     - ratio ~3,3× → titre clairement plus proche du contenu qu'il
+       introduit (règle de proximité) sans vide disproportionné. */
+/* Reset des styles natifs du <fieldset> (border/padding/margin par
+   défaut du navigateur) puis application de nos vraies valeurs.
+   Le reset doit être ici et pas en inline pour ne pas écraser les
+   espacements de la classe. */
+.cqf__group {
+  border: 0;
+  padding: 0 0 24px;
+  margin: 0;
+  min-width: 0;
+  border-bottom: 1px solid var(--border-subtle);
+}
+.cqf__group + .cqf__group {
+  margin-top: 28px;
+}
+.cqf__group:last-of-type {
+  border-bottom: 0;
+  padding-bottom: 16px;
+}
+.cqf__group-label {
+  font-family: var(--font-mono);
+  font-size: 12px;
+  font-weight: 700;
+  letter-spacing: 0.1em;
+  text-transform: uppercase;
+  color: var(--cr-emerald-700);
+  margin: 0 0 16px;
+  display: flex;
+  align-items: center;
+  gap: 10px;
+  line-height: 1.3;
+}
+.cqf__group-label::after {
+  content: "";
+  flex: 1;
+  height: 1px;
+  background: var(--cr-pearl-200);
+}
+
+.cqf__field {
+  display: flex;
+  flex-direction: column;
+  gap: 6px;
+  margin-bottom: 14px;
+}
+.cqf__field:last-child { margin-bottom: 0; }
+.cqf__row {
+  display: grid;
+  grid-template-columns: 1fr 1fr;
+  gap: 12px;
+  align-items: end;
+  margin-bottom: 14px;
+}
+.cqf__row .cqf__field { margin-bottom: 0; }
+@media (max-width: 480px) {
+  .cqf__row { grid-template-columns: 1fr; }
+}
+
+.cqf__label {
+  font-size: 13px;
+  font-weight: 600;
+  color: var(--cr-navy-950);
+}
+.cqf__req {
+  color: var(--cr-emerald-600);
+  margin-left: 2px;
+}
+
+.cqf input[type="text"],
+.cqf input[type="email"],
+.cqf input[type="tel"],
+.cqf input[type="number"],
+.cqf textarea {
+  font: inherit;
+  font-size: 15px;
+  padding: 12px 14px;
+  border-radius: 10px;
+  border: 1px solid var(--border-default);
+  background: #fff;
+  color: var(--cr-navy-950);
+  outline: none;
+  transition:
+    border-color var(--dur-fast),
+    box-shadow var(--dur-fast);
+}
+.cqf input:focus,
+.cqf textarea:focus {
+  border-color: var(--cr-emerald-600);
+  box-shadow: 0 0 0 4px rgba(14, 143, 112, 0.18);
+}
+.cqf__hint {
+  font-size: 12px;
+  color: var(--cr-pearl-500);
+}
+.cqf__error {
+  font-size: 12px;
+  color: var(--cr-danger);
+  margin-top: 4px;
+}
+
+/* Chips type de bien, salubrité, accessibilité — affichage minimaliste.
+   Labels bruts uniquement, pas de hint sous le titre (décision UX v3
+   : design rapide à lire, sans surcharge textuelle). */
+.cqf__chips {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 8px;
+}
+.cqf__chip {
+  font: inherit;
+  font-size: 14px;
+  font-weight: 500;
+  background: #fff;
+  color: var(--cr-navy-900);
+  border: 1px solid var(--border-default);
+  padding: 10px 16px;
+  border-radius: 999px;
+  cursor: pointer;
+  transition: all var(--dur-fast);
+  line-height: 1.25;
+}
+.cqf__chip:hover { border-color: var(--cr-navy-700); }
+.cqf__chip[aria-pressed="true"] {
+  background: var(--cr-emerald-100);
+  color: var(--cr-emerald-700);
+  border-color: var(--cr-emerald-600);
+  font-weight: 600;
+}
+.cqf__chip:focus-visible {
+  outline: none;
+  box-shadow: var(--shadow-focus-brand);
+}
+
+/* Checkboxes annexes (multi-sélection chips-style) */
+.cqf__checkboxes {
+  display: grid;
+  grid-template-columns: repeat(2, 1fr);
+  gap: 8px;
+}
+@media (max-width: 480px) {
+  .cqf__checkboxes { grid-template-columns: 1fr; }
+}
+.cqf__checkbox {
+  display: inline-flex;
+  align-items: center;
+  gap: 10px;
+  padding: 12px 16px;
+  border-radius: 12px;
+  border: 1px solid var(--border-default);
+  background: #fff;
+  cursor: pointer;
+  font-size: 14px;
+  color: var(--cr-navy-900);
+  transition: all var(--dur-fast);
+}
+.cqf__checkbox:hover { border-color: var(--cr-navy-700); }
+.cqf__checkbox input[type="checkbox"] {
+  margin: 0;
+  accent-color: var(--cr-emerald-600);
+}
+.cqf__checkbox--checked {
+  background: var(--cr-emerald-100);
+  color: var(--cr-emerald-700);
+  border-color: var(--cr-emerald-600);
+  font-weight: 600;
+}
+
+/* Surface : slider + input numérique côte à côte */
+.cqf__surface {
+  display: grid;
+  grid-template-columns: 1fr 120px;
+  gap: 16px;
+  align-items: center;
+}
+.cqf__surface-slider {
+  -webkit-appearance: none;
+  appearance: none;
+  height: 6px;
+  background: var(--cr-pearl-200);
+  border-radius: 999px;
+  outline: none;
+}
+.cqf__surface-slider::-webkit-slider-thumb {
+  -webkit-appearance: none;
+  appearance: none;
+  width: 22px;
+  height: 22px;
+  border-radius: 50%;
+  background: var(--cr-emerald-600);
+  border: 3px solid #fff;
+  box-shadow: var(--shadow-sm);
+  cursor: pointer;
+}
+.cqf__surface-slider::-moz-range-thumb {
+  width: 22px;
+  height: 22px;
+  border-radius: 50%;
+  background: var(--cr-emerald-600);
+  border: 3px solid #fff;
+  box-shadow: var(--shadow-sm);
+  cursor: pointer;
+}
+.cqf__surface-input {
+  text-align: right;
+  font-variant-numeric: tabular-nums;
+}
+@media (max-width: 480px) {
+  .cqf__surface { grid-template-columns: 1fr; }
+}
+
+/* Submit */
+.cqf__submit {
+  width: 100%;
+  background: var(--cr-emerald-600);
+  color: #fff;
+  font: inherit;
+  font-weight: 600;
+  font-size: 16px;
+  border: 0;
+  border-radius: 999px;
+  padding: 16px;
+  cursor: pointer;
+  transition: background var(--dur-fast);
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  gap: 8px;
+}
+.cqf__submit:hover:not(:disabled) {
+  background: var(--cr-emerald-700);
+}
+.cqf__submit:disabled {
+  opacity: 0.6;
+  cursor: not-allowed;
+}
+.cqf__legal {
+  font-size: 12px;
+  color: var(--cr-pearl-500);
+  text-align: center;
+  margin-top: 12px;
+  line-height: 1.5;
+}
+.cqf__legal a { color: var(--cr-navy-800); }
+
+/* Consent checkbox */
+.cqf__consent {
+  display: flex;
+  align-items: flex-start;
+  gap: 10px;
+  font-size: 13px;
+  line-height: 1.5;
+  color: var(--cr-pearl-700);
+  margin-top: 4px;
+}
+.cqf__consent input[type="checkbox"] {
+  margin-top: 3px;
+  accent-color: var(--cr-emerald-600);
+}
+
+/* Honeypot — caché visuellement et au lecteur d'écran */
+.cqf__honeypot {
+  position: absolute;
+  left: -9999px;
+  width: 1px;
+  height: 1px;
+  overflow: hidden;
+}
+
+/* Status messages */
+.cqf__status {
+  margin-top: 16px;
+  padding: 14px 16px;
+  border-radius: 12px;
+  font-size: 14px;
+}
+.cqf__status--ok {
+  background: var(--cr-emerald-100);
+  color: var(--cr-emerald-700);
+  border: 1px solid var(--cr-emerald-300);
+}
+.cqf__status--err {
+  background: rgba(192, 57, 43, 0.08);
+  color: var(--cr-danger);
+  border: 1px solid rgba(192, 57, 43, 0.3);
+}
+
+/* ============================================================
+   11c. Aside : estimation live + trust pills
+   ============================================================ */
+.cqf-aside {
+  position: sticky;
+  top: 24px;
+  display: flex;
+  flex-direction: column;
+  gap: 16px;
+}
+.cqf-aside__estimate {
+  background: var(--cr-navy-950);
+  color: #fff;
+  border-radius: 18px;
+  padding: 28px;
+  background-image:
+    radial-gradient(ellipse 80% 60% at 90% 0%, rgba(255, 255, 255, 0.06), transparent 60%);
+}
+.cqf-aside__eyebrow {
+  font-size: 11px;
+  font-weight: 600;
+  letter-spacing: 0.14em;
+  text-transform: uppercase;
+  color: var(--cr-emerald-300);
+  display: inline-flex;
+  align-items: center;
+  gap: 6px;
+}
+/* Prix d'appel (v3 stratégie agressive) — le low mis en gros,
+   le high en secondaire en dessous. */
+.cqf-aside__price-prefix {
+  font-size: 12px;
+  font-weight: 500;
+  color: rgba(255, 255, 255, 0.55);
+  letter-spacing: 0.04em;
+  margin-top: 14px;
+  margin-bottom: 2px;
+}
+.cqf-aside__price {
+  font-size: 40px;
+  font-weight: 800;
+  letter-spacing: -0.025em;
+  line-height: 1.05;
+  color: #fff;
+  margin: 0 0 8px;
+}
+.cqf-aside__price-max {
+  font-size: 13px;
+  color: rgba(255, 255, 255, 0.7);
+  margin-bottom: 10px;
+  line-height: 1.4;
+}
+.cqf-aside__price-max strong {
+  color: #fff;
+  font-weight: 700;
+}
+.cqf-aside__note {
+  font-size: 13px;
+  line-height: 1.5;
+  color: rgba(255, 255, 255, 0.7);
+  margin: 0;
+}
+.cqf-aside__pill {
+  background: rgba(255, 255, 255, 0.08);
+  border-radius: 999px;
+  padding: 6px 12px;
+  font-size: 12px;
+  display: inline-flex;
+  align-items: center;
+  gap: 6px;
+  margin-top: 14px;
+  color: rgba(255, 255, 255, 0.85);
+}
+
+/* Récapitulatif des paramètres choisis (sous le prix) */
+.cqf-aside__recap {
+  margin-top: 14px;
+  padding-top: 14px;
+  border-top: 1px solid rgba(255, 255, 255, 0.12);
+  display: flex;
+  flex-direction: column;
+  gap: 6px;
+  font-size: 12px;
+  color: rgba(255, 255, 255, 0.7);
+}
+.cqf-aside__recap-row {
+  display: flex;
+  justify-content: space-between;
+  gap: 12px;
+}
+.cqf-aside__recap-row strong {
+  color: #fff;
+  font-weight: 600;
+}
+
+/* Encart capture (sous le prix dans l'aside) */
+.cqf-aside__capture {
+  background: var(--bg-surface);
+  border: 1px solid var(--border-subtle);
+  border-radius: 18px;
+  padding: 24px;
+}
+.cqf-aside__capture-eyebrow {
+  font-family: var(--font-mono);
+  font-size: 11px;
+  font-weight: 700;
+  letter-spacing: 0.1em;
+  text-transform: uppercase;
+  color: var(--cr-emerald-700);
+  display: inline-flex;
+  align-items: center;
+  gap: 6px;
+  margin-bottom: 8px;
+}
+.cqf-aside__capture h3 {
+  font-size: 16px;
+  font-weight: 700;
+  color: var(--cr-navy-950);
+  margin: 0 0 8px;
+  letter-spacing: -0.005em;
+  line-height: 1.3;
+}
+.cqf-aside__capture-lead {
+  font-size: 13px;
+  line-height: 1.5;
+  color: var(--cr-pearl-700);
+  margin: 0 0 16px;
+}
+.cqf-aside__capture .cqf__field {
+  margin-bottom: 12px;
+}
+.cqf-aside__capture .cqf__field:last-of-type {
+  margin-bottom: 0;
+}
+.cqf-aside__capture .cqf__submit {
+  margin-top: 16px;
+  padding: 14px;
+  font-size: 15px;
+}
+.cqf-aside__capture .cqf__legal {
+  margin-top: 10px;
+  font-size: 11px;
+}
+.cqf-aside__capture .cqf__consent {
+  font-size: 12px;
+  margin-top: 0;
+}
+
+.cqf-aside__trust {
+  background: var(--bg-surface);
+  border: 1px solid var(--border-subtle);
+  border-radius: 18px;
+  padding: 20px 24px;
+}
+.cqf-aside__trust h4 {
+  font-size: 14px;
+  font-weight: 700;
+  color: var(--cr-navy-950);
+  margin: 0 0 14px;
+}
+.cqf-aside__trust ul {
+  list-style: none;
+  padding: 0;
+  margin: 0;
+  display: flex;
+  flex-direction: column;
+  gap: 10px;
+}
+.cqf-aside__trust li {
+  display: flex;
+  align-items: flex-start;
+  gap: 10px;
+  font-size: 13px;
+  line-height: 1.5;
+  color: var(--cr-pearl-900);
+}
+
+@media (max-width: 880px) {
+  .cqf-aside { position: static; }
+}
+
+/* ============================================================
+   12. Header/eyebrow de tier — utilitaires partagés
+   ============================================================ */
+.tier__eyebrow {
+  display: inline-flex;
+  align-items: center;
+  gap: 8px;
+  font-size: 12px;
+  font-weight: 600;
+  letter-spacing: 0.14em;
+  text-transform: uppercase;
+  color: var(--cr-emerald-700);
+  margin-bottom: 12px;
+}
+.tier-deep .tier__eyebrow { color: var(--cr-emerald-300); }

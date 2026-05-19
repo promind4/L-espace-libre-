@@ -1,0 +1,32 @@
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 200 150" fill="none">
+  
+  <line x1="10" y1="138" x2="172" y2="138" stroke="#1D3E61" stroke-width="6" stroke-linecap="round"></line>
+
+  
+  <path d="M22 138 L22 78 L78 32 L134 78 L134 138 Z" fill="#1D3E61"></path>
+  
+  <path d="M14 84 L78 32 L142 84" stroke="#0C1F33" stroke-width="5" stroke-linejoin="round" stroke-linecap="round" fill="none"></path>
+
+  
+  <path d="M118 138 L118 90 L138 78 L158 90 L158 138 Z" fill="#1D3E61"></path>
+  
+  <path d="M112 94 L138 78 L164 94" stroke="#0C1F33" stroke-width="4" stroke-linejoin="round" stroke-linecap="round" fill="none"></path>
+
+  
+  <rect x="40" y="92" width="14" height="20" fill="#FFFFFF" rx="1"></rect>
+  <rect x="62" y="92" width="14" height="20" fill="#FFFFFF" rx="1"></rect>
+  
+  <rect x="131" y="108" width="14" height="30" fill="#FFFFFF" rx="1"></rect>
+
+  
+  <g transform="translate(118 18)">
+    
+    <path d="M0 30 Q18 6 50 14 Q40 30 22 36 Q8 38 0 30 Z" fill="#0E8F70"></path>
+    
+    <path d="M6 22 Q22 -2 54 8 Q46 22 28 28 Q14 30 6 22 Z" fill="#15A985"></path>
+    
+    <path d="M30 14 Q56 8 64 22 Q60 32 44 34 Q30 32 26 24 Z" fill="#0E8F70"></path>
+    
+    <path d="M62 21 L68 22 L62 25 Z" fill="#0A6E55"></path>
+  </g>
+</svg>

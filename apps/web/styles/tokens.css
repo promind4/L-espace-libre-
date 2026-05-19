@@ -1,0 +1,206 @@
+/* ============================================================
+   L'Espace Libre — Design Tokens
+   Foundation for every artefact in the system.
+   Synced from colors_and_type.css (Claude Design source).
+   Aucune modification ad hoc — Constitution P1.1.
+   ============================================================ */
+
+/* ---- Fonts ----
+   Inter — auto-hébergé via next/font/local dans app/layout.tsx.
+   Aucun import Google Fonts en production (Constitution P4.4).
+*/
+
+:root {
+  /* ====================================================
+     COLOR — Brand
+     ==================================================== */
+  /* Primary — Bleu Ardoise / Navy. Confiance, institutionnel. */
+  --cr-navy-950: #0C1F33;        /* near-black navy, hero backgrounds */
+  --cr-navy-900: #1D3E61;        /* dominant primary — matches logo */
+  --cr-navy-800: #2A4E73;        /* hover / depth */
+  --cr-navy-700: #3D628A;        /* mid navy */
+  --cr-navy-500: #6B85A6;        /* soft navy, illustrative */
+  --cr-navy-300: #B7C4D6;        /* faded navy */
+  --cr-navy-100: #DDE5EE;        /* navy tint surface */
+
+  /* Action — Vert Émeraude doux. CTA, validation, éco. */
+  --cr-emerald-700: #0A6E55;     /* pressed */
+  --cr-emerald-600: #0E8F70;     /* default CTA — matches logo green */
+  --cr-emerald-500: #15A985;     /* hover / accent */
+  --cr-emerald-300: #82D2BC;     /* tint */
+  --cr-emerald-100: #DBF1E8;     /* surface, success bg */
+
+  /* Neutrals — Blanc & Gris Perle. Espace, propreté. */
+  --cr-white: #FFFFFF;
+  --cr-pearl-50:  #FAFBFC;       /* page bg */
+  --cr-pearl-100: #F4F6F8;       /* section bg */
+  --cr-pearl-200: #E9ECF1;       /* card divider, faint border */
+  --cr-pearl-300: #D6DBE3;       /* control border */
+  --cr-pearl-400: #B5BCC8;       /* disabled text */
+  --cr-pearl-500: #8A93A2;       /* muted */
+  --cr-pearl-700: #4B5566;       /* body */
+  --cr-pearl-900: #1F2733;       /* heading */
+
+  /* Semantic */
+  --cr-success: #0E8F70;
+  --cr-warning: #C8851A;
+  --cr-danger:  #C0392B;
+  --cr-info:    #3D628A;
+
+  /* ====================================================
+     SEMANTIC TOKENS — use these in components
+     ==================================================== */
+  --fg-strong:   var(--cr-pearl-900);  /* headings */
+  --fg-default:  var(--cr-pearl-700);  /* body */
+  --fg-muted:    var(--cr-pearl-500);  /* captions, meta */
+  --fg-on-dark:  var(--cr-white);
+  --fg-on-dark-muted: rgba(255,255,255,.72);
+  --fg-brand:    var(--cr-navy-900);
+  --fg-action:   var(--cr-emerald-600);
+
+  --bg-page:     var(--cr-pearl-50);
+  --bg-surface:  var(--cr-white);
+  --bg-sunken:   var(--cr-pearl-100);
+  --bg-brand:    var(--cr-navy-900);
+  --bg-brand-deep: var(--cr-navy-950);
+  --bg-action:   var(--cr-emerald-600);
+
+  --border-subtle: var(--cr-pearl-200);
+  --border-default: var(--cr-pearl-300);
+  --border-strong:  var(--cr-pearl-500);
+  --border-brand:   var(--cr-navy-900);
+
+  /* ====================================================
+     TYPE
+     ==================================================== */
+  --font-sans: "Inter", ui-sans-serif, system-ui, -apple-system,
+               "Segoe UI", Roboto, "Helvetica Neue", Arial, sans-serif;
+  --font-mono: ui-monospace, "SF Mono", Menlo, Consolas, monospace;
+
+  /* Type scale — modular, mobile-first */
+  --fs-12: 0.75rem;     /* 12 — micro / legal */
+  --fs-13: 0.8125rem;   /* 13 — meta */
+  --fs-14: 0.875rem;    /* 14 — small body */
+  --fs-16: 1rem;        /* 16 — body */
+  --fs-18: 1.125rem;    /* 18 — lead */
+  --fs-20: 1.25rem;     /* 20 — h4 */
+  --fs-24: 1.5rem;      /* 24 — h3 */
+  --fs-30: 1.875rem;    /* 30 — h2 mobile */
+  --fs-36: 2.25rem;     /* 36 — h2 */
+  --fs-48: 3rem;        /* 48 — h1 mobile / hero small */
+  --fs-64: 4rem;        /* 64 — hero desktop */
+
+  --lh-tight:   1.1;
+  --lh-snug:    1.25;
+  --lh-normal:  1.5;
+  --lh-relaxed: 1.65;
+
+  --tracking-tight: -0.02em;
+  --tracking-snug:  -0.01em;
+  --tracking-wide:   0.02em;
+  --tracking-eyebrow: 0.14em;
+
+  /* ====================================================
+     SPACE / RADIUS / SHADOW
+     ==================================================== */
+  --space-1:  4px;
+  --space-2:  8px;
+  --space-3:  12px;
+  --space-4:  16px;
+  --space-5:  24px;
+  --space-6:  32px;
+  --space-7:  48px;
+  --space-8:  64px;
+  --space-9:  96px;
+  --space-10: 128px;
+
+  --radius-xs: 4px;
+  --radius-sm: 6px;
+  --radius-md: 10px;     /* default for inputs, small cards */
+  --radius-lg: 14px;     /* cards */
+  --radius-xl: 20px;     /* large surface cards */
+  --radius-2xl: 28px;    /* hero blocks */
+  --radius-pill: 999px;
+
+  /* Shadows — soft, low-contrast. Propreté demands restraint. */
+  --shadow-xs:  0 1px 1px rgba(29, 62, 97, 0.05);
+  --shadow-sm:  0 1px 2px rgba(29, 62, 97, 0.07), 0 1px 3px rgba(29, 62, 97, 0.04);
+  --shadow-md:  0 4px 12px rgba(29, 62, 97, 0.09), 0 2px 4px rgba(29, 62, 97, 0.04);
+  --shadow-lg:  0 12px 32px rgba(29, 62, 97, 0.11), 0 4px 8px rgba(29, 62, 97, 0.05);
+  --shadow-xl:  0 24px 56px rgba(29, 62, 97, 0.15), 0 8px 16px rgba(29, 62, 97, 0.06);
+  --shadow-focus: 0 0 0 4px rgba(14, 143, 112, 0.22);
+  --shadow-focus-brand: 0 0 0 4px rgba(61, 98, 138, 0.22);
+
+  /* Motion */
+  --ease-out:   cubic-bezier(0.22, 1, 0.36, 1);
+  --ease-in-out:cubic-bezier(0.65, 0, 0.35, 1);
+  --dur-fast:   140ms;
+  --dur-base:   220ms;
+  --dur-slow:   360ms;
+}
+
+/* ============================================================
+   ELEMENT BASELINES
+   ============================================================ */
+html {
+  font-family: var(--font-sans);
+  color: var(--fg-default);
+  background: var(--bg-page);
+  -webkit-font-smoothing: antialiased;
+  text-rendering: optimizeLegibility;
+}
+
+body { margin: 0; }
+
+h1, h2, h3, h4, h5, h6 {
+  color: var(--fg-strong);
+  font-weight: 700;
+  letter-spacing: var(--tracking-tight);
+  line-height: var(--lh-tight);
+  margin: 0 0 var(--space-4);
+  text-wrap: balance;
+}
+
+h1 { font-size: clamp(var(--fs-36), 5vw + 1rem, var(--fs-64)); font-weight: 800; }
+h2 { font-size: clamp(var(--fs-30), 3vw + 1rem, var(--fs-48)); }
+h3 { font-size: var(--fs-24); }
+h4 { font-size: var(--fs-20); }
+h5 { font-size: var(--fs-18); }
+h6 {
+  font-size: var(--fs-13);
+  text-transform: uppercase;
+  letter-spacing: var(--tracking-eyebrow);
+  color: var(--cr-navy-700);
+}
+
+p {
+  margin: 0 0 var(--space-4);
+  font-size: var(--fs-16);
+  line-height: var(--lh-relaxed);
+  color: var(--fg-default);
+  text-wrap: pretty;
+}
+
+small { font-size: var(--fs-13); color: var(--fg-muted); }
+
+a {
+  color: var(--cr-navy-800);
+  text-decoration-color: var(--cr-pearl-300);
+  text-decoration-thickness: 1px;
+  text-underline-offset: 3px;
+  transition: color var(--dur-fast) var(--ease-out),
+              text-decoration-color var(--dur-fast) var(--ease-out);
+}
+a:hover {
+  color: var(--cr-emerald-600);
+  text-decoration-color: var(--cr-emerald-500);
+}
+
+/* Utility — eyebrow label */
+.eyebrow {
+  font-size: var(--fs-12);
+  font-weight: 600;
+  letter-spacing: var(--tracking-eyebrow);
+  text-transform: uppercase;
+  color: var(--cr-navy-700);
+}

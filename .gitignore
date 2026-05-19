@@ -1,0 +1,55 @@
+﻿# Dependencies
+node_modules/
+.pnp
+.pnp.js
+
+# Next.js build output
+apps/web/.next/
+apps/web/out/
+apps/web/build/
+
+# Environment files — NE JAMAIS COMMITER
+.env
+.env.local
+.env.*.local
+apps/web/.env
+apps/web/.env.local
+apps/web/.env.*.local
+
+# Cache & debug
+.DS_Store
+Thumbs.db
+*.log
+npm-debug.log*
+pnpm-debug.log*
+
+# TypeScript
+*.tsbuildinfo
+apps/web/next-env.d.ts
+
+# Tests reports
+playwright-report/
+test-results/
+
+# Dossiers de travail (design, prototypes, assets bruts)
+input avif/
+LOGO/
+concepts/
+assets/
+ui_kits/
+preview/
+uploads/
+input/
+*.zip
+
+# Fichiers Claude / audit internes
+.claude/
+.specify/
+AUDIT_REPORT.md
+EXECUTIVE_REPORT.md
+EXPECTATIONS_CHECKLIST.md
+SKILL.md
+ICONOGRAPHY.md
+colors_and_type.css
+meta.md
+mission_lespace_libre.md

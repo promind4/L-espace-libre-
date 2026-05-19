@@ -1,0 +1,107 @@
+/* ============================================================
+   BlogContent — typographie d'article.
+   Largeur lecture ≤ 68ch, tokens hérités.
+   ============================================================ */
+
+.prose {
+  max-width: 68ch;
+  margin-inline: auto;
+  color: var(--fg-default);
+  font-size: var(--fs-16);
+  line-height: var(--lh-relaxed);
+}
+
+.prose > * + * {
+  margin-top: var(--space-4);
+}
+
+.prose p {
+  margin: 0;
+}
+
+.prose h2 {
+  font-size: clamp(var(--fs-24), 2vw + 1rem, var(--fs-30));
+  font-weight: 700;
+  color: var(--fg-strong);
+  letter-spacing: var(--tracking-tight);
+  line-height: var(--lh-tight);
+  margin-top: var(--space-7) !important;
+  margin-bottom: var(--space-3);
+}
+
+.prose h2:first-child {
+  margin-top: 0 !important;
+}
+
+.prose h3 {
+  font-size: var(--fs-20);
+  font-weight: 700;
+  color: var(--fg-strong);
+  margin-top: var(--space-5) !important;
+  margin-bottom: var(--space-3);
+}
+
+.list,
+.listOrdered {
+  padding-left: var(--space-5);
+  color: var(--fg-default);
+}
+
+.list {
+  list-style: disc;
+}
+
+.listOrdered {
+  list-style: decimal;
+}
+
+.list li,
+.listOrdered li {
+  margin-bottom: var(--space-2);
+  line-height: var(--lh-relaxed);
+}
+
+.list li::marker,
+.listOrdered li::marker {
+  color: var(--cr-emerald-600);
+}
+
+.callout {
+  padding: var(--space-4) var(--space-5);
+  border-radius: var(--radius-md);
+  border-left: 4px solid var(--cr-emerald-600);
+  background: var(--cr-emerald-100);
+  color: var(--cr-pearl-900);
+  font-size: var(--fs-15, var(--fs-14));
+  line-height: var(--lh-relaxed);
+}
+
+.calloutInfo {
+  border-left-color: var(--cr-emerald-600);
+  background: var(--cr-emerald-100);
+}
+
+.calloutWarning {
+  border-left-color: var(--cr-warning);
+  background: #FFF7E6;
+}
+
+.quote {
+  margin: 0;
+  padding: var(--space-4) var(--space-5);
+  border-left: 4px solid var(--cr-navy-700);
+  background: var(--bg-surface);
+  border-radius: var(--radius-md);
+  font-style: italic;
+  color: var(--fg-strong);
+}
+
+.quote p {
+  margin: 0 0 var(--space-2);
+}
+
+.quoteAttribution {
+  font-style: normal;
+  font-size: var(--fs-13);
+  color: var(--fg-muted);
+}

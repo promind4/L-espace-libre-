@@ -1,0 +1,266 @@
+/* ============================================================
+   BeforeAfterStack — pile interactive de paires Avant/Après.
+   Stratégie : carte « avant » tirée latéralement révèle « après ».
+   Constitution III.4 : motion calme, easing --ease-out, durée ≤ 360 ms.
+   ============================================================ */
+
+.section {
+  padding-block: var(--space-9);
+  background: var(--bg-page);
+}
+
+.head {
+  margin-bottom: var(--space-7);
+  text-align: center;
+}
+
+.lead {
+  color: var(--fg-default);
+  max-width: 56ch;
+  margin: 0 auto;
+}
+
+/* Compteur de paires (« 1 / 5 ») */
+.counter {
+  display: inline-flex;
+  align-items: center;
+  gap: var(--space-2);
+  font-size: var(--fs-13);
+  color: var(--fg-muted);
+  margin-bottom: var(--space-4);
+}
+
+.counter strong {
+  color: var(--fg-strong);
+  font-weight: 700;
+}
+
+/* Pile */
+.stage {
+  position: relative;
+  max-width: 540px;
+  margin: 0 auto;
+  aspect-ratio: 4 / 3;
+  perspective: 1200px;
+  touch-action: none; /* le drag ne déclenche pas le scroll */
+}
+
+/* ===== Variante "inline" pour le Hero =====
+   La pile s'inscrit dans le slot `.hero__visual` (aspect 4/5 desktop),
+   sans wrapper de section ni header autonome.
+*/
+.inline {
+  width: 100%;
+  height: 100%;
+  display: flex;
+  flex-direction: column;
+  gap: var(--space-3);
+}
+
+.inline .stage {
+  flex: 1;
+  max-width: none;
+  aspect-ratio: auto;
+  margin: 0;
+}
+
+.inline .counter {
+  margin-bottom: 0;
+  align-self: center;
+}
+
+.inline .nav {
+  margin-top: 0;
+  justify-content: center;
+}
+
+.card {
+  position: absolute;
+  inset: 0;
+  border-radius: var(--radius-2xl);
+  overflow: hidden;
+  background: var(--bg-surface);
+  box-shadow: var(--shadow-lg);
+  transition: transform var(--dur-slow) var(--ease-out),
+              opacity var(--dur-slow) var(--ease-out);
+  user-select: none;
+  -webkit-user-select: none;
+}
+
+.cardAfter {
+  z-index: 1;
+}
+
+.cardBefore {
+  z-index: 2;
+  cursor: grab;
+  touch-action: none;
+}
+
+.cardBefore:active {
+  cursor: grabbing;
+}
+
+.cardBefore:focus-visible {
+  outline: none;
+  box-shadow: var(--shadow-focus-brand);
+}
+
+.cardDragging {
+  /* Pendant un drag actif, on désactive la transition pour suivre le doigt. */
+  transition: none !important;
+}
+
+/* Cartes empilées en arrière-plan (effet de pile) */
+.cardStacked {
+  z-index: 0;
+}
+
+.cardImg {
+  width: 100%;
+  height: 100%;
+  object-fit: cover;
+  display: block;
+}
+
+.label {
+  position: absolute;
+  top: var(--space-4);
+  left: var(--space-4);
+  display: inline-flex;
+  align-items: center;
+  gap: var(--space-2);
+  padding: var(--space-2) var(--space-3);
+  border-radius: var(--radius-pill);
+  font-size: var(--fs-12);
+  font-weight: 600;
+  letter-spacing: var(--tracking-eyebrow);
+  text-transform: uppercase;
+  backdrop-filter: blur(8px);
+  -webkit-backdrop-filter: blur(8px);
+}
+
+.labelBefore {
+  background: rgba(192, 57, 43, 0.85);
+  color: var(--cr-white);
+}
+
+.labelAfter {
+  background: rgba(14, 143, 112, 0.85);
+  color: var(--cr-white);
+}
+
+.hint {
+  position: absolute;
+  bottom: var(--space-4);
+  left: 50%;
+  transform: translateX(-50%);
+  display: inline-flex;
+  align-items: center;
+  gap: var(--space-2);
+  padding: var(--space-2) var(--space-4);
+  background: rgba(255, 255, 255, 0.92);
+  color: var(--cr-navy-900);
+  border-radius: var(--radius-pill);
+  font-size: var(--fs-13);
+  font-weight: 600;
+  box-shadow: var(--shadow-sm);
+  transition: opacity var(--dur-base) var(--ease-out);
+  pointer-events: none;
+}
+
+.placeholderBadge {
+  position: absolute;
+  bottom: var(--space-4);
+  right: var(--space-4);
+  font-size: var(--fs-12);
+  color: var(--cr-white);
+  background: rgba(31, 39, 51, 0.7);
+  padding: var(--space-1) var(--space-3);
+  border-radius: var(--radius-pill);
+  letter-spacing: var(--tracking-wide);
+}
+
+/* Caption sous la pile */
+.caption {
+  margin-top: var(--space-5);
+  text-align: center;
+}
+
+.captionTitle {
+  font-size: var(--fs-18);
+  font-weight: 600;
+  color: var(--fg-strong);
+  margin: 0 0 var(--space-1);
+}
+
+.captionMeta {
+  font-size: var(--fs-13);
+  color: var(--fg-muted);
+}
+
+/* Navigation */
+.nav {
+  display: flex;
+  justify-content: center;
+  align-items: center;
+  gap: var(--space-3);
+  margin-top: var(--space-6);
+}
+
+.btn {
+  display: inline-flex;
+  align-items: center;
+  gap: var(--space-2);
+  padding: var(--space-3) var(--space-5);
+  font-size: var(--fs-14);
+  font-weight: 600;
+  border-radius: var(--radius-pill);
+  cursor: pointer;
+  transition:
+    background var(--dur-fast) var(--ease-out),
+    color var(--dur-fast) var(--ease-out),
+    transform var(--dur-fast) var(--ease-out);
+  min-height: 44px;
+}
+
+.btn:focus-visible {
+  outline: none;
+  box-shadow: var(--shadow-focus);
+}
+
+.btn:active:not(:disabled) {
+  transform: scale(0.985);
+}
+
+.btn:disabled {
+  opacity: 0.4;
+  cursor: not-allowed;
+}
+
+.btnGhost {
+  background: transparent;
+  color: var(--cr-navy-800);
+  border: 1px solid var(--border-default);
+}
+
+.btnGhost:hover:not(:disabled) {
+  border-color: var(--cr-navy-700);
+  color: var(--cr-navy-900);
+}
+
+.btnPrimary {
+  background: var(--cr-navy-900);
+  color: var(--cr-white);
+}
+
+.btnPrimary:hover:not(:disabled) {
+  background: var(--cr-navy-800);
+}
+
+/* Reduced motion */
+@media (prefers-reduced-motion: reduce) {
+  .card {
+    transition: opacity var(--dur-base) ease !important;
+  }
+}

@@ -1,0 +1,338 @@
+/* ============================================================
+   AdminEstimateur — outil interne PO.
+   Affichage formulaire dense, pensé desktop (mais reste utilisable
+   sur tablette). Aucune contrainte de marque marketing : ici on
+   privilégie la densité d'information.
+   ============================================================ */
+
+.shell {
+  max-width: 1100px;
+  margin-inline: auto;
+  padding: var(--space-6) var(--space-5);
+}
+
+.banner {
+  display: flex;
+  align-items: center;
+  gap: var(--space-3);
+  padding: var(--space-3) var(--space-4);
+  margin-bottom: var(--space-6);
+  background: var(--cr-pearl-100);
+  border-left: 3px solid var(--cr-warning);
+  border-radius: var(--radius-md);
+  color: var(--fg-default);
+  font-size: var(--fs-13);
+}
+
+.head {
+  margin-bottom: var(--space-6);
+}
+
+.eyebrow {
+  display: inline-block;
+  font-size: var(--fs-12);
+  font-weight: 600;
+  letter-spacing: var(--tracking-eyebrow);
+  text-transform: uppercase;
+  color: var(--cr-navy-700);
+  margin-bottom: var(--space-2);
+}
+
+.head h1 {
+  margin-bottom: var(--space-2);
+}
+
+.head p {
+  color: var(--fg-default);
+  max-width: 64ch;
+  margin: 0;
+}
+
+/* ===== Grille principale ===== */
+.grid {
+  display: grid;
+  grid-template-columns: 1fr;
+  gap: var(--space-6);
+}
+
+@media (min-width: 960px) {
+  .grid {
+    grid-template-columns: 1.1fr 1fr;
+  }
+}
+
+/* ===== Bloc formulaire ===== */
+.card {
+  background: var(--bg-surface);
+  border: 1px solid var(--border-subtle);
+  border-radius: var(--radius-lg);
+  padding: var(--space-5);
+  box-shadow: var(--shadow-sm);
+}
+
+@media (min-width: 768px) {
+  .card {
+    padding: var(--space-6);
+  }
+}
+
+.cardTitle {
+  margin: 0 0 var(--space-4);
+  font-size: var(--fs-18);
+  color: var(--fg-strong);
+}
+
+.row {
+  display: grid;
+  grid-template-columns: 1fr;
+  gap: var(--space-4);
+  margin-bottom: var(--space-4);
+}
+
+@media (min-width: 640px) {
+  .row {
+    grid-template-columns: 1fr 1fr;
+  }
+}
+
+.field label {
+  display: block;
+  font-size: var(--fs-13);
+  font-weight: 600;
+  color: var(--fg-strong);
+  margin-bottom: var(--space-2);
+}
+
+.field input,
+.field select,
+.field textarea {
+  width: 100%;
+  padding: var(--space-3);
+  font-size: var(--fs-14);
+  background: var(--bg-surface);
+  color: var(--fg-strong);
+  border: 1px solid var(--border-default);
+  border-radius: var(--radius-md);
+  font-family: inherit;
+}
+
+.field input:focus-visible,
+.field select:focus-visible,
+.field textarea:focus-visible {
+  outline: none;
+  border-color: var(--cr-navy-700);
+  box-shadow: var(--shadow-focus-brand);
+}
+
+.field textarea {
+  min-height: 120px;
+  resize: vertical;
+}
+
+.helper {
+  font-size: var(--fs-12);
+  color: var(--fg-muted);
+  margin: var(--space-2) 0 0;
+}
+
+.inputError {
+  border-color: var(--cr-danger) !important;
+}
+
+.errorText {
+  color: var(--cr-danger);
+  font-size: var(--fs-13);
+  margin-top: var(--space-2);
+}
+
+/* ===== Panneau résultat ===== */
+.result {
+  background: var(--bg-surface);
+  border: 1px solid var(--border-subtle);
+  border-radius: var(--radius-lg);
+  box-shadow: var(--shadow-sm);
+  overflow: hidden;
+  align-self: start;
+  position: sticky;
+  top: var(--space-4);
+}
+
+.resultHead {
+  background: var(--cr-navy-900);
+  color: var(--fg-on-dark);
+  padding: var(--space-5);
+}
+
+.resultEyebrow {
+  font-size: var(--fs-12);
+  letter-spacing: var(--tracking-eyebrow);
+  text-transform: uppercase;
+  color: var(--cr-emerald-300);
+  font-weight: 600;
+}
+
+.resultPrice {
+  font-size: var(--fs-36);
+  font-weight: 800;
+  margin: var(--space-2) 0 var(--space-1);
+  color: var(--fg-on-dark);
+  letter-spacing: var(--tracking-tight);
+  line-height: var(--lh-tight);
+}
+
+.resultRange {
+  color: var(--fg-on-dark-muted);
+  margin: 0;
+  font-size: var(--fs-14);
+}
+
+.resultBody {
+  padding: var(--space-5);
+}
+
+.breakdown {
+  width: 100%;
+  font-size: var(--fs-13);
+  border-collapse: collapse;
+  margin-bottom: var(--space-5);
+}
+
+.breakdown td {
+  padding: var(--space-2) 0;
+  border-bottom: 1px dashed var(--border-subtle);
+}
+
+.breakdown td:first-child {
+  color: var(--fg-muted);
+}
+
+.breakdown td:last-child {
+  text-align: right;
+  font-weight: 600;
+  color: var(--fg-strong);
+  font-variant-numeric: tabular-nums;
+}
+
+.breakdown tr:last-child td {
+  border-bottom: none;
+  padding-top: var(--space-3);
+  font-size: var(--fs-14);
+  font-weight: 700;
+  color: var(--cr-navy-900);
+}
+
+.actions {
+  display: flex;
+  flex-wrap: wrap;
+  gap: var(--space-2);
+}
+
+.btn {
+  display: inline-flex;
+  align-items: center;
+  gap: var(--space-2);
+  padding: var(--space-3) var(--space-4);
+  font-size: var(--fs-14);
+  font-weight: 600;
+  border-radius: var(--radius-md);
+  cursor: pointer;
+  transition:
+    background var(--dur-fast) var(--ease-out),
+    color var(--dur-fast) var(--ease-out);
+  min-height: 44px;
+}
+
+.btn:focus-visible {
+  outline: none;
+  box-shadow: var(--shadow-focus);
+}
+
+.btn:disabled {
+  opacity: 0.45;
+  cursor: not-allowed;
+}
+
+.btnPrimary {
+  background: var(--cr-emerald-600);
+  color: var(--cr-white);
+}
+
+.btnPrimary:hover:not(:disabled) {
+  background: var(--cr-emerald-700);
+}
+
+.btnGhost {
+  background: transparent;
+  color: var(--cr-navy-800);
+  border: 1px solid var(--border-default);
+}
+
+.btnGhost:hover:not(:disabled) {
+  border-color: var(--cr-navy-700);
+  color: var(--cr-navy-900);
+}
+
+.copied {
+  color: var(--cr-emerald-600);
+  font-size: var(--fs-13);
+  font-weight: 600;
+  margin: var(--space-2) 0 0;
+}
+
+/* ===== Preview du devis client ===== */
+.preview {
+  margin-top: var(--space-5);
+  padding: var(--space-4);
+  background: var(--bg-sunken);
+  border-radius: var(--radius-md);
+  font-family: var(--font-mono, ui-monospace, "SF Mono", Menlo, Consolas, monospace);
+  font-size: var(--fs-12);
+  line-height: 1.55;
+  color: var(--fg-default);
+  white-space: pre-wrap;
+  max-height: 420px;
+  overflow: auto;
+  border: 1px solid var(--border-subtle);
+}
+
+/* ===== Styles d'impression ===== */
+@media print {
+  .banner,
+  .grid > div:first-child,
+  .actions,
+  .resultEyebrow {
+    display: none !important;
+  }
+  .shell {
+    padding: 0;
+    max-width: none;
+  }
+  .grid {
+    grid-template-columns: 1fr;
+  }
+  .result {
+    box-shadow: none;
+    border: none;
+    position: static;
+  }
+  .resultHead {
+    background: none !important;
+    color: var(--fg-strong) !important;
+    padding: 0 0 var(--space-4) 0;
+    border-bottom: 1px solid var(--border-default);
+  }
+  .resultPrice {
+    color: var(--cr-navy-900) !important;
+  }
+  .resultRange {
+    color: var(--fg-default) !important;
+  }
+  .preview {
+    background: none;
+    border: none;
+    padding: var(--space-3) 0;
+    max-height: none;
+    overflow: visible;
+    font-size: var(--fs-13);
+  }
+}

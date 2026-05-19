@@ -1,0 +1,13 @@
+{
+  "name": "L'Espace Libre",
+  "short_name": "Espace Libre",
+  "description": "Débarras professionnel — Bordeaux Métropole & Nouvelle-Aquitaine.",
+  "icons": [
+    { "src": "/android-chrome-192x192.png", "sizes": "192x192", "type": "image/png" },
+    { "src": "/android-chrome-512x512.png", "sizes": "512x512", "type": "image/png" }
+  ],
+  "theme_color": "#1D3E61",
+  "background_color": "#FAFBFC",
+  "display": "standalone",
+  "start_url": "/"
+}

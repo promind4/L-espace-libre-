@@ -1,0 +1,177 @@
+{
+  "bordeaux": {
+    "nom_ville": "Bordeaux",
+    "code_postal": "33000",
+    "distance_base": "0 km (centre-ville)",
+    "point_tri_local": "Déchèterie professionnelle de Bordeaux Nord",
+    "partenaire_solidaire": "Emmaüs Gironde"
+  },
+  "merignac": {
+    "nom_ville": "Mérignac",
+    "code_postal": "33700",
+    "distance_base": "7 km (environ 15 min)",
+    "point_tri_local": "Centre de tri de Mérignac",
+    "partenaire_solidaire": "Le Relais 33"
+  },
+  "pessac": {
+    "nom_ville": "Pessac",
+    "code_postal": "33600",
+    "distance_base": "8 km",
+    "point_tri_local": "Déchèterie de Pessac",
+    "partenaire_solidaire": "Secours Populaire"
+  },
+  "talence": {
+    "nom_ville": "Talence",
+    "code_postal": "33400",
+    "distance_base": "5 km",
+    "point_tri_local": "Déchèterie de Talence",
+    "partenaire_solidaire": "La Croix Rouge"
+  },
+  "begles": {
+    "nom_ville": "Bègles",
+    "code_postal": "33130",
+    "distance_base": "4 km",
+    "point_tri_local": "Déchèterie de Bègles",
+    "partenaire_solidaire": "Emmaüs Gironde"
+  },
+  "le-bouscat": {
+    "nom_ville": "Le Bouscat",
+    "code_postal": "33110",
+    "distance_base": "4 km",
+    "point_tri_local": "Déchèterie professionnelle (zone nord)",
+    "partenaire_solidaire": "Le Relais 33"
+  },
+  "villenave-d-ornon": {
+    "nom_ville": "Villenave-d'Ornon",
+    "code_postal": "33140",
+    "distance_base": "8 km",
+    "point_tri_local": "Déchèterie de Villenave-d'Ornon",
+    "partenaire_solidaire": "Secours Catholique"
+  },
+  "gradignan": {
+    "nom_ville": "Gradignan",
+    "code_postal": "33170",
+    "distance_base": "10 km",
+    "point_tri_local": "Centre de tri partenaire",
+    "partenaire_solidaire": "Emmaüs Gironde"
+  },
+  "floirac": {
+    "nom_ville": "Floirac",
+    "code_postal": "33270",
+    "distance_base": "6 km",
+    "point_tri_local": "Déchèterie Rive Droite",
+    "partenaire_solidaire": "Ressourcerie locale"
+  },
+  "cenon": {
+    "nom_ville": "Cenon",
+    "code_postal": "33150",
+    "distance_base": "5 km",
+    "point_tri_local": "Déchèterie Rive Droite",
+    "partenaire_solidaire": "Ressourcerie locale"
+  },
+  "bruges": {
+    "nom_ville": "Bruges",
+    "code_postal": "33520",
+    "distance_base": "5 km",
+    "point_tri_local": "Déchèterie de Bruges",
+    "partenaire_solidaire": "Emmaüs Gironde"
+  },
+  "lormont": {
+    "nom_ville": "Lormont",
+    "code_postal": "33310",
+    "distance_base": "7 km",
+    "point_tri_local": "Déchèterie de Lormont",
+    "partenaire_solidaire": "Le Relais 33"
+  },
+  "saint-medard-en-jalles": {
+    "nom_ville": "Saint-Médard-en-Jalles",
+    "code_postal": "33160",
+    "distance_base": "12 km",
+    "point_tri_local": "Déchèterie de Saint-Médard",
+    "partenaire_solidaire": "Croix Rouge"
+  },
+  "eysines": {
+    "nom_ville": "Eysines",
+    "code_postal": "33320",
+    "distance_base": "9 km",
+    "point_tri_local": "Déchèterie d'Eysines",
+    "partenaire_solidaire": "Emmaüs Gironde"
+  },
+  "ambares-et-lagrave": {
+    "nom_ville": "Ambarès-et-Lagrave",
+    "code_postal": "33440",
+    "distance_base": "14 km",
+    "point_tri_local": "Déchèterie d'Ambarès",
+    "partenaire_solidaire": "Ressourcerie locale"
+  },
+  "mont-de-marsan": {
+    "nom_ville": "Mont-de-Marsan",
+    "code_postal": "40000",
+    "distance_base": "130 km (env. 1h30)",
+    "point_tri_local": "Déchèterie de Mont-de-Marsan",
+    "partenaire_solidaire": "Emmaüs Landes"
+  },
+  "dax": {
+    "nom_ville": "Dax",
+    "code_postal": "40100",
+    "distance_base": "150 km",
+    "point_tri_local": "Déchèterie de Dax",
+    "partenaire_solidaire": "Secours Populaire Dax"
+  },
+  "saint-paul-les-dax": {
+    "nom_ville": "Saint-Paul-lès-Dax",
+    "code_postal": "40990",
+    "distance_base": "152 km",
+    "point_tri_local": "Déchèterie de Dax agglomération",
+    "partenaire_solidaire": "Emmaüs Landes"
+  },
+  "capbreton": {
+    "nom_ville": "Capbreton",
+    "code_postal": "40130",
+    "distance_base": "170 km",
+    "point_tri_local": "Déchèterie de Capbreton",
+    "partenaire_solidaire": "Le Relais"
+  },
+  "biscarrosse": {
+    "nom_ville": "Biscarrosse",
+    "code_postal": "40600",
+    "distance_base": "110 km",
+    "point_tri_local": "Déchèterie de Biscarrosse",
+    "partenaire_solidaire": "Ressourcerie Côte Landaise"
+  },
+  "agen": {
+    "nom_ville": "Agen",
+    "code_postal": "47000",
+    "distance_base": "140 km",
+    "point_tri_local": "Déchèterie d'Agen",
+    "partenaire_solidaire": "Emmaüs Agen"
+  },
+  "marmande": {
+    "nom_ville": "Marmande",
+    "code_postal": "47200",
+    "distance_base": "90 km",
+    "point_tri_local": "Déchèterie de Marmande",
+    "partenaire_solidaire": "Croix Rouge Marmande"
+  },
+  "villeneuve-sur-lot": {
+    "nom_ville": "Villeneuve-sur-Lot",
+    "code_postal": "47300",
+    "distance_base": "150 km",
+    "point_tri_local": "Déchèterie de Villeneuve-sur-Lot",
+    "partenaire_solidaire": "Secours Populaire Villeneuve"
+  },
+  "tonneins": {
+    "nom_ville": "Tonneins",
+    "code_postal": "47400",
+    "distance_base": "110 km",
+    "point_tri_local": "Déchèterie de Tonneins",
+    "partenaire_solidaire": "Emmaüs Agen"
+  },
+  "le-passage": {
+    "nom_ville": "Le Passage",
+    "code_postal": "47520",
+    "distance_base": "142 km",
+    "point_tri_local": "Déchèterie du Passage",
+    "partenaire_solidaire": "Ressourcerie locale"
+  }
+}
