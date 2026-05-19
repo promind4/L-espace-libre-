@@ -7,6 +7,7 @@
  * FAQ <details>, cross-services, fermeture, JSON-LD complet
  * (Service + FAQPage + BreadcrumbList).
  */
+import Link from "next/link";
 import { Icon } from "@/components/ui/Icon";
 import { Spark } from "@/components/ui/Spark";
 import { JsonLd } from "@/components/seo/JsonLd";
@@ -146,11 +147,11 @@ export function ServicePageTemplate({ service }: ServicePageTemplateProps) {
       {/* ===== Fil d'Ariane ===== */}
       <nav className="container" aria-label="Fil d'Ariane">
         <div className={styles.breadcrumb}>
-          <a href="/">Accueil</a>
+          <Link href="/">Accueil</Link>
           <span className={styles.breadcrumbSep} aria-hidden>
             ›
           </span>
-          <a href="/services">Services</a>
+          <Link href="/services">Services</Link>
           <span className={styles.breadcrumbSep} aria-hidden>
             ›
           </span>
@@ -370,12 +371,12 @@ export function ServicePageTemplate({ service }: ServicePageTemplateProps) {
                         || ZONES_BY_DEPARTEMENT["47"]?.find(z => z.slug === slug);
               if (!zone) return null;
               return (
-                <a key={slug} href={`/zones/${slug}`} className="btn btn--secondary btn--sm" style={{ textDecoration: "none" }}>
+                <Link key={slug} href={`/zones/${slug}`} className="btn btn--secondary btn--sm" style={{ textDecoration: "none" }}>
                   Débarras à {zone.nom}
-                </a>
+                </Link>
               );
             })}
-            <a href="/zones" className="btn btn--secondary btn--sm" style={{ textDecoration: "none" }}>Voir toutes les villes...</a>
+            <Link href="/zones" className="btn btn--secondary btn--sm" style={{ textDecoration: "none" }}>Voir toutes les villes...</Link>
           </div>
         </div>
       </section>

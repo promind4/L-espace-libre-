@@ -1,4 +1,5 @@
 import type { Metadata } from "next";
+import Link from "next/link";
 import { Icon } from "@/components/ui/Icon";
 import { Spark } from "@/components/ui/Spark";
 // import { JsonLd } from "@/components/seo/JsonLd";
@@ -182,12 +183,12 @@ export default function AvisPage() {
             paddingBlock: "var(--space-4)",
           }}
         >
-          <a
+          <Link
             href="/"
             style={{ color: "var(--cr-navy-800)", textDecoration: "none" }}
           >
             Accueil
-          </a>
+          </Link>
           <span
             style={{
               margin: "0 var(--space-2)",

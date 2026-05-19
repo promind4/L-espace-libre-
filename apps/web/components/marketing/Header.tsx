@@ -10,9 +10,10 @@
  */
 import { useEffect, useRef, useState } from "react";
 import Image from "next/image";
+import Link from "next/link";
 import { Icon } from "@/components/ui/Icon";
 import { SERVICES } from "@/content/services";
-import { ZONES, ZONES_BY_DEPARTEMENT } from "@/content/zones";
+import { ZONES_BY_DEPARTEMENT } from "@/content/zones";
 import { BUSINESS } from "@/config/business";
 
 type DropdownKey = "services" | "zones" | null;
@@ -57,7 +58,7 @@ export function Header() {
   return (
     <header className="header">
       <div className="header__inner">
-        <a className="header__logo" href="/" aria-label="L'Espace Libre">
+        <Link className="header__logo" href="/" aria-label="L'Espace Libre">
           {/* Logo circulaire complet (texte + arbre + emerald) en PNG.
               `priority` car c'est l'élément above-the-fold critique.
               Dimensions intrinsèques 96×96 (taille rendue contrôlée par
@@ -71,7 +72,7 @@ export function Header() {
             sizes="(max-width: 600px) 60px, 76px"
             className="header__mark"
           />
-        </a>
+        </Link>
 
         <nav className="header__nav" ref={navRef} aria-label="Navigation principale">
           <button
@@ -93,7 +94,7 @@ export function Header() {
                 role="menu"
               >
                 {headerServices.map((s) => (
-                  <a
+                  <Link
                     key={s.slug}
                     className="dropdown__item"
                     href={`/services/${s.slug}`}
@@ -103,7 +104,7 @@ export function Header() {
                       <div className="dropdown__title">{s.titre}</div>
                       <div className="dropdown__desc">{s.baseline}</div>
                     </span>
-                  </a>
+                  </Link>
                 ))}
               </div>
             )}
@@ -149,17 +150,17 @@ export function Header() {
                   }}
                 >
                   {featuredZones.map((z) => (
-                    <a
+                    <Link
                       key={z.slug}
                       href={`/zones/${z.slug}`}
                       role="menuitem"
                       className="dropdown__zone-link"
                     >
                       {z.nom}
-                    </a>
+                    </Link>
                   ))}
                 </div>
-                <a
+                <Link
                   href="/zones"
                   className="dropdown__item"
                   style={{ borderTop: "1px solid var(--border-subtle)", marginTop: 4 }}
@@ -171,23 +172,23 @@ export function Header() {
                       25 communes — Gironde, Landes, Lot-et-Garonne
                     </div>
                   </span>
-                </a>
+                </Link>
               </div>
             )}
           </button>
 
-          <a className="nav__item" href="/blog">
+          <Link className="nav__item" href="/blog">
             Articles
-          </a>
-          <a className="nav__item" href="/faq">
+          </Link>
+          <Link className="nav__item" href="/faq">
             FAQ
-          </a>
-          {/* <a className="nav__item" href="/a-propos">
+          </Link>
+          {/* <Link className="nav__item" href="/a-propos">
             À propos
-          </a> */}
-          <a className="nav__item" href="/contact">
+          </Link> */}
+          <Link className="nav__item" href="/contact">
             Contact
-          </a>
+          </Link>
         </nav>
 
         <div className="header__actions">
@@ -237,44 +238,42 @@ export function Header() {
           >
             <ul className="header__mobile-list header__mobile-list--flat">
               <li>
-                <a href="/services" onClick={closeMobile}>
+                <Link href="/services" onClick={closeMobile}>
                   Nos services
-                </a>
+                </Link>
               </li>
               <li>
-                <a href="/zones" onClick={closeMobile}>
+                <Link href="/zones" onClick={closeMobile}>
                   Zone d&apos;intervention
-                </a>
+                </Link>
               </li>
               <li>
-                <a href="/blog" onClick={closeMobile}>
+                <Link href="/blog" onClick={closeMobile}>
                   Articles
-                </a>
+                </Link>
               </li>
               <li>
-                <a href="/faq" onClick={closeMobile}>
+                <Link href="/faq" onClick={closeMobile}>
                   FAQ
-                </a>
+                </Link>
               </li>
-              {/* Lien « À propos » masqué en Phase 1 — la page reste
-                  accessible directement par URL pour usage interne et sera
-                  réintégrée à la navigation lors de la Phase 2. */}
+              {/* Lien « À propos » masqué en Phase 1 */}
               <li>
-                <a href="/contact" onClick={closeMobile}>
+                <Link href="/contact" onClick={closeMobile}>
                   Contact
-                </a>
+                </Link>
               </li>
             </ul>
 
             <div className="header__mobile-actions">
-              <a
+              <Link
                 className="btn btn--primary btn--lg"
                 href="/contact"
                 onClick={closeMobile}
                 style={{ width: "100%", justifyContent: "center" }}
               >
                 Estimation gratuite
-              </a>
+              </Link>
               <a
                 className="header__mobile-phone"
                 href={`tel:${BUSINESS.contact.telephone.replace(/\s/g, "")}`}

@@ -8,6 +8,7 @@
  * Ce composant est invoqué uniquement depuis `app/zones/[commune]/page.tsx`.
  * Toute la logique de routage et de génération statique reste dans la page.
  */
+import Link from "next/link";
 import { Icon } from "@/components/ui/Icon";
 import { Spark } from "@/components/ui/Spark";
 import { JsonLd } from "@/components/seo/JsonLd";
@@ -140,11 +141,11 @@ export function LocalPageTemplate({ zone }: LocalPageTemplateProps) {
       {/* ===== Fil d'Ariane ===== */}
       <nav className="container" aria-label="Fil d'Ariane">
         <div className={styles.breadcrumb}>
-          <a href="/">Accueil</a>
+          <Link href="/">Accueil</Link>
           <span className={styles.breadcrumbSep} aria-hidden>
             ›
           </span>
-          <a href="/zones">Zones d&apos;intervention</a>
+          <Link href="/zones">Zones d&apos;intervention</Link>
           <span className={styles.breadcrumbSep} aria-hidden>
             ›
           </span>

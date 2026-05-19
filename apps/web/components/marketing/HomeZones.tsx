@@ -3,6 +3,7 @@
  * Port du prototype `ui_kits/marketing-site/Sections.jsx`, étendu aux
  * 25 communes (Gironde + Landes + Lot-et-Garonne).
  */
+import Link from "next/link";
 import { Spark } from "@/components/ui/Spark";
 import { Tier } from "@/components/ui/Tier";
 import { ZonesMap } from "@/components/zones/ZonesMap";
@@ -43,22 +44,22 @@ export function HomeZones() {
           </p>
           <div className="zones-home__list">
             {featured.map((z) => (
-              <a
+              <Link
                 key={z.slug}
                 href={`/zones/${z.slug}`}
                 className="zones-home__chip featured"
               >
                 {z.nom}
-              </a>
+              </Link>
             ))}
             {others33.map((z) => (
-              <a
+              <Link
                 key={z.slug}
                 href={`/zones/${z.slug}`}
                 className="zones-home__chip"
               >
                 {z.nom}
-              </a>
+              </Link>
             ))}
             {landes.map((z) => (
               <a
@@ -70,17 +71,17 @@ export function HomeZones() {
               </a>
             ))}
             {lot.map((z) => (
-              <a
+              <Link
                 key={z.slug}
                 href={`/zones/${z.slug}`}
                 className="zones-home__chip"
               >
                 {z.nom} (47)
-              </a>
+              </Link>
             ))}
           </div>
           <p style={{ marginTop: 20, fontSize: 14 }}>
-            <a
+            <Link
               href="/zones"
               style={{
                 color: "var(--cr-emerald-600)",
@@ -89,7 +90,7 @@ export function HomeZones() {
               }}
             >
               Voir toutes les zones →
-            </a>
+            </Link>
           </p>
         </div>
       </div>

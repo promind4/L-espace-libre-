@@ -6,6 +6,7 @@
  * BlogContent, tags, articles connexes, CTA de fermeture, JSON-LD
  * (Article + BreadcrumbList).
  */
+import Link from "next/link";
 import { Icon } from "@/components/ui/Icon";
 import { Spark } from "@/components/ui/Spark";
 import { JsonLd } from "@/components/seo/JsonLd";
@@ -83,11 +84,11 @@ export function BlogPostTemplate({ post }: BlogPostTemplateProps) {
       {/* ===== Fil d'Ariane ===== */}
       <nav className="container" aria-label="Fil d'Ariane">
         <div className={styles.breadcrumb}>
-          <a href="/">Accueil</a>
+          <Link href="/">Accueil</Link>
           <span className={styles.breadcrumbSep} aria-hidden>
             ›
           </span>
-          <a href="/blog">Blog</a>
+          <Link href="/blog">Blog</Link>
           <span className={styles.breadcrumbSep} aria-hidden>
             ›
           </span>
@@ -172,14 +173,14 @@ export function BlogPostTemplate({ post }: BlogPostTemplateProps) {
             photos.
           </p>
           <div style={{ display: "flex", flexWrap: "wrap", gap: "10px", marginBottom: "var(--space-4)" }}>
-            <a href="/services/debarras-maison-appartement" className="btn btn--secondary btn--sm" style={{ textDecoration: "none" }}>Débarras Maison</a>
-            <a href="/services/succession-notaire" className="btn btn--secondary btn--sm" style={{ textDecoration: "none" }}>Succession</a>
-            <a href="/services/nettoyage-extreme-diogene" className="btn btn--secondary btn--sm" style={{ textDecoration: "none" }}>Nettoyage Diogène</a>
+            <Link href="/services/debarras-maison-appartement" className="btn btn--secondary btn--sm" style={{ textDecoration: "none" }}>Débarras Maison</Link>
+            <Link href="/services/succession-notaire" className="btn btn--secondary btn--sm" style={{ textDecoration: "none" }}>Succession</Link>
+            <Link href="/services/nettoyage-extreme-diogene" className="btn btn--secondary btn--sm" style={{ textDecoration: "none" }}>Nettoyage Diogène</Link>
           </div>
-          <a className={styles.closingCta} href="/contact">
+          <Link className={styles.closingCta} href="/contact">
             Demander mon estimation
             <Icon name="arrow-right" size={18} />
-          </a>
+          </Link>
         </div>
       </aside>
     </>

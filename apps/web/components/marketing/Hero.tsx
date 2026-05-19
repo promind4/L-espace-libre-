@@ -9,6 +9,7 @@
  * automatiquement (via lib/resolve-image). Sinon, le placeholder
  * élégant reste affiché et le code ne plante pas.
  */
+import Link from "next/link";
 import { Icon } from "@/components/ui/Icon";
 import { Spark } from "@/components/ui/Spark";
 import { Tier } from "@/components/ui/Tier";
@@ -65,9 +66,9 @@ export function Hero() {
               className="sweep-overlay absolute inset-0 z-10 block rounded-[inherit]"
             />
           </a>
-          <a className="btn btn--secondary btn--lg" href="/services" style={{ background: "rgba(255,255,255,0.1)", color: "#fff", border: "1px solid rgba(255,255,255,0.2)" }}>
+          <Link className="btn btn--secondary btn--lg" href="/services" style={{ background: "rgba(255,255,255,0.1)", color: "#fff", border: "1px solid rgba(255,255,255,0.2)" }}>
             Voir nos services
-          </a>
+          </Link>
         </div>
 
         <style>{`

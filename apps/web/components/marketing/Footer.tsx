@@ -4,6 +4,7 @@
  * Logo circulaire complet (texte + arbre) en bandeau de tête.
  */
 import Image from "next/image";
+import Link from "next/link";
 import { SERVICES } from "@/content/services";
 import { BUSINESS } from "@/config/business";
 
@@ -50,7 +51,7 @@ export function Footer() {
         <div style={{ position: "relative", zIndex: 1, width: "100%", padding: "0 48px", boxSizing: "border-box" }}>
 
           {/* Logo de marque — bandeau de tête */}
-          <a
+          <Link
             href="/"
             className="footer-brand-link"
             aria-label="L'Espace Libre — accueil"
@@ -65,7 +66,7 @@ export function Footer() {
               className="footer-brand-logo"
               style={{ display: "block", height: "auto", width: "80px" }}
             />
-          </a>
+          </Link>
 
           <p style={{
             fontSize: "0.75rem",

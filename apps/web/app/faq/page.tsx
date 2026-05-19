@@ -1,4 +1,5 @@
 import type { Metadata } from "next";
+import Link from "next/link";
 import { Icon } from "@/components/ui/Icon";
 import { Spark } from "@/components/ui/Spark";
 import { JsonLd } from "@/components/seo/JsonLd";
@@ -182,7 +183,7 @@ export default function FaqPage() {
       {/* ===== Fil d'Ariane ===== */}
       <nav className="container" aria-label="Fil d'Ariane">
         <div className="faq-page__crumb">
-          <a href="/">Accueil</a>
+          <Link href="/">Accueil</Link>
           <span className="faq-page__crumb-sep" aria-hidden>
             ›
           </span>

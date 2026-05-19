@@ -23,6 +23,7 @@ const animationProps = {
       mass: 0.5,
     },
   },
+// eslint-disable-next-line @typescript-eslint/no-explicit-any
 } as any;
 
 interface ShinyButtonProps extends HTMLMotionProps<"a"> {
