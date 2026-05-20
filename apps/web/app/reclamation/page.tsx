@@ -5,6 +5,8 @@ import { BUSINESS } from "@/config/business";
 export const metadata: Metadata = {
   title: `Réclamation et Service Client | ${SITE.nom}`,
   description: "Vous avez rencontré un problème lors d'une intervention ? Notre service réclamation est à votre écoute pour trouver une solution rapidement.",
+  // Obligation légale (DGCCRF) — accessible mais sans valeur SEO.
+  robots: { index: false, follow: false },
 };
 
 export default function ReclamationPage() {
