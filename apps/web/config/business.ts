@@ -24,7 +24,7 @@ export const BUSINESS = {
   contact: {
     telephone: "+33 5 00 00 00 00", // TODO PO
     telephoneAffichage: "05 00 00 00 00", // TODO PO
-    email: "contact@lespacelibre.fr", // TODO PO
+    email: "contact@lespace-libre.fr",
     // Adresse de réception back-office des leads — validée par le PO (R12).
     emailLeads: process.env["LEADS_INBOX_EMAIL"] ?? "leads@lespacelibre.fr",
   },

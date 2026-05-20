@@ -36,8 +36,8 @@ export interface LeadContext {
   };
 }
 
-const FROM_PROSPECT = `L'Espace Libre <devis@lespacelibre.fr>`;
-const FROM_BACKOFFICE = `Simulateur <notifications@lespacelibre.fr>`;
+const FROM_PROSPECT = `L'Espace Libre <contact@lespace-libre.fr>`;
+const FROM_BACKOFFICE = `L'Espace Libre <contact@lespace-libre.fr>`;
 const REPLY_TO = BUSINESS.contact.email;
 
 let _resend: Resend | null = null;
@@ -54,18 +54,16 @@ function resend(): Resend {
 }
 
 export async function sendLeadEmails(context: LeadContext): Promise<void> {
-  const tasks: Array<Promise<unknown>> = [
+  const results = await Promise.all([
     resend().emails.send(buildProspectEmail(context)),
     resend().emails.send(buildBackofficeEmail(context)),
-  ];
-  // En cas d'échec d'un des deux envois, on lève une erreur mais on
-  // tente quand même le second (pas de short-circuit côté Resend).
-  const results = await Promise.allSettled(tasks);
-  const failures = results.filter((r) => r.status === "rejected");
+  ]);
+  // Resend v4 retourne { data, error } au lieu de rejeter — on vérifie les deux.
+  const failures = results.filter((r) => r.error);
   if (failures.length > 0) {
     throw new Error(
       `Resend a échoué sur ${failures.length} envoi(s) : ${failures
-        .map((f) => (f as PromiseRejectedResult).reason)
+        .map((f) => JSON.stringify(f.error))
         .join(" | ")}`,
     );
   }
@@ -291,6 +289,7 @@ export interface ContactQuoteEmailContext {
   prenom: string;
   email: string;
   telephone?: string;
+  ville?: string;
   estimate: PricingOutput;
   meta: {
     submittedAt: Date;
@@ -311,16 +310,16 @@ export interface ContactQuoteEmailContext {
 export async function sendContactQuoteEmails(
   ctx: ContactQuoteEmailContext,
 ): Promise<void> {
-  const tasks: Array<Promise<unknown>> = [
+  const results = await Promise.all([
     resend().emails.send(buildContactProspectEmail(ctx)),
     resend().emails.send(buildContactBackofficeEmail(ctx)),
-  ];
-  const results = await Promise.allSettled(tasks);
-  const failures = results.filter((r) => r.status === "rejected");
+  ]);
+  // Resend v4 retourne { data, error } au lieu de rejeter — on vérifie les deux.
+  const failures = results.filter((r) => r.error);
   if (failures.length > 0) {
     throw new Error(
       `Resend a échoué sur ${failures.length} envoi(s) : ${failures
-        .map((f) => (f as PromiseRejectedResult).reason)
+        .map((f) => JSON.stringify(f.error))
         .join(" | ")}`,
     );
   }
@@ -431,45 +430,151 @@ function buildContactProspectEmail(ctx: ContactQuoteEmailContext) {
 
 function buildContactBackofficeEmail(ctx: ContactQuoteEmailContext) {
   const range = `${formatEuros(ctx.estimate.low)} — ${formatEuros(ctx.estimate.high)}`;
-  const subject = `[Devis] ${ctx.prenom} — ${TYPE_LABELS[ctx.type]} ${ctx.surface_m2}m² ${SALUBRITY_LABELS[ctx.salubrity]} — ${range}`;
-  const annexesList = (ctx.annexes ?? [])
-    .map((a) => ANNEX_LABELS[a])
-    .join(", ");
+  const villeLabel = ctx.ville?.trim() || "zone non précisée";
+  const subject = `Nouveau lead : ${TYPE_LABELS[ctx.type]} à ${villeLabel}`;
+  const annexesList = (ctx.annexes ?? []).map((a) => ANNEX_LABELS[a]).join(", ");
+  const hasAnnexes = (ctx.annexes ?? []).length > 0;
 
   const text = [
-    `Nouvelle demande de devis via /contact.`,
+    `Nouveau lead : ${TYPE_LABELS[ctx.type]} à ${villeLabel}`,
     ``,
-    `=== Coordonnées ===`,
+    `=== Client ===`,
     `Prénom    : ${ctx.prenom}`,
     `E-mail    : ${ctx.email}`,
     `Téléphone : ${ctx.telephone ?? "(non renseigné)"}`,
+    `Ville/CP  : ${villeLabel}`,
     ``,
-    `=== Demande ===`,
-    `Type            : ${TYPE_LABELS[ctx.type]} (${ctx.type})`,
+    `=== Intervention ===`,
+    `Type            : ${TYPE_LABELS[ctx.type]}`,
     `Surface à vider : ${ctx.surface_m2} m²`,
-    ctx.annexes && ctx.annexes.length > 0
+    hasAnnexes
       ? `Annexes         : ${annexesList} (${ctx.annexes_surface_m2 ?? 0} m²)`
       : `Annexes         : (aucune)`,
-    `Salubrité       : ${SALUBRITY_LABELS[ctx.salubrity]} (${ctx.salubrity})`,
-    `Accès           : ${FLOOR_LABELS[ctx.floor]} (${ctx.floor})`,
     `Volume évacué   : ${ctx.estimate.volume_evacue_m3.toFixed(1)} m³`,
+    `Salubrité       : ${SALUBRITY_LABELS[ctx.salubrity]}`,
+    `Accès           : ${FLOOR_LABELS[ctx.floor]}`,
     `Précisions accès: ${ctx.acces ?? "(aucune)"}`,
     ``,
-    `=== Estimation ===`,
-    `Nominal         : ${formatEuros(ctx.estimate.nominal)}`,
+    `=== Estimation affichée au client ===`,
     `Fourchette      : ${range}`,
+    `Nominal         : ${formatEuros(ctx.estimate.nominal)}`,
     `Coef. salubrité : ×${ctx.estimate.coefficient_salubrity}`,
     `Coef. étage     : ×${ctx.estimate.coefficient_etage}`,
     ``,
     `=== Méta ===`,
     `Soumis le       : ${ctx.meta.submittedAt.toISOString()}`,
     `IP              : ${ctx.meta.ip}`,
-    `User agent      : ${ctx.meta.userAgent}`,
     `Referer         : ${ctx.meta.referer}`,
     ``,
-    `Pour produire le devis ferme final :`,
-    `${SITE.url}/admin/estimateur`,
+    `Devis ferme : ${SITE.url}/admin/estimateur`,
   ].join("\n");
+
+  const html = renderHtml({
+    title: `Nouveau lead : ${escapeHtml(TYPE_LABELS[ctx.type])} à ${escapeHtml(villeLabel)}`,
+    preheader: `${ctx.prenom} — ${range} — ${ctx.telephone ?? ctx.email}`,
+    body: `
+      <!-- CLIENT -->
+      <p style="margin:0 0 8px;font-size:11px;font-weight:700;letter-spacing:0.14em;text-transform:uppercase;color:#3D628A;">Client</p>
+      <table role="presentation" cellpadding="0" cellspacing="0" border="0" width="100%" style="margin:0 0 24px;background:#F0F4FA;border-radius:10px;">
+        <tr><td style="padding:16px 20px;">
+          <table role="presentation" cellpadding="0" cellspacing="0" border="0" width="100%" style="font-size:14px;color:#1F2733;">
+            <tr>
+              <td style="padding:4px 0;width:110px;color:#8A93A2;">Prénom</td>
+              <td style="padding:4px 0;font-weight:600;">${escapeHtml(ctx.prenom)}</td>
+            </tr>
+            <tr>
+              <td style="padding:4px 0;color:#8A93A2;">E-mail</td>
+              <td style="padding:4px 0;">
+                <a href="mailto:${escapeHtml(ctx.email)}" style="color:#1D3E61;font-weight:600;">${escapeHtml(ctx.email)}</a>
+              </td>
+            </tr>
+            <tr>
+              <td style="padding:4px 0;color:#8A93A2;">Téléphone</td>
+              <td style="padding:4px 0;font-weight:600;">
+                ${ctx.telephone
+                  ? `<a href="tel:${escapeHtml(ctx.telephone)}" style="color:#1D3E61;">${escapeHtml(ctx.telephone)}</a>`
+                  : `<span style="color:#8A93A2;">non renseigné</span>`}
+              </td>
+            </tr>
+            <tr>
+              <td style="padding:4px 0;color:#8A93A2;">Ville / CP</td>
+              <td style="padding:4px 0;font-weight:600;">${escapeHtml(villeLabel)}</td>
+            </tr>
+          </table>
+        </td></tr>
+      </table>
+
+      <!-- INTERVENTION -->
+      <p style="margin:0 0 8px;font-size:11px;font-weight:700;letter-spacing:0.14em;text-transform:uppercase;color:#3D628A;">Intervention</p>
+      <table role="presentation" cellpadding="0" cellspacing="0" border="0" width="100%" style="margin:0 0 24px;font-size:14px;color:#4B5566;">
+        <tr>
+          <td style="padding:5px 0;width:150px;color:#8A93A2;">Type de bien</td>
+          <td style="padding:5px 0;">${escapeHtml(TYPE_LABELS[ctx.type])}</td>
+        </tr>
+        <tr>
+          <td style="padding:5px 0;color:#8A93A2;">Surface à vider</td>
+          <td style="padding:5px 0;">${ctx.surface_m2}&nbsp;m²</td>
+        </tr>
+        <tr>
+          <td style="padding:5px 0;color:#8A93A2;">Annexes</td>
+          <td style="padding:5px 0;">
+            ${hasAnnexes
+              ? `${escapeHtml(annexesList)} (${ctx.annexes_surface_m2 ?? 0}&nbsp;m²)`
+              : `<span style="color:#C0C8D4;">aucune</span>`}
+          </td>
+        </tr>
+        <tr>
+          <td style="padding:5px 0;color:#8A93A2;">Volume évacué</td>
+          <td style="padding:5px 0;">${ctx.estimate.volume_evacue_m3.toFixed(1)}&nbsp;m³</td>
+        </tr>
+        <tr>
+          <td style="padding:5px 0;color:#8A93A2;">Salubrité</td>
+          <td style="padding:5px 0;">${escapeHtml(SALUBRITY_LABELS[ctx.salubrity])}</td>
+        </tr>
+        <tr>
+          <td style="padding:5px 0;color:#8A93A2;">Accès</td>
+          <td style="padding:5px 0;">${escapeHtml(FLOOR_LABELS[ctx.floor])}</td>
+        </tr>
+        ${ctx.acces ? `
+        <tr>
+          <td style="padding:5px 0;color:#8A93A2;vertical-align:top;">Précisions</td>
+          <td style="padding:5px 0;font-style:italic;">${escapeHtml(ctx.acces)}</td>
+        </tr>` : ""}
+      </table>
+
+      <!-- ESTIMATION -->
+      <p style="margin:0 0 8px;font-size:11px;font-weight:700;letter-spacing:0.14em;text-transform:uppercase;color:#3D628A;">Estimation affichée au client</p>
+      <table role="presentation" cellpadding="0" cellspacing="0" border="0" width="100%" style="margin:0 0 24px;background:#FAFBFC;border:2px solid #1D3E61;border-radius:10px;">
+        <tr><td style="padding:20px 24px;text-align:center;">
+          <div style="font-size:28px;font-weight:800;color:#1D3E61;letter-spacing:-0.02em;line-height:1.1;">
+            ${escapeHtml(range)}
+          </div>
+          <div style="font-size:12px;color:#8A93A2;margin-top:6px;">
+            Nominal&nbsp;: ${escapeHtml(formatEuros(ctx.estimate.nominal))}
+            &nbsp;&nbsp;·&nbsp;&nbsp;
+            Coef. salubrité&nbsp;: ×${ctx.estimate.coefficient_salubrity}
+            &nbsp;&nbsp;·&nbsp;&nbsp;
+            Coef. étage&nbsp;: ×${ctx.estimate.coefficient_etage}
+          </div>
+        </td></tr>
+      </table>
+
+      <!-- CTA + META -->
+      <table role="presentation" cellpadding="0" cellspacing="0" border="0" width="100%" style="margin:0 0 24px;">
+        <tr><td style="text-align:center;">
+          <a href="${SITE.url}/admin/estimateur" style="display:inline-block;background:#1D3E61;color:#FFFFFF;font-size:14px;font-weight:600;padding:12px 24px;border-radius:8px;text-decoration:none;">
+            Ouvrir l'estimateur admin
+          </a>
+        </td></tr>
+      </table>
+
+      <p style="margin:0;font-size:11px;color:#C0C8D4;line-height:1.6;">
+        Soumis le ${escapeHtml(ctx.meta.submittedAt.toLocaleString("fr-FR", { timeZone: "Europe/Paris" }))}
+        &nbsp;·&nbsp; IP&nbsp;: ${escapeHtml(ctx.meta.ip)}
+        &nbsp;·&nbsp; Referer&nbsp;: ${escapeHtml(ctx.meta.referer)}
+      </p>
+    `,
+  });
 
   return {
     from: FROM_BACKOFFICE,
@@ -477,5 +582,6 @@ function buildContactBackofficeEmail(ctx: ContactQuoteEmailContext) {
     replyTo: ctx.email,
     subject,
     text,
+    html,
   };
 }

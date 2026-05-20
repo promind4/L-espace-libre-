@@ -94,6 +94,7 @@ export async function POST(req: NextRequest) {
       prenom: input.prenom,
       email: input.email,
       telephone: input.telephone || undefined,
+      ville: input.ville || undefined,
       estimate,
       meta: {
         submittedAt: new Date(),
