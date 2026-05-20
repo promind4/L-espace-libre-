@@ -88,18 +88,7 @@ export default function sitemap(): MetadataRoute.Sitemap {
       priority: 0.9,
     },
 
-    // ── Pages de confiance ────────────────────────────────────
-    {
-      url: `${base}/a-propos`,
-      lastModified: now,
-      changeFrequency: "monthly",
-      priority: 0.5,
-    },
-    {
-      url: `${base}/espace-pro`,
-      lastModified: now,
-      changeFrequency: "monthly",
-      priority: 0.7,
-    },
+    // NB : /a-propos et /espace-pro sont masquées (Phase 1, contenu
+    //      placeholder) — noindex posé sur chaque page, exclues du sitemap.
   ];
 }
