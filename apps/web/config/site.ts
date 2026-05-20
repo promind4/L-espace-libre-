@@ -7,11 +7,11 @@ export const SITE = {
   nom: "L'Espace Libre",
   baseline: "Débarras haute performance, Bordeaux Métropole & Nouvelle-Aquitaine",
   url:
-    process.env["NEXT_PUBLIC_SITE_URL"] ?? "https://lespacelibre.fr",
+    process.env["NEXT_PUBLIC_SITE_URL"] ?? "https://lespace-libre.fr",
   locale: "fr-FR",
   region: "Nouvelle-Aquitaine",
   description:
     "Débarras complet, tri responsable, devis final sous 2h par photo. Bordeaux, Gironde, Landes, Lot-et-Garonne.",
   defaultOgImage: "/logo.png",
-  twitter: "@lespacelibre",
+  twitter: "@lespace_libre",
 } as const;

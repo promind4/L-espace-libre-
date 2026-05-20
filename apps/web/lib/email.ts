@@ -3,7 +3,7 @@
  *
  * Deux destinations à chaque soumission du Simulateur :
  *   1. Prospect — reçoit sa fourchette (HTML + texte brut, vouvoiement).
- *   2. Back-office — adresse leads@lespacelibre.fr (R12).
+ *   2. Back-office — adresse contact@lespace-libre.fr (R12).
  *
  * Templates : français FR-FR, calme, factuel, aucun emoji, aucun
  * point d'exclamation (Constitution I.2).
