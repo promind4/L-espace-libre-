@@ -27,6 +27,8 @@ const DESCRIPTION =
 export const metadata: Metadata = {
   title: TITLE,
   description: DESCRIPTION,
+  // Page masquée Phase 1 — contenu placeholder non validé par le PO.
+  robots: { index: false, follow: false },
   alternates: { canonical: `${SITE.url.replace(/\/$/, "")}/a-propos` },
   openGraph: {
     title: TITLE,

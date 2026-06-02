@@ -4,6 +4,8 @@ import { SITE } from "@/config/site";
 export const metadata: Metadata = {
   title: `Espace Pro : Notaires & Agences | ${SITE.nom}`,
   description: "Services de débarras dédiés aux professionnels de l'immobilier, notaires, mandataires judiciaires et syndics en Nouvelle-Aquitaine.",
+  // Page masquée Phase 1 — à activer avec contenu validé.
+  robots: { index: false, follow: false },
 };
 
 export default function EspaceProPage() {

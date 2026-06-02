@@ -10,23 +10,23 @@
 export const BUSINESS = {
   nom: "L'Espace Libre",
   raisonSociale: "L'Espace Libre",
-  siret: "", // À renseigner lors de la mise en ligne définitive (lancement V1 — test marché).
+  siret: "83068325600028",
   formeJuridique: "",
   capital: "",
 
   adresse: {
-    rue: "TODO Adresse Bordeaux Centre",
+    rue: "Cours d'Albret",
     codePostal: "33000",
     ville: "Bordeaux",
     pays: "FR",
   },
 
   contact: {
-    telephone: "+33 5 00 00 00 00", // TODO PO
-    telephoneAffichage: "05 00 00 00 00", // TODO PO
-    email: "contact@lespacelibre.fr", // TODO PO
+    telephone: "+33 7 51 35 22 49",
+    telephoneAffichage: "07 51 35 22 49",
+    email: "contact@lespace-libre.fr",
     // Adresse de réception back-office des leads — validée par le PO (R12).
-    emailLeads: process.env["LEADS_INBOX_EMAIL"] ?? "leads@lespacelibre.fr",
+    emailLeads: process.env["LEADS_INBOX_EMAIL"] ?? "contact@lespace-libre.fr",
   },
 
   // Conservation RGPD des leads — validée par le PO (R11).

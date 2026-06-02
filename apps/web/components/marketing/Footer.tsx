@@ -179,6 +179,7 @@ export function Footer() {
             <a href="/mentions-legales" style={{ color: "rgba(255,255,255,0.9)", textDecoration: "none" }}>Mentions Légales</a>
             <a href="/politique-de-confidentialite" style={{ color: "rgba(255,255,255,0.9)", textDecoration: "none" }}>Politique de Confidentialité</a>
             <a href="/cgv" style={{ color: "rgba(255,255,255,0.9)", textDecoration: "none" }}>CGV</a>
+            <a href="/plan-du-site" style={{ color: "rgba(255,255,255,0.65)", textDecoration: "none" }}>Plan du site</a>
           </div>
           <div className="footer-bottom-copy" style={{ fontSize: "0.8125rem", color: "rgba(255,255,255,0.75)", fontWeight: 500 }}>
             © {year} {BUSINESS.nom} — Tous droits réservés.

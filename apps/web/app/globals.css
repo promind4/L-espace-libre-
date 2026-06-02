@@ -806,6 +806,24 @@ ul, ol { list-style: none; padding: 0; margin: 0; }
   min-height: 360px;
   border-radius: 20px;
   overflow: hidden;
+  /* Skeleton pendant le chargement de Leaflet (div vide avant mount). */
+  background: linear-gradient(
+    90deg,
+    var(--cr-pearl-100) 25%,
+    var(--cr-pearl-200) 50%,
+    var(--cr-pearl-100) 75%
+  );
+  background-size: 200% 100%;
+  animation: skeleton-sweep 1.6s ease-in-out infinite;
+}
+/* Dès que Leaflet monte, les tuiles OSM recouvrent le skeleton. */
+.zones-map .leaflet-container {
+  animation: none;
+  background: transparent;
+}
+@keyframes skeleton-sweep {
+  0%   { background-position: 200% 0; }
+  100% { background-position: -200% 0; }
 }
 
 /* Override léger pour intégrer Leaflet à la palette de marque. */

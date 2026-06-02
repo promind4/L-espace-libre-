@@ -108,6 +108,58 @@ export function buildLocalBusinessJsonLd(zone: Zone) {
 }
 
 // ============================================================
+//  LocalBusiness global — page d'accueil
+// ============================================================
+
+/** Schema.org LocalBusiness pour la page d'accueil (signal SEO local principal). */
+export function buildSiteLocalBusinessJsonLd() {
+  const baseUrl = SITE.url.replace(/\/$/, "");
+  return {
+    "@context": "https://schema.org",
+    "@type": "LocalBusiness",
+    "@id": baseUrl,
+    name: BUSINESS.nom,
+    description: SITE.description,
+    url: baseUrl,
+    telephone: BUSINESS.contact.telephone,
+    email: BUSINESS.contact.email,
+    image: `${baseUrl}${SITE.defaultOgImage}`,
+    priceRange: "€€",
+    address: {
+      "@type": "PostalAddress",
+      streetAddress: BUSINESS.adresse.rue,
+      addressLocality: BUSINESS.adresse.ville,
+      postalCode: BUSINESS.adresse.codePostal,
+      addressCountry: BUSINESS.adresse.pays,
+    },
+    geo: {
+      "@type": "GeoCoordinates",
+      latitude: BUSINESS.geo.latitude,
+      longitude: BUSINESS.geo.longitude,
+    },
+    areaServed: [
+      { "@type": "AdministrativeArea", name: "Gironde" },
+      { "@type": "AdministrativeArea", name: "Landes" },
+      { "@type": "AdministrativeArea", name: "Lot-et-Garonne" },
+    ],
+    openingHoursSpecification: [
+      {
+        "@type": "OpeningHoursSpecification",
+        dayOfWeek: ["Monday", "Tuesday", "Wednesday", "Thursday", "Friday"],
+        opens: "08:00",
+        closes: "19:00",
+      },
+      {
+        "@type": "OpeningHoursSpecification",
+        dayOfWeek: "Saturday",
+        opens: "09:00",
+        closes: "17:00",
+      },
+    ],
+  };
+}
+
+// ============================================================
 //  Service JSON-LD
 // ============================================================
 /**

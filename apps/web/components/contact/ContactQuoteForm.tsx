@@ -64,6 +64,7 @@ export function ContactQuoteForm() {
   const [prenom, setPrenom] = useState<string>("");
   const [email, setEmail] = useState<string>("");
   const [telephone, setTelephone] = useState<string>("");
+  const [ville, setVille] = useState<string>("");
   const [consent, setConsent] = useState<boolean>(false);
   const [website, setWebsite] = useState<string>(""); // honeypot
   const [status, setStatus] = useState<Status>({ kind: "idle" });
@@ -121,6 +122,7 @@ export function ContactQuoteForm() {
           prenom: prenom.trim(),
           email: email.trim(),
           telephone: telephone.trim() || undefined,
+          ville: ville.trim() || undefined,
           consent,
           website,
         }),
@@ -503,6 +505,21 @@ export function ContactQuoteForm() {
                 onChange={(e) => setTelephone(e.target.value)}
                 maxLength={30}
                 autoComplete="tel"
+              />
+            </div>
+
+            <div className="cqf__field">
+              <label htmlFor="cqf-ville" className="cqf__label">
+                Code postal / Ville
+              </label>
+              <input
+                id="cqf-ville"
+                type="text"
+                placeholder="33000 Bordeaux"
+                value={ville}
+                onChange={(e) => setVille(e.target.value)}
+                maxLength={100}
+                autoComplete="postal-code"
               />
             </div>
 

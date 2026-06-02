@@ -10,6 +10,8 @@ import { HomeFAQ } from "@/components/marketing/HomeFAQ";
 import { HomeSEOText } from "@/components/marketing/HomeSEOText";
 import { resolveImage } from "@/lib/resolve-image";
 import { SITE } from "@/config/site";
+import { JsonLd } from "@/components/seo/JsonLd";
+import { buildSiteLocalBusinessJsonLd } from "@/lib/seo";
 
 /**
  * Métadonnées HOME — Phase 2 SEO (cf. meta.md §3).
@@ -50,6 +52,7 @@ export const metadata: Metadata = {
 export default function HomePage() {
   return (
     <main>
+      <JsonLd data={buildSiteLocalBusinessJsonLd()} />
       <Hero />
       <StatsBand />
       {/*

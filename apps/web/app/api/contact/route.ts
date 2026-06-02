@@ -10,7 +10,7 @@
  *  3. Calcul de la fourchette via lib/pricing (défauts publics).
  *  4. Envoi de deux e-mails transactionnels :
  *     - Prospect : son estimation + suite des opérations.
- *     - Back-office : leads@lespacelibre.fr avec toutes les coordonnées.
+ *     - Back-office : contact@lespace-libre.fr avec toutes les coordonnées.
  *  5. Honeypot anti-bot : succès silencieux si rempli.
  *
  * En cas d'échec Resend, on renvoie 502 sans persister (pas de BDD v1).
@@ -94,6 +94,7 @@ export async function POST(req: NextRequest) {
       prenom: input.prenom,
       email: input.email,
       telephone: input.telephone || undefined,
+      ville: input.ville || undefined,
       estimate,
       meta: {
         submittedAt: new Date(),

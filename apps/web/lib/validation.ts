@@ -163,6 +163,13 @@ export const ContactQuoteSchema = z.object({
     }),
   }),
 
+  // ===== Localisation (optionnel — zone d'intervention) =====
+  ville: z
+    .string()
+    .min(2, "Ville trop courte")
+    .max(100, "Ville trop longue")
+    .optional(),
+
   // ===== Honeypot anti-bot =====
   website: z.string().max(0).optional(),
 });
