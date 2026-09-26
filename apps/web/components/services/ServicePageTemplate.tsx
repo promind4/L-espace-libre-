@@ -15,7 +15,7 @@ import { SERVICES, type Service } from "@/content/services";
 import { ImageComparison, ImageComparisonImage, ImageComparisonSlider } from "@/components/ui/ImageComparison";
 import { ImagePlaceholder } from "@/components/marketing/ImagePlaceholder";
 import { resolveImage } from "@/lib/resolve-image";
-import { ZONES_BY_DEPARTEMENT } from "@/content/zones";
+import { ZONES_ACTIVES, zoneLocatif } from "@/content/zones";
 import { getPostsByDateDesc } from "@/content/blog/posts";
 import { SITE } from "@/config/site";
 import {
@@ -82,7 +82,7 @@ export function ServicePageTemplate({ service }: ServicePageTemplateProps) {
         return {
           avant: "dio1.avif",
           apres: "dio2.avif",
-          altPrefix: "Nettoyage syndrome de Diogène en Aquitaine",
+          altPrefix: "Nettoyage syndrome de Diogène à Bordeaux",
         };
       default:
         return {
@@ -365,14 +365,12 @@ export function ServicePageTemplate({ service }: ServicePageTemplateProps) {
             </h2>
           </header>
           <div style={{ display: "flex", flexWrap: "wrap", gap: "10px" }}>
-            {["bordeaux", "merignac", "pessac", "mont-de-marsan", "agen"].map((slug) => {
-              const zone = ZONES_BY_DEPARTEMENT["33"]?.find(z => z.slug === slug) 
-                        || ZONES_BY_DEPARTEMENT["40"]?.find(z => z.slug === slug)
-                        || ZONES_BY_DEPARTEMENT["47"]?.find(z => z.slug === slug);
+            {["bordeaux", "merignac", "pessac", "talence", "le-bouscat"].map((slug) => {
+              const zone = ZONES_ACTIVES.find((z) => z.slug === slug);
               if (!zone) return null;
               return (
                 <Link key={slug} href={`/zones/${slug}`} className="btn btn--secondary btn--sm" style={{ textDecoration: "none" }}>
-                  Débarras à {zone.nom}
+                  Débarras {zoneLocatif(zone)}
                 </Link>
               );
             })}

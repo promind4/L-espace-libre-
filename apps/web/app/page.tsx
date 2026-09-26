@@ -18,14 +18,14 @@ import { buildSiteLocalBusinessJsonLd } from "@/lib/seo";
  *
  * Le `title.absolute` court-circuite le `template: "%s | L'Espace Libre"`
  * déclaré dans le layout racine — la formule exacte de la roadmap doit
- * être servie au robot sans suffixe parasite (budget : 56 caractères).
+ * être servie au robot sans suffixe parasite (budget : 60 caractères).
  */
 export const metadata: Metadata = {
   title: {
-    absolute: "Débarras Gironde & Aquitaine | Maisons, Locaux, Diogène",
+    absolute: "Débarras maison à Bordeaux & Gironde | L'Espace Libre",
   },
   description:
-    "Débarras complet en Gironde et Nouvelle-Aquitaine : maisons, locaux, encombrants et syndrome de Diogène. Obtenez votre estimation instantanément.",
+    "Débarras de maisons, appartements, locaux et logements Diogène à Bordeaux et en Gironde. Tri responsable, devis ferme par photo sous 2 h.",
   alternates: { canonical: SITE.url },
 };
 

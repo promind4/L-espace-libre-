@@ -13,7 +13,7 @@ import type { Metadata } from "next";
 import Link from "next/link";
 import { SITE } from "@/config/site";
 import { SERVICES } from "@/content/services";
-import { ZONES, ZONES_BY_DEPARTEMENT } from "@/content/zones";
+import { ZONES, ZONES_BY_DEPARTEMENT, zoneLocatif } from "@/content/zones";
 import { BLOG_POSTS } from "@/content/blog/posts";
 
 export const metadata: Metadata = {
@@ -101,7 +101,7 @@ export default function PlanDuSitePage() {
                   {zones.map((z) => (
                     <li key={z.slug}>
                       <Link href={`/zones/${z.slug}`} style={linkStyle}>
-                        Débarras à {z.nom}
+                        Débarras {zoneLocatif(z)}
                       </Link>
                     </li>
                   ))}

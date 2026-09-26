@@ -1,7 +1,7 @@
 /**
  * HomeZones — section de la page d'accueil listant les zones desservies.
  * Port du prototype `ui_kits/marketing-site/Sections.jsx`, étendu aux
- * 25 communes (Gironde + Landes + Lot-et-Garonne).
+ * communes actives (Gironde — cf. DEPARTEMENTS_ACTIFS).
  */
 import Link from "next/link";
 import { Spark } from "@/components/ui/Spark";
@@ -12,8 +12,6 @@ import { ZONES_BY_DEPARTEMENT } from "@/content/zones";
 export function HomeZones() {
   const featured = (ZONES_BY_DEPARTEMENT["33"] ?? []).slice(0, 4);
   const others33 = (ZONES_BY_DEPARTEMENT["33"] ?? []).slice(4);
-  const landes = ZONES_BY_DEPARTEMENT["40"] ?? [];
-  const lot = ZONES_BY_DEPARTEMENT["47"] ?? [];
 
   return (
     <Tier variant="light" as="section" rhythmIndex={10} id="zones" className="zones-home">
@@ -32,15 +30,15 @@ export function HomeZones() {
             className="section__title"
             style={{ textAlign: "left" }}
           >
-            Toute la Gironde, et au-delà.
+            Bordeaux Métropole et la Gironde.
           </h2>
           <p
             className="section__lead"
             style={{ textAlign: "left" }}
           >
             Basés à Bordeaux, nous couvrons l&apos;ensemble de la métropole
-            sans frais kilométriques, et nous déplaçons en Gironde, dans les
-            Landes et le Lot-et-Garonne avec frais transparents.
+            sans frais kilométriques, et intervenons en Gironde dans un rayon
+            d&apos;une heure avec des frais de déplacement annoncés d&apos;avance.
           </p>
           <div className="zones-home__list">
             {featured.map((z) => (
@@ -59,24 +57,6 @@ export function HomeZones() {
                 className="zones-home__chip"
               >
                 {z.nom}
-              </Link>
-            ))}
-            {landes.map((z) => (
-              <a
-                key={z.slug}
-                href={`/zones/${z.slug}`}
-                className="zones-home__chip"
-              >
-                {z.nom} (40)
-              </a>
-            ))}
-            {lot.map((z) => (
-              <Link
-                key={z.slug}
-                href={`/zones/${z.slug}`}
-                className="zones-home__chip"
-              >
-                {z.nom} (47)
               </Link>
             ))}
           </div>

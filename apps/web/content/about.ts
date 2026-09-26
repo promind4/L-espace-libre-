@@ -124,7 +124,7 @@ export const ABOUT: AboutContent = {
       // TODO PO : confirmer dates et données légales avant publication.
       { label: "Fondé en", value: "2024 · Bordeaux" },
       { label: "Statut", value: "Auto-entrepreneur" },
-      { label: "Couverture", value: "Gironde · Landes · Lot-et-Garonne" },
+      { label: "Couverture", value: "Bordeaux Métropole · Gironde" },
       { label: "Assurance", value: "RC Pro" },
     ],
   },

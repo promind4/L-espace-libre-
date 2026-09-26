@@ -2,6 +2,11 @@
  * Données des 25 communes desservies en SEO local.
  * 15 Gironde (33) + 5 Landes (40) + 5 Lot-et-Garonne (47).
  *
+ * Seules les communes des départements listés dans
+ * `DEPARTEMENTS_ACTIFS` sont exposées (sitemap, listes, maillage).
+ * Les autres restent générées mais en `noindex` — conservées pour
+ * une réactivation ultérieure (il suffit d'ajouter le département).
+ *
  * Toute évolution éditoriale passe par ce fichier — il alimente :
  *   - app/zones/[commune]/page.tsx (SSG)
  *   - app/sitemap.ts
@@ -46,7 +51,7 @@ export const ZONES: readonly Zone[] = [
     distanceKmDepuisBordeaux: 0,
     limitrophes: ["merignac", "pessac", "talence", "begles", "le-bouscat"],
     metaDescription:
-      "Débarras à Bordeaux : devis gratuit sous 2h, intervention rapide, tri responsable. Couverture tous quartiers, des Chartrons à Caudéran.",
+      "Débarras à Bordeaux (33000), des Chartrons à Caudéran : maisons, appartements, successions. Devis gratuit sous 2h, tri et dons avec Emmaüs Gironde.",
     temoignage: {
       auteur: "Mme R., Bordeaux Chartrons",
       contexte: "Succession appartement haussmannien",
@@ -65,7 +70,7 @@ export const ZONES: readonly Zone[] = [
     distanceKmDepuisBordeaux: 7,
     limitrophes: ["bordeaux", "pessac", "le-bouscat", "eysines", "bruges"],
     metaDescription:
-      "Débarras à Mérignac : maison, appartement, bureaux. Devis sous 2h, tri responsable. Acteur local Bordeaux Métropole.",
+      "Débarras à Mérignac (33700) : maisons d'Arlac à Capeyron, bureaux, garages. À 15 min de notre base, devis sous 2h et recyclage via Le Relais 33.",
     temoignage: {
       auteur: "M. D., Mérignac Arlac",
       contexte: "Vide-maison avant mise en vente",
@@ -84,7 +89,7 @@ export const ZONES: readonly Zone[] = [
     distanceKmDepuisBordeaux: 8,
     limitrophes: ["bordeaux", "merignac", "talence", "gradignan"],
     metaDescription:
-      "Débarras à Pessac : intervention rapide, charte 0 gaspillage. Maisons, appartements, bureaux. Devis gratuit sous 2h.",
+      "Débarras à Pessac (33600), de Saige au Bourg : maisons, appartements, successions notariales. Devis ferme sous 2h, dons au Secours Populaire.",
     temoignage: {
       auteur: "Étude notariale, Pessac",
       contexte: "Succession instruction notariale",
@@ -103,7 +108,7 @@ export const ZONES: readonly Zone[] = [
     distanceKmDepuisBordeaux: 5,
     limitrophes: ["bordeaux", "pessac", "begles", "gradignan"],
     metaDescription:
-      "Débarras à Talence : étudiants, particuliers, héritiers. Tri responsable et tarifs transparents. Devis sous 2h.",
+      "Débarras à Talence (33400) : studios étudiants, maisons de Thouars et de la Médoquine. Tarif transparent, devis sous 2h, dons à la Croix-Rouge.",
     temoignage: {
       auteur: "Mme L., Talence Thouars",
       contexte: "Désencombrement avant déménagement",
@@ -121,7 +126,7 @@ export const ZONES: readonly Zone[] = [
     distanceKmDepuisBordeaux: 4,
     limitrophes: ["bordeaux", "talence", "villenave-d-ornon", "floirac"],
     metaDescription:
-      "Débarras à Bègles : maison, garage, cave. Intervention sous 7 jours, devis ferme par photo. Acteur local.",
+      "Débarras à Bègles (33130) : maisons, garages et caves. Devis ferme sur photo, intervention rapide et tri sélectif à la déchèterie de Bègles.",
     temoignage: {
       auteur: "M. K., Bègles centre",
       contexte: "Débarras garage et cave",
@@ -139,7 +144,7 @@ export const ZONES: readonly Zone[] = [
     distanceKmDepuisBordeaux: 4,
     limitrophes: ["bordeaux", "bruges", "merignac", "eysines"],
     metaDescription:
-      "Débarras au Bouscat : appartements, maisons familiales, successions. Devis sous 2h, assurance RC Pro incluse.",
+      "Débarras au Bouscat (33110) : appartements, maisons familiales et successions. Équipe assurée RC Pro, devis sous 2h, recyclage via Le Relais 33.",
     temoignage: {
       auteur: "Famille B., Le Bouscat",
       contexte: "Succession parentale",
@@ -157,7 +162,7 @@ export const ZONES: readonly Zone[] = [
     distanceKmDepuisBordeaux: 8,
     limitrophes: ["begles", "talence", "gradignan", "floirac"],
     metaDescription:
-      "Débarras à Villenave-d'Ornon : maisons individuelles, dépendances. Charte 0 gaspillage. Devis gratuit sous 2h.",
+      "Débarras à Villenave-d'Ornon (33140) : maisons individuelles et dépendances. Charte zéro gaspillage, devis gratuit sous 2h, dons au Secours Catholique.",
     temoignage: {
       auteur: "M. T., Villenave-d'Ornon",
       contexte: "Débarras maison familiale",
@@ -175,7 +180,7 @@ export const ZONES: readonly Zone[] = [
     distanceKmDepuisBordeaux: 10,
     limitrophes: ["pessac", "talence", "villenave-d-ornon"],
     metaDescription:
-      "Débarras à Gradignan : pavillons, locaux pro, garages. Intervention rapide, tarif au volume transparent.",
+      "Débarras à Gradignan (33170) : pavillons, garages et locaux professionnels. Tarif au volume annoncé d'avance, devis sous 2h, tri responsable.",
     temoignage: {
       auteur: "Mme P., Gradignan",
       contexte: "Désencombrement après veuvage",
@@ -193,7 +198,7 @@ export const ZONES: readonly Zone[] = [
     distanceKmDepuisBordeaux: 6,
     limitrophes: ["bordeaux", "cenon", "begles", "villenave-d-ornon"],
     metaDescription:
-      "Débarras à Floirac : appartements, maisons, caves. Tri sélectif rigoureux et restitution propre.",
+      "Débarras à Floirac (33270), rive droite : appartements, maisons, caves. Tri sélectif rigoureux, objets réemployés en ressourcerie, lieux rendus propres.",
     temoignage: {
       auteur: "Bailleur social, Floirac",
       contexte: "Remise en état logement",
@@ -210,7 +215,7 @@ export const ZONES: readonly Zone[] = [
     distanceKmDepuisBordeaux: 5,
     limitrophes: ["bordeaux", "lormont", "floirac"],
     metaDescription:
-      "Débarras à Cenon : interventions discrètes, équipe formée aux situations sensibles. Devis sous 2h.",
+      "Débarras à Cenon (33150) : appartements et maisons, y compris situations sensibles. Intervention discrète, devis sous 2h, réemploi en ressourcerie.",
     temoignage: {
       auteur: "Mme G., Cenon Palmer",
       contexte: "Débarras appartement T3",
@@ -227,7 +232,7 @@ export const ZONES: readonly Zone[] = [
     distanceKmDepuisBordeaux: 5,
     limitrophes: ["bordeaux", "le-bouscat", "merignac", "eysines"],
     metaDescription:
-      "Débarras à Bruges : maisons, locaux pro, dépendances. Acteur local Bordeaux Métropole, devis gratuit sous 2h.",
+      "Débarras à Bruges (33520) : maisons, dépendances, bureaux et locaux pro rendus au bailleur. Devis gratuit sous 2h, dons à Emmaüs Gironde.",
     temoignage: {
       auteur: "M. H., Bruges",
       contexte: "Vidage bureau professionnel",
@@ -245,7 +250,7 @@ export const ZONES: readonly Zone[] = [
     distanceKmDepuisBordeaux: 7,
     limitrophes: ["cenon", "bordeaux", "ambares-et-lagrave"],
     metaDescription:
-      "Débarras à Lormont : appartements, maisons, garages. Intervention sous 7 jours, tri responsable.",
+      "Débarras à Lormont (33310), de Génicart au bas Lormont : appartements, maisons, garages. Devis sous 2h, tri responsable avec Le Relais 33.",
     temoignage: {
       auteur: "Mme V., Lormont Génicart",
       contexte: "Succession appartement",
@@ -262,7 +267,7 @@ export const ZONES: readonly Zone[] = [
     distanceKmDepuisBordeaux: 12,
     limitrophes: ["eysines", "merignac"],
     metaDescription:
-      "Débarras à Saint-Médard-en-Jalles : pavillons, maisons familiales, dépendances. Devis sous 2h.",
+      "Débarras à Saint-Médard-en-Jalles (33160) : pavillons, maisons familiales, dépendances. Vide-maison après décès, devis sous 2h, dons à la Croix-Rouge.",
     temoignage: {
       auteur: "Famille C., Saint-Médard",
       contexte: "Vide-maison après décès",
@@ -280,7 +285,7 @@ export const ZONES: readonly Zone[] = [
     distanceKmDepuisBordeaux: 9,
     limitrophes: ["bruges", "le-bouscat", "merignac", "saint-medard-en-jalles"],
     metaDescription:
-      "Débarras à Eysines : maisons, appartements, locaux pro. Acteur Bordeaux Métropole, devis transparent.",
+      "Débarras à Eysines (33320) : maisons, appartements et locaux professionnels. Devis ferme respecté, intervention rapide, dons à Emmaüs Gironde.",
     temoignage: {
       auteur: "M. F., Eysines",
       contexte: "Vidage maison en succession",
@@ -297,7 +302,7 @@ export const ZONES: readonly Zone[] = [
     distanceKmDepuisBordeaux: 14,
     limitrophes: ["lormont"],
     metaDescription:
-      "Débarras à Ambarès-et-Lagrave : maisons individuelles, hangars, caves. Charte 0 gaspillage.",
+      "Débarras à Ambarès-et-Lagrave (33440) : maisons individuelles, hangars et caves. Gros volumes pris en charge, devis sous 2h, charte zéro gaspillage.",
     temoignage: {
       auteur: "M. M., Ambarès",
       contexte: "Vidage hangar agricole",
@@ -482,7 +487,40 @@ export const ZONES: readonly Zone[] = [
   },
 ] as const;
 
-export const ZONES_BY_DEPARTEMENT = ZONES.reduce(
+/**
+ * Départements actuellement promus. Périmètre recentré sur la Gironde
+ * (≤ 1 h de Bordeaux). Landes (40) et Lot-et-Garonne (47) masqués.
+ */
+export const DEPARTEMENTS_ACTIFS: readonly Departement[] = ["33"];
+
+export function isZoneActive(zone: Zone): boolean {
+  return DEPARTEMENTS_ACTIFS.includes(zone.departement);
+}
+
+/** Communes promues : sitemap, listes, carte, maillage interne. */
+export const ZONES_ACTIVES: readonly Zone[] = ZONES.filter(isZoneActive);
+
+/** Date de dernière révision éditoriale des pages zones (sitemap `lastmod`). */
+export const ZONES_UPDATED_AT = "2026-09-26";
+
+/** Communes articles « le / la / les » : « au Bouscat », « au Passage ». */
+const ARTICLES: Record<string, string> = { le: "au", la: "à la", les: "aux" };
+
+/**
+ * Locatif grammatical : « à Bordeaux », « au Bouscat », « au Passage ».
+ * Utilisé partout où l'on écrit « à {commune} ».
+ */
+export function zoneLocatif(zone: Pick<Zone, "nom">): string {
+  const [article, ...reste] = zone.nom.split(" ");
+  const contracte = article ? ARTICLES[article.toLowerCase()] : undefined;
+  if (contracte && reste.length > 0) {
+    return `${contracte} ${reste.join(" ")}`;
+  }
+  return `à ${zone.nom}`;
+}
+
+/** Regroupement par département — communes actives uniquement. */
+export const ZONES_BY_DEPARTEMENT = ZONES_ACTIVES.reduce(
   (acc, zone) => {
     (acc[zone.departement] ??= []).push(zone);
     return acc;

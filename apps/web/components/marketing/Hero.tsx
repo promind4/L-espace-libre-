@@ -42,9 +42,13 @@ export function Hero() {
         </span>
 
         <h1 style={{ color: "#fff", fontSize: "clamp(2.5rem, 5vw, 4rem)", lineHeight: 1.1, marginBottom: "1.5rem" }}>
-          Votre espace libéré
+          Débarras à{" "}
+          <em style={{ color: "var(--cr-emerald-300)", fontStyle: "normal" }}>Bordeaux</em>
+          {" "}et en Gironde
           <br />
-          en <em style={{ color: "var(--cr-emerald-300)", fontStyle: "normal" }}>Gironde</em> en quelques heures.
+          <span style={{ fontSize: "0.6em", fontWeight: 500 }}>
+            Votre espace libéré en quelques heures.
+          </span>
         </h1>
 
         <p className="hero__lead" style={{ color: "var(--cr-pearl-200)", fontSize: "1.25rem", maxWidth: "600px", margin: "0 auto 2.5rem" }}>

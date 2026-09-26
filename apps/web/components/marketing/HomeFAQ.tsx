@@ -22,8 +22,8 @@ const ITEMS = [
     a: "Le tarif dépend du **volume à évacuer**, du type de bien (cave, appartement, maison), de l'**accessibilité** (étage, ascenseur, stationnement) et de la valeur éventuelle des objets revendables. Pour un appartement T3 standard en Bordeaux Métropole, comptez entre **940 € et 1 270 €** ; pour une cave de 15 m², la fourchette descend à **290 €–390 €**. Le devis ferme est gratuit et arrive **sous 2 heures** après envoi de quelques photos. <a href=\"/contact\">Demandez votre estimation</a> en quelques secondes via notre formulaire.",
   },
   {
-    q: "Sous combien de temps intervenez-vous en Gironde et en Nouvelle-Aquitaine ?",
-    a: "Nous intervenons de **48 heures à 10 jours** après acceptation du devis, parfois le jour même pour les urgences (vente notariée, fin de bail, situation sanitaire). Le déplacement est programmé avec un calendrier convenu à l'avance pour optimiser les trajets sur toute notre zone (Gironde, Landes, Lot-et-Garonne). Le devis ferme par photo arrive systématiquement **sous 2 heures ouvrées**.",
+    q: "Sous combien de temps intervenez-vous à Bordeaux et en Gironde ?",
+    a: "Nous intervenons de **48 heures à 10 jours** après acceptation du devis, parfois le jour même pour les urgences (vente notariée, fin de bail, situation sanitaire). Le déplacement est programmé avec un calendrier convenu à l'avance pour optimiser les trajets sur toute notre zone (Bordeaux Métropole et Gironde, à moins d'une heure de Bordeaux). Le devis ferme par photo arrive systématiquement **sous 2 heures ouvrées**.",
   },
   {
     q: "Que devient ce que vous emportez ? Comment se passe le tri ?",

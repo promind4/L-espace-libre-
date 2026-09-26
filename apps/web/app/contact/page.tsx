@@ -57,7 +57,7 @@ export default function ContactPage() {
         contactType: "customer service",
         email: BUSINESS.contact.email,
         availableLanguage: ["French"],
-        areaServed: ["FR-33", "FR-40", "FR-47"],
+        areaServed: ["FR-33"],
       },
     },
   };

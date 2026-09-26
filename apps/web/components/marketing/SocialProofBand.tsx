@@ -8,7 +8,7 @@
  *
  * Indicateurs :
  *  1. Délai de devis (promesse de marque)
- *  2. Couverture géographique : 534 communes de Gironde (fait INSEE)
+ *  2. Couverture géographique : rayon d'une heure autour de Bordeaux
  *  3. Assurance RC Pro incluse (fait administratif)
  *  4. Aucun acompte exigé (engagement commercial)
  *
@@ -32,12 +32,12 @@ export function SocialProofBand() {
           </div>
 
           <div className="social-proof__item">
-            <span className="social-proof__num">534</span>
+            <span className="social-proof__num">1&nbsp;h</span>
             <span className="social-proof__label">
-              <strong>Communes</strong> de Gironde couvertes
+              <strong>Rayon d&apos;intervention</strong> autour de Bordeaux
               <br />
               <span style={{ color: "var(--cr-pearl-500)", fontSize: 12 }}>
-                Toute la Gironde · Landes · Lot-et-Garonne
+                Bordeaux Métropole · Gironde
               </span>
             </span>
           </div>

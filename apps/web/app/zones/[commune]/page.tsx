@@ -1,7 +1,7 @@
 import type { Metadata } from "next";
 import { notFound } from "next/navigation";
 import { LocalPageTemplate } from "@/components/local/LocalPageTemplate";
-import { getZone, getZoneSlugs } from "@/content/zones";
+import { getZone, getZoneSlugs, isZoneActive } from "@/content/zones";
 import { SITE } from "@/config/site";
 import { buildZoneTitle, buildZoneDescription } from "@/lib/seo";
 
@@ -42,6 +42,9 @@ export async function generateMetadata({
     title: { absolute: title },
     description,
     alternates: { canonical },
+    // Communes hors périmètre actif (Landes, Lot-et-Garonne) : page
+    // conservée mais retirée de l'index et du sitemap.
+    ...(isZoneActive(zone) ? {} : { robots: { index: false, follow: true } }),
     openGraph: {
       title,
       description,
