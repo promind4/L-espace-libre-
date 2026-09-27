@@ -942,6 +942,76 @@ export const BLOG_POSTS: readonly BlogPost[] = [
   },
 
   // ============================================================
+  //  16. Encombrants — ramassage gratuit ou débarras payant
+  // ============================================================
+  {
+    slug: "encombrants-bordeaux-ramassage-gratuit-ou-debarras",
+    titre:
+      "Encombrants à Bordeaux : ramassage gratuit de la métropole ou débarras professionnel, que choisir ?",
+    excerpt:
+      "Bordeaux Métropole propose un ramassage gratuit des encombrants, mais avec des limites de volume et de délai. Voici quand ce service suffit, et quand un débarras professionnel devient nécessaire.",
+    metaDescription:
+      "Encombrants à Bordeaux : différence entre le ramassage gratuit de la métropole et un débarras professionnel. Délais, volumes, quand faire appel à un pro.",
+    publishedAt: "2026-09-27",
+    readingTimeMin: 5,
+    category: "Logistique",
+    tags: ["encombrants", "bordeaux", "gironde", "ramassage", "guide"],
+    auteur: AUTEUR,
+    blocks: [
+      {
+        type: "p",
+        content:
+          "« Encombrants Bordeaux » est l'une des recherches les plus fréquentes sur le débarras dans la métropole. Elle mène presque toujours vers le même réflexe : le service gratuit de collecte des encombrants proposé par Bordeaux Métropole. C'est un service utile, mais il répond à un besoin précis et limité. Ce guide explique ce qu'il couvre, où il s'arrête, et à partir de quand un <a href=\"/services/debarras-maison-appartement\">débarras professionnel</a> devient la solution adaptée.",
+      },
+      { type: "h2", content: "Ce que couvre le ramassage gratuit des encombrants" },
+      {
+        type: "p",
+        content:
+          "La collecte municipale des encombrants est pensée pour de petits volumes ponctuels : un canapé, un matelas, quelques meubles ou électroménagers, sortis sur le trottoir un jour de passage donné. Elle se réserve généralement sur rendez-vous, avec un délai qui s'allonge en période de forte demande (déménagements de rentrée, fin d'année). Les objets doivent être accessibles depuis la voie publique : le service ne monte pas dans les étages, ne vide pas une cave, un garage ou un logement entier, et refuse les déchets dangereux (peintures, solvants, gravats, amiante).",
+      },
+      {
+        type: "callout",
+        tone: "info",
+        content:
+          "Pour deux ou trois objets ponctuels, sans urgence et avec un accès facile au rez-de-chaussée, la collecte gratuite de la métropole reste la solution la plus simple. Elle n'est pas concurrencée par une offre payante sur ce cas précis.",
+      },
+      { type: "h2", content: "Quand le service gratuit ne suffit plus" },
+      {
+        type: "ul",
+        items: [
+          "Un volume important : appartement entier, succession, local professionnel à vider.",
+          "Un accès difficile : étage sans ascenseur, échoppe bordelaise avec couloir étroit, cour intérieure.",
+          "Un délai serré : fin de bail, vente notariée, restitution de clés sous quelques jours.",
+          "Des déchets non repris par la collecte municipale : gravats, produits chimiques, encombrants issus d'un logement insalubre.",
+          "Un besoin de tri, de dons ou de remise en état des lieux après évacuation.",
+        ],
+      },
+      {
+        type: "p",
+        content:
+          "Dans ces situations, un débarrasseur professionnel prend en charge l'intégralité du volume, y compris la manutention en étage, le tri sélectif et l'évacuation des déchets que la collectivité ne reprend pas. Le <a href=\"/blog/prix-debarras-gironde-2026\">tarif se calcule au volume réellement évacué</a> (environ 45 € par m³ en 2026, plus un forfait de déplacement), sans surprise à l'arrivée.",
+      },
+      { type: "h2", content: "Encombrants, débarras partiel, débarras complet : les mots ne veulent pas dire la même chose" },
+      {
+        type: "p",
+        content:
+          "« Encombrants » désigne des objets isolés à sortir. « Débarras » désigne le vidage d'un espace entier, pièce par pièce. Beaucoup de recherches mélangent les deux, ce qui explique pourquoi les résultats affichés pour « encombrants Bordeaux » renvoient d'abord vers le service municipal, même quand le besoin réel est un débarras de logement. Si votre demande dépasse quelques meubles isolés, il vaut mieux chercher directement un <a href=\"/services\">débarras professionnel</a> plutôt qu'une collecte d'encombrants.",
+      },
+      { type: "h2", content: "Notre organisation sur Bordeaux Métropole" },
+      {
+        type: "p",
+        content:
+          "Sur Bordeaux, Mérignac, Pessac, Talence, Bègles, Le Bouscat et les autres communes de la métropole, aucun frais de déplacement ne s'ajoute au devis. Un <a href=\"/contact\">devis ferme par photo est transmis sous 2 heures ouvrées</a>, avec une intervention possible de 48 heures à 10 jours selon l'urgence.",
+      },
+    ],
+    related: [
+      "prix-debarras-gironde-2026",
+      "bureaux-merignac-pessac",
+      "acteur-local-bordeaux-region",
+    ],
+  },
+
+  // ============================================================
   //  15. Garage / Traitement des déchets toxiques
   // ============================================================
   {

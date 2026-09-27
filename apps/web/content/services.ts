@@ -265,8 +265,8 @@ export const SERVICES: readonly Service[] = [
     defaultType: "cave",
     metaDescription:
       "Besoin de vider une cave, un garage ou d'évacuer des encombrants en Gironde ? Intervention rapide pour particuliers et syndics. Obtenez votre prix.",
-    seoTitle: "Débarras de Caves, Garages & Encombrants | Gironde",
-    seoH1: "Désencombrement de caves, garages et dépendances.",
+    seoTitle: "Débarras Garage, Cave & Grenier | Gironde",
+    seoH1: "Débarras de garage, cave et grenier en Gironde.",
     intro:
       "Reconquérez les mètres carrés perdus de vos espaces annexes et redonnez de l'oxygène à votre résidence secondaire. L'accumulation silencieuse finit toujours par saturer les sous-sols et les combles, transformant des zones de stockage en impasses inexploitables. Nous intervenons en profondeur pour assainir et libérer ces pièces souvent délaissées, avec une efficacité redoutable.",
     sections: [

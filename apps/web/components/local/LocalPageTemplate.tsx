@@ -213,6 +213,14 @@ export function LocalPageTemplate({ zone }: LocalPageTemplateProps) {
                 Conformément à notre charte environnementale, chaque intervention de vidage {locatif} inclut un tri minutieux. Les biens réutilisables sont orientés vers nos partenaires locaux (notamment <strong>{localInfo.partenaire_solidaire}</strong>) afin de profiter d'une seconde vie. Les matériaux non valorisables (ferraille, gravats, D3E) sont transportés en filière courte vers les sites agréés comme <strong>{localInfo.point_tri_local}</strong>. Faire appel à notre entreprise, c'est l'assurance d'un service de débarras responsable et sans surprise tarifaire.
               </p>
             </div>
+            <div>
+              <h3 style={{ fontSize: "var(--fs-18)", color: "var(--cr-navy-950)", marginBottom: "var(--space-3)" }}>
+                Encombrants ou débarras complet&nbsp;?
+              </h3>
+              <p>
+                Pour quelques objets isolés {locatif}, la collecte gratuite de la métropole reste la solution la plus simple. Dès qu&apos;il s&apos;agit de vider un logement entier, une cave ou un local, ou que l&apos;accès est difficile (étage sans ascenseur, délai serré), un <Link href="/blog/encombrants-bordeaux-ramassage-gratuit-ou-debarras">débarras professionnel</Link> devient la solution adaptée. Nous détaillons cette différence dans notre guide dédié.
+              </p>
+            </div>
           </div>
         </div>
       </section>

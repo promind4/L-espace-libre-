@@ -34,7 +34,10 @@ export async function generateMetadata({
   const description = buildArticleDescription(post);
   const canonical = `${SITE.url.replace(/\/$/, "")}/blog/${post.slug}`;
   return {
-    title,
+    // `title.absolute` évite le doublon avec le template racine
+    // (« %s | L'Espace Libre ») — `buildArticleTitle` porte déjà
+    // son propre suffixe « | Blog L'Espace Libre ».
+    title: { absolute: title },
     description,
     alternates: { canonical },
     openGraph: {
