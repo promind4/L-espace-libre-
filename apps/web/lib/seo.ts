@@ -7,7 +7,7 @@
  */
 import { SITE } from "@/config/site";
 import { BUSINESS } from "@/config/business";
-import type { Zone } from "@/content/zones";
+import { zoneLocatif, type Zone } from "@/content/zones";
 import type { Service, ServiceFaqItem } from "@/content/services";
 import type { BlogPost } from "@/content/blog/types";
 
@@ -15,7 +15,7 @@ import type { BlogPost } from "@/content/blog/types";
 //  Titres et descriptions par département — Phase 2 SEO
 //  Formules figées par la feuille de route meta.md §5
 //  (Programmatic SEO « cocon local »). Gabarit unique pour
-//  toutes les communes desservies — la matrice 33/40/47 partage
+//  toutes les communes desservies — la matrice partage
 //  la même syntaxe : ${nom} (${codePostal}) | Maisons & Pro.
 //
 //  Ces chaînes sont injectées via `title.absolute` dans la page
@@ -26,8 +26,12 @@ export function buildZoneTitle(zone: Zone): string {
   return `Débarras ${zone.nom} (${zone.codePostal}) | Maisons & Pro`;
 }
 
+/**
+ * Méta-description propre à chaque commune (rédigée dans `content/zones.ts`),
+ * pour éviter 25 descriptions quasi identiques aux yeux de Google.
+ */
 export function buildZoneDescription(zone: Zone): string {
-  return `Entreprise de débarras intégral à ${zone.nom} (${zone.codePostal}). Évacuation complète de maisons, appartements, caves et bureaux. Obtenez votre devis en ligne.`;
+  return zone.metaDescription;
 }
 
 /**
@@ -36,7 +40,7 @@ export function buildZoneDescription(zone: Zone): string {
  * de recherche du visiteur (particulier OU professionnel local).
  */
 export function buildZoneH1(zone: Zone): string {
-  return `Débarras à ${zone.nom} : Maisons, Locaux et Encombrants`;
+  return `Débarras ${zoneLocatif(zone)} : maisons, locaux et encombrants`;
 }
 
 /**
@@ -138,9 +142,8 @@ export function buildSiteLocalBusinessJsonLd() {
       longitude: BUSINESS.geo.longitude,
     },
     areaServed: [
+      { "@type": "AdministrativeArea", name: "Bordeaux Métropole" },
       { "@type": "AdministrativeArea", name: "Gironde" },
-      { "@type": "AdministrativeArea", name: "Landes" },
-      { "@type": "AdministrativeArea", name: "Lot-et-Garonne" },
     ],
     openingHoursSpecification: [
       {
@@ -204,9 +207,8 @@ export function buildServiceJsonLd(service: Service) {
       },
     },
     areaServed: [
+      { "@type": "AdministrativeArea", name: "Bordeaux Métropole" },
       { "@type": "AdministrativeArea", name: "Gironde (33)" },
-      { "@type": "AdministrativeArea", name: "Landes (40)" },
-      { "@type": "AdministrativeArea", name: "Lot-et-Garonne (47)" },
     ],
     offers: {
       "@type": "Offer",
@@ -315,7 +317,7 @@ export function buildAboutPageJsonLd(opts: {
       name: BUSINESS.nom,
       legalName: BUSINESS.nom,
       url: baseUrl,
-      areaServed: ["Gironde", "Landes", "Lot-et-Garonne"],
+      areaServed: ["Bordeaux Métropole", "Gironde"],
       founder: {
         "@type": "Person",
         name: opts.founderName,

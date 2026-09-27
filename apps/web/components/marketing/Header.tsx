@@ -169,7 +169,7 @@ export function Header() {
                   <span>
                     <div className="dropdown__title">Toutes les zones</div>
                     <div className="dropdown__desc">
-                      25 communes — Gironde, Landes, Lot-et-Garonne
+                      Bordeaux Métropole et Gironde (≤ 1 h)
                     </div>
                   </span>
                 </Link>

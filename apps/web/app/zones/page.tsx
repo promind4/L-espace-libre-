@@ -2,14 +2,19 @@ import type { Metadata } from "next";
 import { Icon } from "@/components/ui/Icon";
 import { Spark } from "@/components/ui/Spark";
 import { JsonLd } from "@/components/seo/JsonLd";
-import { ZONES, ZONES_BY_DEPARTEMENT, type Departement } from "@/content/zones";
+import {
+  DEPARTEMENTS_ACTIFS,
+  ZONES_ACTIVES,
+  ZONES_BY_DEPARTEMENT,
+  type Departement,
+} from "@/content/zones";
 import { SITE } from "@/config/site";
 import { buildBreadcrumbList } from "@/lib/seo";
 
 const TITLE =
-  "Zones d'intervention en Gironde, Landes et Lot-et-Garonne | L'Espace Libre";
+  "Zones d'intervention : Bordeaux Métropole et Gironde | L'Espace Libre";
 const DESCRIPTION =
-  "L'Espace Libre intervient dans 25 communes de Nouvelle-Aquitaine (Gironde 33, Landes 40, Lot-et-Garonne 47). Trouvez votre ville pour un devis localisé.";
+  `Débarras à Bordeaux et dans ${ZONES_ACTIVES.length} communes de Gironde, à moins d'une heure de notre base : Mérignac, Pessac, Talence, Le Bouscat… Trouvez votre ville.`;
 
 export const metadata: Metadata = {
   title: TITLE,
@@ -22,7 +27,7 @@ export const metadata: Metadata = {
   },
 };
 
-const DEPT_ORDER: Departement[] = ["33", "40", "47"];
+const DEPT_ORDER: readonly Departement[] = DEPARTEMENTS_ACTIFS;
 
 const DEPT_INFO: Record<Departement, { titre: string; sous: string }> = {
   "33": {
@@ -76,7 +81,7 @@ export default function ZonesIndexPage() {
         >
           <img
             src="/images/hero/zone.avif"
-            alt="Zones d'intervention L'Espace Libre — Gironde, Landes et Lot-et-Garonne"
+            alt="Zones d'intervention L'Espace Libre — Bordeaux Métropole et Gironde"
             style={{
               width: "100%",
               height: "100%",
@@ -116,7 +121,7 @@ export default function ZonesIndexPage() {
             }}
           >
             <Spark size={14} variant="light" />
-            Nouvelle-Aquitaine
+            Gironde (33)
           </span>
           <h1
             style={{
@@ -125,7 +130,7 @@ export default function ZonesIndexPage() {
               marginBottom: "var(--space-4)",
             }}
           >
-            25 communes desservies en Gironde, Landes et Lot-et-Garonne.
+            {ZONES_ACTIVES.length} communes desservies autour de Bordeaux.
           </h1>
           <p
             style={{
@@ -135,8 +140,8 @@ export default function ZonesIndexPage() {
               opacity: 0.9,
             }}
           >
-            Notre équipe est basée à Bordeaux et intervient dans toute la
-            Nouvelle-Aquitaine ouest. Sélectionnez votre commune pour
+            Notre équipe est basée à Bordeaux et intervient dans un rayon
+            d&apos;une heure. Sélectionnez votre commune pour
             consulter sa page dédiée — délai, témoignage local et estimation
             en quelques clics.
           </p>
@@ -248,8 +253,8 @@ export default function ZonesIndexPage() {
             }}
           >
             Votre commune ne figure pas dans la liste&nbsp;? Nous étudions les
-            interventions ponctuelles partout en Nouvelle-Aquitaine sur
-            demande.
+            interventions ponctuelles en Gironde, à moins d&apos;une heure de
+            Bordeaux, sur demande.
           </p>
           <a
             href="/contact"
@@ -275,4 +280,3 @@ export default function ZonesIndexPage() {
   );
 }
 
-void ZONES; // satisfait l'analyseur qui veut signaler ZONES non utilisé

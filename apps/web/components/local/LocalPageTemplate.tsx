@@ -1,5 +1,5 @@
 /**
- * LocalPageTemplate — gabarit unique des 25 pages locales.
+ * LocalPageTemplate — gabarit unique des pages locales.
  *
  * Server Component (par défaut Next.js App Router). Compose les
  * différentes sections : bandeau, fil d'Ariane, Simulateur (Client),
@@ -14,7 +14,7 @@ import { Spark } from "@/components/ui/Spark";
 import { JsonLd } from "@/components/seo/JsonLd";
 import { ImagePlaceholder } from "@/components/marketing/ImagePlaceholder";
 import { SERVICES } from "@/content/services";
-import { getZone, type Zone } from "@/content/zones";
+import { getZone, isZoneActive, zoneLocatif, type Zone } from "@/content/zones";
 import {
   buildBreadcrumbList,
   buildDelaiIntervention,
@@ -48,8 +48,9 @@ export function LocalPageTemplate({ zone }: LocalPageTemplateProps) {
   // Maillage interne : on hydrate les communes limitrophes (au plus 5).
   const nearby = zone.limitrophes
     .map((slug) => getZone(slug))
-    .filter((z): z is Zone => Boolean(z))
+    .filter((z): z is Zone => Boolean(z) && isZoneActive(z as Zone))
     .slice(0, 5);
+  const locatif = zoneLocatif(zone);
 
   // Récupération des données dynamiques pour la zone
   const localInfo = zonesData[zone.slug] || {
@@ -94,8 +95,8 @@ export function LocalPageTemplate({ zone }: LocalPageTemplateProps) {
         <div className={styles.heroBackground}>
           <ImagePlaceholder
             src={heroImageSrc}
-            alt={`Débarras à ${zone.nom} (${zone.codePostal}) — équipe L'Espace Libre en intervention`}
-            label={`Photo : équipe en intervention à ${zone.nom}`}
+            alt={`Débarras ${locatif} (${zone.codePostal}) — équipe L'Espace Libre en intervention`}
+            label={`Photo : équipe en intervention ${locatif}`}
             icon="users"
             tone="dark"
             hint="Image de fond plein écran (ex: 1920x1080)"
@@ -112,7 +113,7 @@ export function LocalPageTemplate({ zone }: LocalPageTemplateProps) {
             </span>
             {/*
               H1 unifié — Phase 2 SEO (meta.md §5). Gabarit unique pour
-              les 25 communes : « Débarras à {nom} : Maisons, Locaux et
+              les communes : « Débarras {locatif} : maisons, locaux et
               Encombrants ». Valide l'intention de recherche locale du
               particulier ET du professionnel sans surcharger la page.
             */}
@@ -166,13 +167,13 @@ export function LocalPageTemplate({ zone }: LocalPageTemplateProps) {
             style={{ justifyContent: "center" }}
           >
             <Spark size={14} />
-            Estimation gratuite à {zone.nom}
+            Estimation gratuite {locatif}
           </span>
           <h2
             className={styles.sectionTitle}
             style={{ margin: "0 0 14px" }}
           >
-            Combien coûte un débarras à {zone.nom}&nbsp;?
+            Combien coûte un débarras {locatif}&nbsp;?
           </h2>
           <p
             className={styles.sectionLead}
@@ -198,10 +199,10 @@ export function LocalPageTemplate({ zone }: LocalPageTemplateProps) {
           <div style={{ display: "grid", gridTemplateColumns: "repeat(auto-fit, minmax(300px, 1fr))", gap: "var(--space-6)", fontSize: "var(--fs-15)", lineHeight: "var(--lh-relaxed)", color: "var(--cr-pearl-700)" }}>
             <div>
               <h3 style={{ fontSize: "var(--fs-18)", color: "var(--cr-navy-950)", marginBottom: "var(--space-3)" }}>
-                Votre expert en débarras à {localInfo.nom_ville} ({localInfo.code_postal})
+                Votre expert en débarras {locatif} ({localInfo.code_postal})
               </h3>
               <p>
-                Intervenir à <strong>{localInfo.nom_ville}</strong> ({localInfo.code_postal}) et dans le département {zone.departementNom} demande une logistique rigoureuse adaptée à la zone (située à environ {localInfo.distance_base} de notre base). L'Espace Libre s'est spécialisé dans le désencombrement rapide et éthique pour les particuliers et professionnels de la région. Que vous fassiez face à une <strong>succession complexe</strong>, un besoin de vider une maison avant une vente immobilière, ou un cas extrême nécessitant un nettoyage approfondi, nos équipes formées intervenons avec réactivité et discrétion.
+                Intervenir <strong>{locatif}</strong> ({localInfo.code_postal}) et dans le département {zone.departementNom} demande une logistique rigoureuse adaptée à la zone (située à environ {localInfo.distance_base} de notre base). L'Espace Libre s'est spécialisé dans le désencombrement rapide et éthique pour les particuliers et professionnels de la région. Que vous fassiez face à une <strong>succession complexe</strong>, un besoin de vider une maison avant une vente immobilière, ou un cas extrême nécessitant un nettoyage approfondi, nos équipes formées interviennent avec réactivité et discrétion.
               </p>
             </div>
             <div>
@@ -209,7 +210,7 @@ export function LocalPageTemplate({ zone }: LocalPageTemplateProps) {
                 Recyclage, dons et démarche zéro gaspillage
               </h3>
               <p>
-                Conformément à notre charte environnementale, chaque intervention de vidage à {localInfo.nom_ville} inclut un tri minutieux. Les biens réutilisables sont orientés vers nos partenaires locaux (notamment <strong>{localInfo.partenaire_solidaire}</strong>) afin de profiter d'une seconde vie. Les matériaux non valorisables (ferraille, gravats, D3E) sont transportés en filière courte vers les sites agréés comme <strong>{localInfo.point_tri_local}</strong>. Faire appel à notre entreprise, c'est l'assurance d'un service de débarras responsable et sans surprise tarifaire.
+                Conformément à notre charte environnementale, chaque intervention de vidage {locatif} inclut un tri minutieux. Les biens réutilisables sont orientés vers nos partenaires locaux (notamment <strong>{localInfo.partenaire_solidaire}</strong>) afin de profiter d'une seconde vie. Les matériaux non valorisables (ferraille, gravats, D3E) sont transportés en filière courte vers les sites agréés comme <strong>{localInfo.point_tri_local}</strong>. Faire appel à notre entreprise, c'est l'assurance d'un service de débarras responsable et sans surprise tarifaire.
               </p>
             </div>
           </div>
@@ -230,13 +231,13 @@ export function LocalPageTemplate({ zone }: LocalPageTemplateProps) {
               style={{ display: "inline-flex", alignItems: "center", gap: 8 }}
             >
               <Spark size={14} />
-              Nos services à {zone.nom}
+              Nos services {locatif}
             </span>
             <h2 className={styles.sectionTitle}>
               Une solution pour chaque situation.
             </h2>
             <p className={styles.sectionLead}>
-              L&apos;ensemble de nos prestations est disponible à {zone.nom}
+              L&apos;ensemble de nos prestations est disponible {locatif}
               {zone.departement !== "33"
                 ? " — avec frais kilométriques transparents indiqués au devis."
                 : "."}
@@ -308,7 +309,7 @@ export function LocalPageTemplate({ zone }: LocalPageTemplateProps) {
         data-rhythm-index={7}
       >
         <div className="container">
-          <h3>Prêts à libérer votre espace à {zone.nom}&nbsp;?</h3>
+          <h3>Prêts à libérer votre espace {locatif}&nbsp;?</h3>
           <p>
             Aucun engagement, recevez votre devis sous deux heures pendant les horaires d&apos;ouverture.
           </p>

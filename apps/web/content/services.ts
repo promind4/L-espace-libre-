@@ -321,8 +321,8 @@ export const SERVICES: readonly Service[] = [
       "Situations critiques, décontamination, équipe spécialisée et confidentialité absolue.",
     icon: "sparkles",
     metaDescription:
-      "Spécialiste du débarras et nettoyage extrême pour syndrome de Diogène et logements insalubres en Gironde et Aquitaine. Discrétion et tri sélectif.",
-    seoTitle: "Nettoyage Diogène & Logement Insalubre | Aquitaine",
+      "Spécialiste du débarras et nettoyage extrême pour syndrome de Diogène et logements insalubres à Bordeaux et en Gironde. Discrétion et tri sélectif.",
+    seoTitle: "Nettoyage Diogène & Logement Insalubre | Bordeaux",
     seoH1: "Débarras technique et nettoyage syndrome de Diogène.",
     intro:
       "Face aux situations de détresse psychologique extrême, une approche purement logistique ne suffit pas. L'Espace Libre déploie un protocole technique de haut niveau doublé d'une profonde écoute humaine pour traiter l'insalubrité la plus sévère. Nous apportons une solution radicale et salvatrice aux travailleurs sociaux, aux syndics et aux familles confrontées à l'indicible.",

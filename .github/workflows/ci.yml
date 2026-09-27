@@ -58,7 +58,7 @@ jobs:
       - name: Next.js build
         run: pnpm build
         env:
-          NEXT_PUBLIC_SITE_URL: https://lespacelibre.fr
+          NEXT_PUBLIC_SITE_URL: https://www.lespace-libre.fr
           NEXT_PUBLIC_PLAUSIBLE_DOMAIN: lespacelibre.fr
           # Build n'a pas besoin de RESEND_API_KEY (utilisé runtime uniquement).
 

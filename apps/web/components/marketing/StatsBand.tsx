@@ -36,11 +36,11 @@ export function StatsBand() {
 
           {/* 2 — Couverture territoriale */}
           <div className="stats-band__item">
-            <span className="stats-band__num">534</span>
+            <span className="stats-band__num">1&nbsp;h</span>
             <span className="stats-band__label">
-              <strong>Communes</strong> de Gironde couvertes.
+              <strong>Rayon d&apos;intervention</strong> autour de Bordeaux.
               <span className="stats-band__label-sub">
-                Landes &amp; Lot-et-Garonne sur demande.
+                Bordeaux Métropole sans frais de déplacement.
               </span>
             </span>
           </div>

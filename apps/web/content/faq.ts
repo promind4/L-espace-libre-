@@ -83,7 +83,7 @@ export const FAQ_CATEGORIES: readonly FaqCategory[] = [
       {
         id: "delai-intervention",
         q: "Sous combien de temps intervenez-vous après acceptation du devis ?",
-        a: "Nous intervenons de **48 heures à 10 jours** après acceptation du devis, parfois le jour même pour les urgences. Le déplacement est programmé avec un calendrier convenu à l'avance pour optimiser les trajets dans toute notre zone d'intervention (Gironde, Landes, Lot-et-Garonne).",
+        a: "Nous intervenons de **48 heures à 10 jours** après acceptation du devis, parfois le jour même pour les urgences. Le déplacement est programmé avec un calendrier convenu à l'avance pour optimiser les trajets dans toute notre zone d'intervention (Bordeaux Métropole et Gironde, à moins d'une heure de Bordeaux).",
       },
       {
         id: "intervention-urgente",
@@ -253,12 +253,12 @@ export const FAQ_CATEGORIES: readonly FaqCategory[] = [
       {
         id: "zones-couvertes",
         q: "Quelles communes desservez-vous ?",
-        a: "Nous intervenons dans **toute la Gironde** (534 communes), avec une présence renforcée sur **Bordeaux Métropole** (Bordeaux, Mérignac, Pessac, Talence, Bègles, Le Bouscat et 22 autres communes de la CUB). Nous nous déplaçons également dans les **Landes (40)** et le **Lot-et-Garonne (47)** pour les interventions programmées. Pour les communes au-delà, contactez-nous : nous étudions chaque demande au cas par cas.",
+        a: "Nous intervenons sur **Bordeaux Métropole** (Bordeaux, Mérignac, Pessac, Talence, Bègles, Le Bouscat et 22 autres communes) et en **Gironde, dans un rayon d'environ une heure autour de Bordeaux**. Pour une commune plus éloignée, contactez-nous : nous étudions chaque demande au cas par cas.",
       },
       {
         id: "frais-kilometriques",
         q: "Y a-t-il des frais kilométriques ?",
-        a: "**Sur Bordeaux Métropole (CUB) : 0 €**, pas de frais de déplacement. **Gironde hors CUB** : forfait de 65 €. **Hors département** (Landes, Lot-et-Garonne, autres) : 0,60 €/km depuis Bordeaux Centre, arrondi à l'euro, indiqué clairement sur le devis. Aucun frais caché ne s'ajoute après signature.",
+        a: "**Sur Bordeaux Métropole (CUB) : 0 €**, pas de frais de déplacement. **Gironde hors CUB** : forfait de 65 €. **Au-delà, sur demande** : 0,60 €/km depuis Bordeaux Centre, arrondi à l'euro, indiqué clairement sur le devis. Aucun frais caché ne s'ajoute après signature.",
       },
       {
         id: "intervention-rurale",

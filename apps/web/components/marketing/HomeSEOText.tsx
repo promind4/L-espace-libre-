@@ -31,7 +31,7 @@ export function HomeSEOText() {
             Votre expert local
           </span>
           <h2 className="section__title">
-            Entreprise de débarras en Gironde, Landes et Lot-et-Garonne.
+            Entreprise de débarras à Bordeaux et en Gironde.
           </h2>
         </header>
 

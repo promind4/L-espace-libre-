@@ -9,13 +9,14 @@
  *  - **Import dynamique** dans un useEffect : Leaflet touche `window`,
  *    incompatible SSR. La carte ne se monte qu'au client.
  *  - **Coordonnées hardcodées** : pas de géocodage en ligne, latitudes
- *    et longitudes statiques pour les 25 communes desservies.
+ *    et longitudes statiques des communes (seules les actives sont affichées).
  *
  * Performance : Leaflet ~42 KB JS + ~50 KB tuiles initiales. Le
  * composant n'est pas pré-chargé — il s'initialise au mount.
  */
 
 import { useEffect, useRef } from "react";
+import { DEPARTEMENTS_ACTIFS, zoneLocatif } from "@/content/zones";
 
 // Bordeaux centre (point d'ancrage par défaut)
 const CENTER: [number, number] = [44.8378, -0.5792];
@@ -68,6 +69,11 @@ const COMMUNES: readonly CommuneEntry[] = [
   { slug: null, nom: "Libourne (secteur)", coords: [44.9131, -0.2434], dpt: "33" },
 ];
 
+/** Communes affichées : Gironde uniquement (périmètre actif, cf. content/zones.ts). */
+const COMMUNES_VISIBLES = COMMUNES.filter((c) =>
+  (DEPARTEMENTS_ACTIFS as readonly string[]).includes(c.dpt),
+);
+
 const COLORS = {
   // Marqueurs par département — palette de marque
   "33": "#0E8F70", // emerald-600
@@ -93,7 +99,7 @@ export function ZonesMap() {
       const isMobile = window.matchMedia("(max-width: 720px)").matches;
 
       // 2. Carte centrée sur Bordeaux, zoom adapté pour couvrir la
-      // Gironde + extrémités Landes/Lot-et-Garonne.
+      // Bordeaux Métropole et la Gironde proche.
       mapInstance = L.map(containerRef.current, {
         center: CENTER,
         zoom: ZOOM,
@@ -112,7 +118,7 @@ export function ZonesMap() {
       // 4. Marqueurs custom — un par commune desservie (26 au total :
       // 25 zones avec page dédiée + Libourne en secteur supplémentaire).
       // `divIcon` plutôt que les PNG natifs Leaflet (bundler-friendly).
-      COMMUNES.forEach((c) => {
+      COMMUNES_VISIBLES.forEach((c) => {
         const color = COLORS[c.dpt];
         const isBdx = c.slug === "bordeaux";
         // Tailles adaptées : un peu plus grandes sur mobile pour rester
@@ -138,7 +144,7 @@ export function ZonesMap() {
 
         // Popup différent selon que la commune a une page dédiée ou non.
         const popupHtml = c.slug
-          ? `<strong>${c.nom}</strong><br/><a href="/zones/${c.slug}" style="color:#0E8F70;">Débarras à ${c.nom} →</a>`
+          ? `<strong>${c.nom}</strong><br/><a href="/zones/${c.slug}" style="color:#0E8F70;">Débarras ${zoneLocatif(c)} →</a>`
           : `<strong>${c.nom}</strong><br/><span style="color:#5A6573;font-size:12px;">Secteur desservi sur demande</span><br/><a href="/contact" style="color:#0E8F70;">Demander un devis →</a>`;
 
         L.marker(c.coords, { icon })
