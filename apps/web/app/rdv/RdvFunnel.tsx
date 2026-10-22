@@ -3,144 +3,221 @@
 import { useState, useEffect, type FormEvent } from "react";
 import { useSearchParams } from "next/navigation";
 import Image from "next/image";
-import { Icon } from "@/components/ui/Icon";
-import { Spark } from "@/components/ui/Spark";
 
 const PARTNERS = [
-  { name: "AXA", src: "/partenaires/Logo-AXA.png", width: 75, height: 26 },
-  { name: "Generali", src: "/partenaires/Logo-GENERALI.png", width: 85, height: 26 },
-  { name: "SwissLife", src: "/partenaires/Logo-SWISSLIFE.png", width: 90, height: 26 },
-  { name: "Harmonie Mutuelle", src: "/partenaires/Logo-HARMONIE-MUTUELLE.png", width: 105, height: 26 },
-  { name: "Prépar-Vie", src: "/partenaires/prepar-vie-e1744285402573.png", width: 90, height: 26 },
-  { name: "Cardif BNP Paribas", src: "/partenaires/Logo-CARDIF.png", width: 85, height: 26 },
-  { name: "Mutlog", src: "/partenaires/Logo-MUTLOG.png", width: 80, height: 26 },
+  { name: "AXA", src: "/partenaires/Logo-AXA.png", width: 70, height: 24 },
+  { name: "Generali", src: "/partenaires/Logo-GENERALI.png", width: 80, height: 24 },
+  { name: "SwissLife", src: "/partenaires/Logo-SWISSLIFE.png", width: 85, height: 24 },
+  { name: "Harmonie Mutuelle", src: "/partenaires/Logo-HARMONIE-MUTUELLE.png", width: 100, height: 24 },
+  { name: "Prépar-Vie", src: "/partenaires/prepar-vie-e1744285402573.png", width: 85, height: 24 },
+  { name: "Cardif BNP Paribas", src: "/partenaires/Logo-CARDIF.png", width: 80, height: 24 },
+  { name: "Mutlog", src: "/partenaires/Logo-MUTLOG.png", width: 75, height: 24 },
 ];
 
-const ASSURANCE_OPTIONS = [
-  "Assurance Décennale BTP (Garantie 10 ans)",
-  "Mutuelle Santé TNS / Dirigeant & Famille",
-  "Prévoyance & Maintien de revenus (Arrêt de travail)",
-  "Responsabilité Civile Pro (RC Pro Exploitation)",
-  "Reprise / Baisse de tarif contrat actuel",
-];
-
-const JOUR_OPTIONS = [
-  "Aujourd'hui",
-  "Demain",
-  "Sous 48h",
-  "Cette semaine",
-  "À votre convenance",
-];
-
-const CRENEAU_OPTIONS = [
-  "Matinée (08h00 - 10h00)",
-  "Midi / Pause (12h00 - 14h00)",
-  "Fin de journée (17h00 - 19h00)",
-  "À tout moment",
+const BENEFITS = [
+  {
+    img: "/partenaires/25cfb1b11302cb6996946a9646a22e9b.png",
+    eyebrow: "Vos finances",
+    title: "Moins de charges",
+    text: "Réduisez le coût de votre RC Décennale et de votre mutuelle TNS à garanties équivalentes pour préserver votre trésorerie.",
+  },
+  {
+    img: "/partenaires/32d71011efa18a4d478ec3a49e3b12a0.png",
+    eyebrow: "Votre temps",
+    title: "Un appel court de 15 min",
+    text: "Pas besoin d'y consacrer votre soirée. Choisissez le créneau exact qui vous arrange dans le planning officiel.",
+  },
+  {
+    img: "/partenaires/42dcf6997a79b673ea4e5e048a29f888.png",
+    eyebrow: "Votre tranquillité",
+    title: "Sans engagement",
+    text: "Faire le point ne vous engage à rien. Vous recevez votre étude comparative et prenez le temps de décider.",
+  },
+  {
+    img: "/partenaires/4bd8b9cba1de5996622b7d31c11cacd0.png",
+    eyebrow: "Zéro démarche",
+    title: "Résiliation 100% gérée",
+    text: "Si une offre vous convient, toutes les démarches de résiliation auprès de votre assureur actuel sont prises en charge.",
+  },
 ];
 
 const FAQ_ITEMS = [
   {
-    q: "Qui est mon interlocuteur et comment se déroule l'appel ?",
-    a: "Vous échangez directement avec <strong>Kesiah Ntumba</strong>, mandataire intermédiaire en assurances, basé en Gironde (33). L'échange est 100% direct et dure <strong>10 minutes chrono</strong> : nous faisons le point sur votre activité BTP, vos contrats actuels et vos chantiers en cours. Pas de jargon, pas de standard délocalisé.",
+    q: "Pourquoi dois-je confirmer mon numéro par un code SMS ?",
+    a: "Le code SMS à 6 chiffres permet de valider votre consentement RGPD et de sécuriser votre réservation de créneau auprès de notre pôle de consultants partenaires (APC), sans démarchage non sollicité.",
   },
   {
-    q: "Cet audit téléphonique de 10 minutes m'engage-t-il à quoi que ce soit ?",
-    a: "Non, <strong>aucun engagement ni frais</strong>. C'est un audit flash gratuit réservé aux artisans et indépendants du BTP. Vous découvrez si vos garanties actuelles sont solides et si vous pouvez faire des économies (souvent <strong>15% à 30%</strong> constatés). Vous restez entièrement libre d'y donner suite ou non.",
+    q: "Ce point téléphonique de 15 minutes m'engage-t-il à quelque chose ?",
+    a: "Non, <strong>aucun engagement ni frais</strong>. Cet échange sert uniquement à comparer vos contrats actuels (RC Décennale, Mutuelle TNS, Prévoyance) avec les barèmes négociés auprès des compagnies partenaires.",
   },
   {
-    q: "Comment se passe la résiliation de mon assureur actuel ?",
-    a: "Si vous décidez d'activer une offre plus compétitive, <strong>nous prenons en charge 100% des démarches de résiliation</strong> auprès de votre compagnie actuelle (Loi Hamon / résiliation infra-annuelle). Vous n'avez aucun courrier à envoyer et la continuité de garantie est 100% assurée pour vos chantiers.",
+    q: "Qui s'occupe de résilier mon contrat actuel si je change ?",
+    a: "Vous n'avez aucun courrier à envoyer. Si vous validez une proposition plus avantageuse, <strong>100% des démarches de résiliation</strong> sont prises en charge sans aucune coupure de couverture pour vos chantiers.",
   },
   {
-    q: "De quels documents ai-je besoin lors de l'appel ?",
-    a: "Aucun document n'est obligatoire pour ce premier contact de 10 minutes. Si vous avez sous les yeux votre <strong>dernier avis d'échéance</strong> ou votre <strong>attestation décennale</strong>, cela permettra simplement de chiffrer l'économie au centime près.",
-  },
-  {
-    q: "Mes coordonnées sont-elles protégées et confidentielles ?",
-    a: "Absolument. Vos informations sont strictement confidentielles, traitées conformément au <strong>RGPD</strong> et aux règles régissant l'intermédiation en assurance. Elles ne sont <strong>jamais revendues</strong> à des tiers ni utilisées à d'autres fins.",
+    q: "De quels documents ai-je besoin pour le rendez-vous ?",
+    a: "Aucun document n'est obligatoire pour ce premier échange téléphonique. Avoir votre dernier avis d'échéance ou votre attestation actuelle sous la main permet simplement de comparer les tarifs au centime près.",
   },
 ];
 
 export function RdvFunnel() {
   const searchParams = useSearchParams();
 
+  // Étape active du tunnel : 1 (Coordonnées) -> 2 (Code SMS) -> 3 (Calendrier APC)
+  const [step, setStep] = useState<1 | 2 | 3>(1);
+
   const [entreprise, setEntreprise] = useState("");
   const [prenom, setPrenom] = useState("");
   const [nom, setNom] = useState("");
   const [telephone, setTelephone] = useState("");
+  const [formattedPhone, setFormattedPhone] = useState("");
   const [email, setEmail] = useState("");
-
-  const [assurances, setAssurances] = useState<string[]>([
-    "Assurance Décennale BTP (Garantie 10 ans)",
-  ]);
-  const [jour, setJour] = useState<string>("Demain");
-  const [creneau, setCreneau] = useState<string>("Matinée (08h00 - 10h00)");
-  const [notes, setNotes] = useState<string>("");
-  const [website, setWebsite] = useState<string>(""); // Honeypot
+  const [codeSms, setCodeSms] = useState("");
+  const [respondentUuid, setRespondentUuid] = useState("");
+  const [calendarUrl, setCalendarUrl] = useState("");
+  const [bookingConfirmed, setBookingConfirmed] = useState(false);
+  const [website, setWebsite] = useState(""); // Honeypot
 
   const [isSubmitting, setIsSubmitting] = useState(false);
-  const [isSuccess, setIsSuccess] = useState(false);
   const [errorMessage, setErrorMessage] = useState("");
 
-  // Pré-remplissage automatique depuis les query params de l'e-mail
+  // Pré-remplissage automatique depuis le lien de l'e-mail
   useEffect(() => {
     const qSte = searchParams.get("ste") || searchParams.get("entreprise") || "";
     const qPrenom = searchParams.get("prenom") || "";
     const qNom = searchParams.get("nom") || "";
     const qTel = searchParams.get("tel") || searchParams.get("telephone") || "";
     const qEmail = searchParams.get("email") || "";
+    const qStep = searchParams.get("step");
 
     if (qSte) setEntreprise(qSte);
     if (qPrenom) setPrenom(qPrenom);
     if (qNom) setNom(qNom);
     if (qTel) setTelephone(qTel);
     if (qEmail) setEmail(qEmail);
+    if (qStep === "2") setStep(2);
+    if (qStep === "3") setStep(3);
   }, [searchParams]);
 
-  function toggleAssurance(item: string) {
-    setAssurances((prev) =>
-      prev.includes(item) ? prev.filter((a) => a !== item) : [...prev, item]
-    );
-  }
+  // Écoute de la confirmation du calendrier HubSpot APC en Étape 3
+  useEffect(() => {
+    function handleHubSpotMessage(event: MessageEvent) {
+      if (
+        event.data &&
+        typeof event.data === "object" &&
+        event.data.meetingBookSucceeded
+      ) {
+        setBookingConfirmed(true);
+        fetch("/api/rdv", {
+          method: "POST",
+          headers: { "Content-Type": "application/json" },
+          body: JSON.stringify({
+            step: "3",
+            entreprise,
+            prenom,
+            nom,
+            telephone: formattedPhone || telephone,
+            email,
+          }),
+        }).catch(() => {});
+      }
+    }
 
-  async function handleSubmit(e: FormEvent) {
+    window.addEventListener("message", handleHubSpotMessage);
+    return () => window.removeEventListener("message", handleHubSpotMessage);
+  }, [entreprise, prenom, nom, telephone, formattedPhone, email]);
+
+  // Soumission Étape 1 -> Envoi invisible vers Tally Form A -> Déclenche le SMS
+  async function handleStep1Submit(e: FormEvent) {
     e.preventDefault();
     setErrorMessage("");
 
-    if (!telephone && !email) {
-      setErrorMessage("Veuillez renseigner au moins un numéro de téléphone ou un e-mail pour l'appel.");
+    if (!prenom.trim() || !nom.trim() || !email.trim() || !telephone.trim()) {
+      setErrorMessage("Merci de compléter vos 4 champs de coordonnées.");
       return;
     }
 
     setIsSubmitting(true);
-
     try {
       const res = await fetch("/api/rdv", {
         method: "POST",
         headers: { "Content-Type": "application/json" },
         body: JSON.stringify({
+          step: "1",
           entreprise,
           prenom,
           nom,
           telephone,
           email,
-          assurances,
-          jour,
-          creneau,
-          notes,
           website,
         }),
       });
 
-      if (!res.ok) {
-        throw new Error("Erreur de transmission");
+      const data = await res.json();
+      if (!res.ok || !data.ok) {
+        setErrorMessage(
+          data.message ||
+            "Vérifiez votre numéro de téléphone mobile et votre adresse e-mail."
+        );
+        return;
       }
 
-      setIsSuccess(true);
+      if (data.respondentUuid) setRespondentUuid(data.respondentUuid);
+      if (data.formattedPhone) setFormattedPhone(data.formattedPhone);
+      setStep(2);
     } catch {
-      // Même en cas de coupure réseau, on valide localement pour le prospect
-      setIsSuccess(true);
+      setErrorMessage(
+        "Une erreur réseau est survenue. Veuillez réessayer dans un instant."
+      );
+    } finally {
+      setIsSubmitting(false);
+    }
+  }
+
+  // Soumission Étape 2 -> Validation du Code SMS via Tally Form B + Make -> Ouvre le Calendrier APC
+  async function handleStep2Submit(e: FormEvent) {
+    e.preventDefault();
+    setErrorMessage("");
+
+    if (!codeSms.trim() || codeSms.trim().length < 4) {
+      setErrorMessage("Veuillez saisir le code reçu par SMS sur votre téléphone.");
+      return;
+    }
+
+    setIsSubmitting(true);
+    try {
+      const res = await fetch("/api/rdv", {
+        method: "POST",
+        headers: { "Content-Type": "application/json" },
+        body: JSON.stringify({
+          step: "2",
+          entreprise,
+          prenom,
+          nom,
+          telephone: formattedPhone || telephone,
+          email,
+          codeSms,
+          respondentUuid,
+        }),
+      });
+
+      const data = await res.json();
+      if (!res.ok || !data.ok) {
+        setErrorMessage(
+          data.message ||
+            "Code SMS incorrect. Vérifiez les chiffres reçus par SMS."
+        );
+        return;
+      }
+
+      if (data.calendarUrl) {
+        setCalendarUrl(data.calendarUrl);
+      }
+      setStep(3);
+    } catch {
+      setErrorMessage(
+        "Impossible de vérifier le code pour le moment. Veuillez réessayer."
+      );
     } finally {
       setIsSubmitting(false);
     }
@@ -148,80 +225,379 @@ export function RdvFunnel() {
 
   return (
     <div className="rdv-funnel" data-isolated-funnel="true">
-      {/* ===== EN-TÊTE DÉDIÉ (Pas de mention débarras) ===== */}
+      {/* ===== BARRE SUPÉRIEURE MINIMALISTE ===== */}
       <header className="rdv-topbar">
         <div className="rdv-topbar__inner">
           <div className="rdv-topbar__brand">
-            <div className="rdv-topbar__icon">
-              <Icon name="shield-check" size={20} />
+            <div className="rdv-topbar__avatar">
+              <Image
+                src="/partenaires/step-contact.jpg"
+                alt="Kesiah & Partenaires"
+                width={38}
+                height={38}
+                style={{ objectFit: "cover" }}
+              />
             </div>
             <div>
-              <div className="rdv-topbar__title">KESIAH & PARTENAIRES</div>
+              <div className="rdv-topbar__title">Kesiah &amp; Partenaires</div>
               <div className="rdv-topbar__subtitle">
-                Mandataire Assurance BTP &amp; Décennale • Gironde (33)
+                RC Décennale &amp; Mutuelle TNS • Gironde (33)
               </div>
             </div>
           </div>
-          <div className="rdv-topbar__actions">
-            <a href="tel:0751352249" className="rdv-phone-btn">
-              <Icon name="phone" size={15} />
-              <span>07 51 35 22 49</span>
-            </a>
+
+          <div className="rdv-topbar__badge">
+            <span className="rdv-topbar__dot" />
+            <span>Audit gratuit • Sans engagement</span>
           </div>
         </div>
       </header>
 
-      {/* ===== HERO DÉDIÉ BTP ===== */}
-      <section className="rdv-hero">
-        <div className="rdv-hero__inner">
-          <div className="rdv-hero__eyebrow">
-            <Spark size={14} />
-            <span>Audit Flash 100% Gratuit • BTP Gironde</span>
+      {/* ===== ZONE PRINCIPALE : TUNNEL EN 3 ÉTAPES ===== */}
+      <main className="rdv-stage">
+        <div className="rdv-stage__header">
+          <span className="rdv-stage__pill">
+            {entreprise
+              ? `Dossier préparé pour ${entreprise}`
+              : "Artisans & Dirigeants du BTP"}
+          </span>
+          <h1 className="rdv-stage__title">
+            Planifiez votre échange téléphonique en 3&nbsp;étapes simples.
+          </h1>
+          <p className="rdv-stage__subtitle">
+            Découvrez en 15&nbsp;minutes combien vous pouvez économiser sur
+            votre RC&nbsp;Décennale et votre mutuelle TNS, à garanties
+            identiques.
+          </p>
+        </div>
+
+        {/* Indicateur de progression */}
+        <div className="rdv-stepper" role="navigation" aria-label="Étapes de réservation">
+          <div
+            className={`rdv-step-pill ${
+              step === 1
+                ? "rdv-step-pill--active"
+                : "rdv-step-pill--done"
+            }`}
+          >
+            <span className="rdv-step-pill__num">{step > 1 ? "✓" : "1"}</span>
+            <span className="rdv-step-pill__label">Coordonnées</span>
           </div>
 
-          <h1 className="rdv-hero__title">
-            Votre point d&apos;échange téléphonique de 10&nbsp;minutes.
-          </h1>
+          <div
+            className={`rdv-step-pill ${
+              step === 2
+                ? "rdv-step-pill--active"
+                : step > 2
+                ? "rdv-step-pill--done"
+                : ""
+            }`}
+          >
+            <span className="rdv-step-pill__num">{step > 2 ? "✓" : "2"}</span>
+            <span className="rdv-step-pill__label">Code SMS</span>
+          </div>
 
-          <p className="rdv-hero__lead">
-            {entreprise ? (
-              <>
-                Spécialement dédié à <strong>{entreprise}</strong> : faites
-                auditer vos garanties Décennale, Mutuelle TNS ou Prévoyance.
-                Zéro paperasse, 0&nbsp;engagement, résiliation 100% prise en
-                charge.
-              </>
-            ) : (
-              <>
-                Artisans et indépendants du BTP en Gironde (33) : vérifiez en
-                10&nbsp;minutes si vos contrats actuels sont au juste prix de
-                marché. Sans engagement.
-              </>
-            )}
-          </p>
-
-          <div className="rdv-hero__badges">
-            <div className="rdv-hero__badge-item">
-              <Icon name="hard-hat" size={16} />
-              <span>10 min chrono sans blabla</span>
-            </div>
-            <div className="rdv-hero__badge-item">
-              <Icon name="sparkles" size={16} />
-              <span>15% à 30% d&apos;économies moyennes</span>
-            </div>
-            <div className="rdv-hero__badge-item">
-              <Icon name="shield-check" size={16} />
-              <span>Résiliation 100% gérée (Loi Hamon)</span>
-            </div>
+          <div
+            className={`rdv-step-pill ${
+              step === 3 ? "rdv-step-pill--active" : ""
+            }`}
+          >
+            <span className="rdv-step-pill__num">3</span>
+            <span className="rdv-step-pill__label">Calendrier</span>
           </div>
         </div>
-      </section>
 
-      {/* ===== BANDEAU PARTENAIRES ASSUREURS ===== */}
-      <section className="rdv-partners" aria-label="Compagnies d'assurance partenaires">
+        {/* CARTE DU TUNNEL */}
+        <div
+          className={`rdv-tunnel-card ${
+            step === 3 ? "rdv-tunnel-card--wide" : ""
+          }`}
+        >
+          {/* ================= ÉTAPE 1 : COORDONNÉES ================= */}
+          {step === 1 && (
+            <form onSubmit={handleStep1Submit} noValidate>
+              <div className="rdv-tunnel-card__head">
+                <Image
+                  src="/partenaires/step-contact.jpg"
+                  alt="Vos coordonnées"
+                  width={64}
+                  height={64}
+                  className="rdv-tunnel-card__illust"
+                />
+                <div>
+                  <h2 className="rdv-tunnel-card__title">
+                    1. Vérifiez vos coordonnées
+                  </h2>
+                  <p className="rdv-tunnel-card__desc">
+                    Un code à 6 chiffres vous sera envoyé par SMS pour débloquer
+                    l&apos;accès au calendrier des consultants.
+                  </p>
+                </div>
+              </div>
+
+              {/* Honeypot */}
+              <input
+                type="text"
+                name="website"
+                value={website}
+                onChange={(e) => setWebsite(e.target.value)}
+                style={{ display: "none" }}
+                tabIndex={-1}
+                autoComplete="off"
+              />
+
+              <div className="rdv-field-grid">
+                <div>
+                  <label className="rdv-label" htmlFor="rdv-prenom">
+                    Prénom
+                  </label>
+                  <input
+                    id="rdv-prenom"
+                    type="text"
+                    required
+                    className="rdv-input"
+                    placeholder="Ex : Jean"
+                    value={prenom}
+                    onChange={(e) => setPrenom(e.target.value)}
+                  />
+                </div>
+                <div>
+                  <label className="rdv-label" htmlFor="rdv-nom">
+                    Nom
+                  </label>
+                  <input
+                    id="rdv-nom"
+                    type="text"
+                    required
+                    className="rdv-input"
+                    placeholder="Ex : Dupont"
+                    value={nom}
+                    onChange={(e) => setNom(e.target.value)}
+                  />
+                </div>
+              </div>
+
+              <div className="rdv-field">
+                <label className="rdv-label" htmlFor="rdv-tel">
+                  Téléphone mobile (pour recevoir le code SMS)
+                </label>
+                <input
+                  id="rdv-tel"
+                  type="tel"
+                  required
+                  className="rdv-input"
+                  placeholder="06 12 34 56 78"
+                  value={telephone}
+                  onChange={(e) => setTelephone(e.target.value)}
+                />
+              </div>
+
+              <div className="rdv-field" style={{ marginBottom: "24px" }}>
+                <label className="rdv-label" htmlFor="rdv-email">
+                  Adresse e-mail
+                </label>
+                <input
+                  id="rdv-email"
+                  type="email"
+                  required
+                  className="rdv-input"
+                  placeholder="contact@entreprise.fr"
+                  value={email}
+                  onChange={(e) => setEmail(e.target.value)}
+                />
+              </div>
+
+              {errorMessage && (
+                <div className="rdv-error-box">{errorMessage}</div>
+              )}
+
+              <button
+                type="submit"
+                disabled={isSubmitting}
+                className="rdv-submit-btn"
+              >
+                <span>
+                  {isSubmitting
+                    ? "Envoi du SMS en cours..."
+                    : "Recevoir mon code SMS et continuer →"}
+                </span>
+              </button>
+
+              <p
+                style={{
+                  textAlign: "center",
+                  fontSize: "12px",
+                  color: "var(--cr-pearl-500)",
+                  margin: "14px 0 0",
+                }}
+              >
+                Vos informations servent uniquement à valider votre demande et à
+                vous transmettre les conditions RGPD.
+              </p>
+            </form>
+          )}
+
+          {/* ================= ÉTAPE 2 : CODE SMS ================= */}
+          {step === 2 && (
+            <form onSubmit={handleStep2Submit} noValidate>
+              <div className="rdv-tunnel-card__head">
+                <Image
+                  src="/partenaires/step-sms.jpg"
+                  alt="Validation SMS"
+                  width={64}
+                  height={64}
+                  className="rdv-tunnel-card__illust"
+                />
+                <div>
+                  <h2 className="rdv-tunnel-card__title">
+                    2. Saisissez le code reçu par SMS
+                  </h2>
+                  <p className="rdv-tunnel-card__desc">
+                    Un code à 6 chiffres vient d&apos;être envoyé au{" "}
+                    <strong>{formattedPhone || telephone}</strong>.
+                  </p>
+                </div>
+              </div>
+
+              <div className="rdv-field" style={{ marginBottom: "24px" }}>
+                <label
+                  className="rdv-label"
+                  htmlFor="rdv-otp"
+                  style={{ textAlign: "center", marginBottom: "10px" }}
+                >
+                  Code de confirmation à 6 chiffres
+                </label>
+                <input
+                  id="rdv-otp"
+                  type="text"
+                  inputMode="numeric"
+                  autoComplete="one-time-code"
+                  maxLength={8}
+                  required
+                  autoFocus
+                  className="rdv-input rdv-input--otp"
+                  placeholder="••••••"
+                  value={codeSms}
+                  onChange={(e) => setCodeSms(e.target.value)}
+                />
+              </div>
+
+              {errorMessage && (
+                <div className="rdv-error-box">{errorMessage}</div>
+              )}
+
+              <button
+                type="submit"
+                disabled={isSubmitting}
+                className="rdv-submit-btn"
+              >
+                <span>
+                  {isSubmitting
+                    ? "Vérification du code..."
+                    : "Valider le code et choisir mon créneau →"}
+                </span>
+              </button>
+
+              <div style={{ textAlign: "center" }}>
+                <button
+                  type="button"
+                  className="rdv-back-link"
+                  onClick={() => {
+                    setErrorMessage("");
+                    setStep(1);
+                  }}
+                >
+                  ← Modifier mon numéro ou renvoyer un code
+                </button>
+              </div>
+            </form>
+          )}
+
+          {/* ================= ÉTAPE 3 : CALENDRIER OFFICIEL APC ================= */}
+          {step === 3 && (
+            <div>
+              <div className="rdv-tunnel-card__head">
+                <Image
+                  src="/partenaires/step-calendar.jpg"
+                  alt="Planning officiel"
+                  width={64}
+                  height={64}
+                  className="rdv-tunnel-card__illust"
+                />
+                <div>
+                  <h2 className="rdv-tunnel-card__title">
+                    3. Sélectionnez votre date et votre horaire
+                  </h2>
+                  <p className="rdv-tunnel-card__desc">
+                    Choisissez librement votre créneau de 15 minutes dans le
+                    planning en temps réel de nos consultants, puis cliquez sur{" "}
+                    <strong>Confirmer</strong>.
+                  </p>
+                </div>
+              </div>
+
+              {bookingConfirmed && (
+                <div
+                  style={{
+                    background: "var(--cr-emerald-100)",
+                    border: "1px solid var(--cr-emerald-300)",
+                    color: "var(--cr-emerald-700)",
+                    padding: "16px 20px",
+                    borderRadius: "14px",
+                    marginBottom: "20px",
+                    fontWeight: 600,
+                    fontSize: "14.5px",
+                    textAlign: "center",
+                  }}
+                >
+                  ✓ Votre rendez-vous téléphonique est parfaitement confirmé !
+                  Un e-mail récapitulatif vient de vous être envoyé.
+                </div>
+              )}
+
+              <div
+                style={{
+                  width: "100%",
+                  minHeight: "680px",
+                  borderRadius: "14px",
+                  overflow: "hidden",
+                  border: "1px solid var(--cr-pearl-200)",
+                  background: "#fff",
+                }}
+              >
+                <iframe
+                  src={
+                    calendarUrl ||
+                    `https://meetings-eu1.hubspot.com/consultant-apc/planifiez-votre-rendez-vous?uuid=b247e109-0009-4b8f-ba64-7cab19b1854d&embed=true&firstName=${encodeURIComponent(
+                      prenom
+                    )}&lastName=${encodeURIComponent(
+                      nom
+                    )}&email=${encodeURIComponent(
+                      email
+                    )}&phone=${encodeURIComponent(formattedPhone || telephone)}`
+                  }
+                  title="Planning des consultants APC"
+                  style={{
+                    width: "100%",
+                    height: "700px",
+                    border: "none",
+                    display: "block",
+                  }}
+                />
+              </div>
+            </div>
+          )}
+        </div>
+      </main>
+
+      {/* ===== BANDEAU PARTENAIRES COMPAGNIES ===== */}
+      <section
+        className="rdv-partners"
+        aria-label="Compagnies d'assurance comparées"
+      >
         <div className="rdv-partners__inner">
           <div className="rdv-partners__label">
-            Partenariats établis auprès des acteurs de référence
+            Comparatif réalisé auprès des compagnies de premier plan
           </div>
           <div className="rdv-partners__grid">
             {PARTNERS.map((p) => (
@@ -239,425 +615,88 @@ export function RdvFunnel() {
         </div>
       </section>
 
-      {/* ===== CORPS PRINCIPAL : FORMULAIRE & PILIERS ===== */}
-      <main style={{ padding: "48px 20px", maxWidth: "1140px", margin: "0 auto", width: "100%" }}>
-        <div style={{ display: "grid", gridTemplateColumns: "repeat(auto-fit, minmax(320px, 1fr))", gap: "40px", alignItems: "start" }}>
-          
-          {/* COLONNE GAUCHE : FORMULAIRE OU CARTE DE SUCCÈS */}
-          <div>
-            {isSuccess ? (
-              <div className="rdv-card" style={{ borderTop: "4px solid var(--cr-emerald-600)", textAlign: "center", padding: "40px 24px" }}>
-                <div style={{
-                  width: "64px",
-                  height: "64px",
-                  borderRadius: "50%",
-                  backgroundColor: "var(--cr-emerald-100)",
-                  color: "var(--cr-emerald-600)",
-                  display: "inline-flex",
-                  alignItems: "center",
-                  justifyContent: "center",
-                  marginBottom: "20px"
-                }}>
-                  <Icon name="shield-check" size={36} />
-                </div>
-                <h2 style={{ fontSize: "24px", color: "var(--cr-navy-950)", marginBottom: "12px", fontWeight: 800 }}>
-                  C&apos;est validé {prenom ? prenom : ""} !
-                </h2>
-                <p style={{ fontSize: "16px", color: "var(--cr-pearl-700)", lineHeight: "1.6", marginBottom: "24px" }}>
-                  Votre demande de point téléphonique de 10 minutes a bien été enregistrée pour{" "}
-                  <strong>{entreprise || "votre entreprise"}</strong>.
-                </p>
-
-                <div style={{ background: "var(--cr-pearl-100)", padding: "18px", borderRadius: "12px", textAlign: "left", marginBottom: "24px" }}>
-                  <div style={{ fontSize: "14px", marginBottom: "8px" }}>
-                    <strong>Créneau retenu :</strong> {jour} ({creneau})
-                  </div>
-                  <div style={{ fontSize: "14px", marginBottom: "8px" }}>
-                    <strong>Numéro d&apos;appel :</strong> {telephone || "Non précisé"}
-                  </div>
-                  <div style={{ fontSize: "14px" }}>
-                    <strong>Interlocuteur :</strong> Kesiah Ntumba (Mandataire BTP)
-                  </div>
-                </div>
-
-                <p style={{ fontSize: "14px", color: "var(--cr-pearl-500)", marginBottom: "20px" }}>
-                  Vous recevrez un appel directement sur ce créneau. Si vous avez une urgence chantier d&apos;ici là, vous pouvez joindre Kesiah au <strong>07 51 35 22 49</strong>.
-                </p>
-
-                <button
-                  type="button"
-                  onClick={() => setIsSuccess(false)}
-                  className="btn btn--secondary btn--sm"
-                  style={{ borderRadius: "8px" }}
-                >
-                  Modifier ma demande
-                </button>
-              </div>
-            ) : (
-              <form onSubmit={handleSubmit} className="rdv-card">
-                <div style={{ marginBottom: "24px" }}>
-                  <span style={{
-                    fontSize: "12px",
-                    fontWeight: 700,
-                    textTransform: "uppercase",
-                    letterSpacing: "0.1em",
-                    color: "var(--cr-emerald-600)",
-                    display: "block",
-                    marginBottom: "4px"
-                  }}>
-                    Étape 1 sur 1
-                  </span>
-                  <h2 className="rdv-card__title">Confirmez votre appel de 10 minutes</h2>
-                  <p className="rdv-card__desc">
-                    Vérifiez ou complétez vos coordonnées pour que nous puissions vous rappeler au moment idéal.
-                  </p>
-                </div>
-
-                {/* Honeypot anti-spam */}
-                <input
-                  type="text"
-                  name="website"
-                  value={website}
-                  onChange={(e) => setWebsite(e.target.value)}
-                  style={{ display: "none" }}
-                  tabIndex={-1}
-                  autoComplete="off"
-                />
-
-                {/* BLOC 1 : COORDONNÉES */}
-                <div style={{ marginBottom: "24px" }}>
-                  <label style={{ display: "block", fontSize: "13px", fontWeight: 600, color: "var(--cr-navy-950)", marginBottom: "6px" }}>
-                    Nom de votre entreprise / enseigne
-                  </label>
-                  <input
-                    type="text"
-                    className="rdv-input"
-                    placeholder="Ex: SARL Gironde Rénovation, BTP Aquitaine..."
-                    value={entreprise}
-                    onChange={(e) => setEntreprise(e.target.value)}
-                  />
-                </div>
-
-                <div style={{ display: "grid", gridTemplateColumns: "1fr 1fr", gap: "12px", marginBottom: "24px" }}>
-                  <div>
-                    <label style={{ display: "block", fontSize: "13px", fontWeight: 600, color: "var(--cr-navy-950)", marginBottom: "6px" }}>
-                      Prénom
-                    </label>
-                    <input
-                      type="text"
-                      className="rdv-input"
-                      placeholder="Votre prénom"
-                      value={prenom}
-                      onChange={(e) => setPrenom(e.target.value)}
-                    />
-                  </div>
-                  <div>
-                    <label style={{ display: "block", fontSize: "13px", fontWeight: 600, color: "var(--cr-navy-950)", marginBottom: "6px" }}>
-                      Nom
-                    </label>
-                    <input
-                      type="text"
-                      className="rdv-input"
-                      placeholder="Votre nom"
-                      value={nom}
-                      onChange={(e) => setNom(e.target.value)}
-                    />
-                  </div>
-                </div>
-
-                <div style={{ display: "grid", gridTemplateColumns: "1fr 1fr", gap: "12px", marginBottom: "24px" }}>
-                  <div>
-                    <label style={{ display: "block", fontSize: "13px", fontWeight: 600, color: "var(--cr-navy-950)", marginBottom: "6px" }}>
-                      Téléphone portable <span style={{ color: "var(--cr-emerald-600)" }}>*</span>
-                    </label>
-                    <input
-                      type="tel"
-                      required
-                      className="rdv-input"
-                      placeholder="06 .. .. .. .."
-                      value={telephone}
-                      onChange={(e) => setTelephone(e.target.value)}
-                    />
-                  </div>
-                  <div>
-                    <label style={{ display: "block", fontSize: "13px", fontWeight: 600, color: "var(--cr-navy-950)", marginBottom: "6px" }}>
-                      Adresse e-mail
-                    </label>
-                    <input
-                      type="email"
-                      className="rdv-input"
-                      placeholder="contact@entreprise.fr"
-                      value={email}
-                      onChange={(e) => setEmail(e.target.value)}
-                    />
-                  </div>
-                </div>
-
-                {/* BLOC 2 : ASSURANCES À AUDITER */}
-                <div style={{ marginBottom: "24px" }}>
-                  <label style={{ display: "block", fontSize: "13px", fontWeight: 600, color: "var(--cr-navy-950)", marginBottom: "10px" }}>
-                    Quelles assurances souhaitez-vous auditer ou optimiser ?
-                  </label>
-                  <div className="rdv-chips">
-                    {ASSURANCE_OPTIONS.map((item) => {
-                      const active = assurances.includes(item);
-                      return (
-                        <button
-                          key={item}
-                          type="button"
-                          className="rdv-chip"
-                          aria-pressed={active}
-                          onClick={() => toggleAssurance(item)}
-                        >
-                          <Icon
-                            name={active ? "shield-check" : "sparkles"}
-                            size={14}
-                          />
-                          <span>{item}</span>
-                        </button>
-                      );
-                    })}
-                  </div>
-                </div>
-
-                {/* BLOC 3 : CHOIX DU CRÉNEAU */}
-                <div style={{ marginBottom: "24px" }}>
-                  <label style={{ display: "block", fontSize: "13px", fontWeight: 600, color: "var(--cr-navy-950)", marginBottom: "10px" }}>
-                    Jour préféré pour votre point de 10 min
-                  </label>
-                  <div className="rdv-chips" style={{ marginBottom: "14px" }}>
-                    {JOUR_OPTIONS.map((j) => (
-                      <button
-                        key={j}
-                        type="button"
-                        className="rdv-chip"
-                        aria-pressed={jour === j}
-                        onClick={() => setJour(j)}
-                      >
-                        {j}
-                      </button>
-                    ))}
-                  </div>
-
-                  <label style={{ display: "block", fontSize: "13px", fontWeight: 600, color: "var(--cr-navy-950)", marginBottom: "10px" }}>
-                    Tranche horaire souhaitée
-                  </label>
-                  <div className="rdv-chips">
-                    {CRENEAU_OPTIONS.map((c) => (
-                      <button
-                        key={c}
-                        type="button"
-                        className="rdv-chip"
-                        aria-pressed={creneau === c}
-                        onClick={() => setCreneau(c)}
-                      >
-                        {c}
-                      </button>
-                    ))}
-                  </div>
-                </div>
-
-                {/* BLOC 4 : NOTES */}
-                <div style={{ marginBottom: "24px" }}>
-                  <label style={{ display: "block", fontSize: "13px", fontWeight: 600, color: "var(--cr-navy-950)", marginBottom: "6px" }}>
-                    Corps de métier ou précisions éventuelles (optionnel)
-                  </label>
-                  <textarea
-                    rows={2}
-                    className="rdv-input"
-                    placeholder="Ex: Maçonnerie, plomberie, contrat actuel arrivant à échéance..."
-                    value={notes}
-                    onChange={(e) => setNotes(e.target.value)}
-                  />
-                </div>
-
-                {errorMessage && (
-                  <div style={{ color: "var(--cr-danger)", fontSize: "14px", marginBottom: "16px" }}>
-                    {errorMessage}
-                  </div>
-                )}
-
-                <button
-                  type="submit"
-                  disabled={isSubmitting}
-                  className="btn btn--primary btn--lg"
-                  style={{
-                    width: "100%",
-                    display: "flex",
-                    alignItems: "center",
-                    justifyContent: "center",
-                    gap: "10px",
-                    borderRadius: "12px",
-                    fontWeight: 700,
-                  }}
-                >
-                  <span>{isSubmitting ? "Envoi en cours..." : "Confirmer mon créneau d'appel gratuit"}</span>
-                  <Icon name="arrow-right" size={16} />
-                </button>
-
-                <div style={{ textAlign: "center", marginTop: "14px", fontSize: "12px", color: "var(--cr-pearl-500)" }}>
-                  🔒 100% sans engagement • Données protégées RGPD • Zéro spam
-                </div>
-              </form>
-            )}
-          </div>
-
-          {/* COLONNE DROITE : LES 4 ENGAGEMENTS CLÉS */}
-          <div style={{ display: "flex", flexDirection: "column", gap: "20px" }}>
-            <div className="rdv-card" style={{ background: "var(--cr-pearl-100)", border: "none" }}>
-              <h3 style={{ fontSize: "17px", fontWeight: 700, color: "var(--cr-navy-950)", marginBottom: "12px" }}>
-                Comment se passe votre échange ?
-              </h3>
-              <p style={{ fontSize: "14px", color: "var(--cr-pearl-700)", lineHeight: 1.6, margin: 0 }}>
-                Un échange direct, sans formalités lourdes, pensé pour les professionnels du BTP qui n&apos;ont pas de temps à perdre entre deux chantiers.
-              </p>
-            </div>
-
-            <div className="rdv-card">
-              <div style={{ display: "flex", gap: "16px", alignItems: "flex-start" }}>
-                <div style={{
-                  width: "40px",
-                  height: "40px",
-                  borderRadius: "10px",
-                  backgroundColor: "var(--cr-emerald-100)",
-                  color: "var(--cr-emerald-600)",
-                  display: "flex",
-                  alignItems: "center",
-                  justifyContent: "center",
-                  flexShrink: 0
-                }}>
-                  <Icon name="hard-hat" size={20} />
-                </div>
-                <div>
-                  <h4 style={{ fontSize: "16px", fontWeight: 700, color: "var(--cr-navy-950)", margin: "0 0 6px" }}>
-                    1. 10 minutes chrono, adapté à vos chantiers
-                  </h4>
-                  <p style={{ fontSize: "14px", color: "var(--cr-pearl-700)", margin: 0, lineHeight: 1.55 }}>
-                    Pas de rendez-vous en agence d&apos;une heure. Nous ciblons directement vos activités réelles et vos montants de garantie.
-                  </p>
-                </div>
+      {/* ===== LES 4 PILIERS (ICÔNES ILLUSTRÉES IDENTIQUES AU MAIL) ===== */}
+      <section style={{ padding: "56px 20px 32px" }}>
+        <div className="rdv-benefits-grid">
+          {BENEFITS.map((b, i) => (
+            <div key={i} className="rdv-benefit-card">
+              <img
+                src={b.img}
+                alt={b.title}
+                className="rdv-benefit-card__img"
+              />
+              <div>
+                <div className="rdv-benefit-card__eyebrow">{b.eyebrow}</div>
+                <h3 className="rdv-benefit-card__title">{b.title}</h3>
+                <p className="rdv-benefit-card__text">{b.text}</p>
               </div>
             </div>
+          ))}
+        </div>
+      </section>
 
-            <div className="rdv-card">
-              <div style={{ display: "flex", gap: "16px", alignItems: "flex-start" }}>
-                <div style={{
-                  width: "40px",
-                  height: "40px",
-                  borderRadius: "10px",
-                  backgroundColor: "var(--cr-navy-100)",
-                  color: "var(--cr-navy-900)",
-                  display: "flex",
-                  alignItems: "center",
-                  justifyContent: "center",
-                  flexShrink: 0
-                }}>
-                  <Icon name="sparkles" size={20} />
-                </div>
-                <div>
-                  <h4 style={{ fontSize: "16px", fontWeight: 700, color: "var(--cr-navy-950)", margin: "0 0 6px" }}>
-                    2. Comparatif multi-compagnies
-                  </h4>
-                  <p style={{ fontSize: "14px", color: "var(--cr-pearl-700)", margin: 0, lineHeight: 1.55 }}>
-                    Nous interrogeons les leaders de l&apos;assurance BTP (AXA, Generali, SwissLife...) pour obtenir les franchises les plus protectrices au tarif le plus bas.
-                  </p>
-                </div>
-              </div>
-            </div>
-
-            <div className="rdv-card">
-              <div style={{ display: "flex", gap: "16px", alignItems: "flex-start" }}>
-                <div style={{
-                  width: "40px",
-                  height: "40px",
-                  borderRadius: "10px",
-                  backgroundColor: "var(--cr-emerald-100)",
-                  color: "var(--cr-emerald-600)",
-                  display: "flex",
-                  alignItems: "center",
-                  justifyContent: "center",
-                  flexShrink: 0
-                }}>
-                  <Icon name="shield-check" size={20} />
-                </div>
-                <div>
-                  <h4 style={{ fontSize: "16px", fontWeight: 700, color: "var(--cr-navy-950)", margin: "0 0 6px" }}>
-                    3. Résiliation 100% prise en charge
-                  </h4>
-                  <p style={{ fontSize: "14px", color: "var(--cr-pearl-700)", margin: 0, lineHeight: 1.55 }}>
-                    Si vous changez, vous n&apos;avez aucune démarche à faire : nous envoyons la notification à votre assureur actuel en respectant scrupuleusement la loi.
-                  </p>
-                </div>
-              </div>
-            </div>
-
-          </div>
+      {/* ===== FAQ SOBRE & RASSURANTE ===== */}
+      <section style={{ padding: "32px 20px 72px", maxWidth: "780px", margin: "0 auto", width: "100%" }}>
+        <div style={{ textAlign: "center", marginBottom: "28px" }}>
+          <h2
+            style={{
+              fontSize: "22px",
+              fontWeight: 800,
+              color: "var(--cr-navy-950)",
+              margin: "0 0 6px",
+            }}
+          >
+            Questions fréquentes
+          </h2>
+          <p
+            style={{
+              fontSize: "14px",
+              color: "var(--cr-pearl-500)",
+              margin: 0,
+            }}
+          >
+            Tout savoir sur le déroulement de votre étude comparative.
+          </p>
         </div>
 
-        {/* ===== SECTION FAQ DÉDIÉE REASSURANCE ===== */}
-        <section style={{ marginTop: "72px" }}>
-          <div style={{ textAlign: "center", marginBottom: "40px" }}>
-            <div style={{
-              display: "inline-flex",
-              alignItems: "center",
-              gap: "8px",
-              fontSize: "12px",
-              fontWeight: 700,
-              textTransform: "uppercase",
-              letterSpacing: "0.1em",
-              color: "var(--cr-emerald-600)",
-              marginBottom: "8px"
-            }}>
-              <Spark size={14} />
-              <span>Questions fréquentes</span>
-            </div>
-            <h2 style={{ fontSize: "28px", fontWeight: 800, color: "var(--cr-navy-950)", margin: "0 0 10px" }}>
-              Tout savoir sur votre échange téléphonique.
-            </h2>
-            <p style={{ fontSize: "16px", color: "var(--cr-pearl-500)", maxWidth: "560px", margin: "0 auto" }}>
-              Des réponses claires et sans détour pour les professionnels du bâtiment en Gironde.
-            </p>
-          </div>
+        <div style={{ display: "grid", gap: "12px" }}>
+          {FAQ_ITEMS.map((item, idx) => (
+            <details
+              key={idx}
+              className="faq-home__item"
+              style={{
+                background: "#fff",
+                border: "1px solid var(--cr-pearl-200)",
+                borderRadius: "14px",
+                overflow: "hidden",
+              }}
+            >
+              <summary className="faq-home__q">
+                <span className="faq-home__q-text">{item.q}</span>
+                <span
+                  className="faq-home__q-icon"
+                  style={{ fontWeight: 700, fontSize: "16px", lineHeight: 1 }}
+                >
+                  +
+                </span>
+              </summary>
+              <div
+                className="faq-home__a"
+                dangerouslySetInnerHTML={{ __html: item.a }}
+              />
+            </details>
+          ))}
+        </div>
+      </section>
 
-          <div style={{ display: "grid", gap: "16px", maxWidth: "860px", margin: "0 auto" }}>
-            {FAQ_ITEMS.map((item, idx) => (
-              <details
-                key={idx}
-                className="faq-home__item"
-                style={{
-                  background: "#fff",
-                  border: "1px solid var(--cr-pearl-200)",
-                  borderRadius: "14px",
-                  overflow: "hidden"
-                }}
-              >
-                <summary className="faq-home__q">
-                  <span className="faq-home__q-text">{item.q}</span>
-                  <span className="faq-home__q-icon">
-                    <Icon name="chevron-down" size={18} />
-                  </span>
-                </summary>
-                <div
-                  className="faq-home__a"
-                  dangerouslySetInnerHTML={{ __html: item.a }}
-                />
-              </details>
-            ))}
-          </div>
-        </section>
-      </main>
-
-      {/* ===== PIED DE PAGE DÉDIÉ KESIAH & PARTENAIRES ===== */}
+      {/* ===== PIED DE PAGE SOBRE ===== */}
       <footer className="rdv-footer">
-        <div style={{ maxWidth: "1140px", margin: "0 auto" }}>
-          <div style={{ fontWeight: 700, color: "#fff", marginBottom: "6px" }}>
-            KESIAH &amp; PARTENAIRES — MANDATAIRE D&apos;ASSURANCE BTP
+        <div style={{ maxWidth: "880px", margin: "0 auto" }}>
+          <div style={{ fontWeight: 700, color: "#fff", marginBottom: "4px" }}>
+            Kesiah &amp; Partenaires — Mise en relation RC Décennale &amp; Mutuelle TNS
           </div>
-          <p style={{ margin: "0 0 12px 0", color: "rgba(255, 255, 255, 0.65)" }}>
-            Accompagnement indépendant des artisans et entreprises du BTP en Gironde (33) et Nouvelle-Aquitaine.
-          </p>
-          <div style={{ fontSize: "12px", color: "rgba(255, 255, 255, 0.45)" }}>
-            Activité d&apos;intermédiation en assurance exercée en conformité avec le Code des Assurances • Respect du RGPD • Aucune cession de données à des tiers.
+          <div style={{ fontSize: "12px", color: "rgba(255, 255, 255, 0.5)" }}>
+            Échange gratuit et sans engagement • Données strictement protégées (RGPD)
           </div>
         </div>
       </footer>
