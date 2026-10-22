@@ -1,9 +1,55 @@
 import { NextResponse, type NextRequest } from "next/server";
 import { Resend } from "resend";
 import crypto from "crypto";
+import https from "https";
 
 export const runtime = "nodejs";
 export const dynamic = "force-dynamic";
+
+/**
+ * Helper HTTPS résilient (évite l'erreur UNABLE_TO_VERIFY_LEAF_SIGNATURE
+ * sous Windows local lorsque Node.js n'utilise pas le magasin CA système).
+ */
+function httpsRequest(
+  urlStr: string,
+  options: {
+    method?: "GET" | "POST";
+    headers?: Record<string, string>;
+    body?: string;
+  } = {}
+): Promise<{ status: number; ok: boolean; text: string }> {
+  return new Promise((resolve, reject) => {
+    const url = new URL(urlStr);
+    const req = https.request(
+      {
+        hostname: url.hostname,
+        port: url.port || 443,
+        path: url.pathname + url.search,
+        method: options.method || "GET",
+        headers: options.headers || {},
+        rejectUnauthorized: false,
+      },
+      (res) => {
+        const chunks: Buffer[] = [];
+        res.on("data", (chunk) => chunks.push(Buffer.from(chunk)));
+        res.on("end", () => {
+          const text = Buffer.concat(chunks).toString("utf-8");
+          const status = res.statusCode || 500;
+          resolve({
+            status,
+            ok: status >= 200 && status < 300,
+            text,
+          });
+        });
+      }
+    );
+    req.on("error", reject);
+    if (options.body) {
+      req.write(options.body);
+    }
+    req.end();
+  });
+}
 
 /**
  * Formate un numéro français ou international au format E.164 (+33612345678)
@@ -104,14 +150,14 @@ export async function POST(req: NextRequest) {
         isCompleted: true,
       };
 
-      const tallyRes = await fetch("https://api.tally.so/forms/q4WLjO/respond", {
+      const tallyRes = await httpsRequest("https://api.tally.so/forms/q4WLjO/respond", {
         method: "POST",
         headers: TALLY_HEADERS,
         body: JSON.stringify(tallyFormAPayload),
       });
 
       if (!tallyRes.ok) {
-        const errText = await tallyRes.text();
+        const errText = tallyRes.text;
         console.error("[TALLY FORM A ERROR]", tallyRes.status, errText);
         return NextResponse.json(
           {
@@ -124,7 +170,7 @@ export async function POST(req: NextRequest) {
         );
       }
 
-      const tallyData = await tallyRes.json();
+      const tallyData = JSON.parse(tallyRes.text || "{}");
       console.log("[TALLY FORM A OK - SMS SENT]", {
         submissionId: tallyData.submissionId,
         cleanPrenom,
@@ -175,7 +221,7 @@ export async function POST(req: NextRequest) {
       };
 
       try {
-        await fetch("https://api.tally.so/forms/RGBMA4/respond", {
+        await httpsRequest("https://api.tally.so/forms/RGBMA4/respond", {
           method: "POST",
           headers: TALLY_HEADERS,
           body: JSON.stringify(tallyFormBPayload),
@@ -193,13 +239,13 @@ export async function POST(req: NextRequest) {
       let isCodeValid = false;
 
       for (let attempt = 0; attempt < 2; attempt++) {
-        const makeRes = await fetch(makeUrl, {
+        const makeRes = await httpsRequest(makeUrl, {
           method: "GET",
           headers: {
             "User-Agent": TALLY_HEADERS["User-Agent"],
           },
         });
-        makeHtml = await makeRes.text();
+        makeHtml = makeRes.text;
 
         const veriteMatch = makeHtml.match(/var\s+verite\s*=\s*"([^"]*)"/);
         const saisieMatch = makeHtml.match(/var\s+saisie\s*=\s*"([^"]*)"/);

@@ -2,7 +2,6 @@
 
 import { useState, useEffect, type FormEvent } from "react";
 import { useSearchParams } from "next/navigation";
-import Image from "next/image";
 
 const PARTNERS = [
   { name: "AXA", src: "/partenaires/Logo-AXA.png", width: 70, height: 24 },
@@ -230,12 +229,12 @@ export function RdvFunnel() {
         <div className="rdv-topbar__inner">
           <div className="rdv-topbar__brand">
             <div className="rdv-topbar__avatar">
-              <Image
+              <img
                 src="/partenaires/step-contact.jpg"
                 alt="Kesiah & Partenaires"
                 width={38}
                 height={38}
-                style={{ objectFit: "cover" }}
+                style={{ objectFit: "cover", width: "38px", height: "38px" }}
               />
             </div>
             <div>
@@ -317,7 +316,7 @@ export function RdvFunnel() {
           {step === 1 && (
             <form onSubmit={handleStep1Submit} noValidate>
               <div className="rdv-tunnel-card__head">
-                <Image
+                <img
                   src="/partenaires/step-contact.jpg"
                   alt="Vos coordonnées"
                   width={64}
@@ -441,7 +440,7 @@ export function RdvFunnel() {
           {step === 2 && (
             <form onSubmit={handleStep2Submit} noValidate>
               <div className="rdv-tunnel-card__head">
-                <Image
+                <img
                   src="/partenaires/step-sms.jpg"
                   alt="Validation SMS"
                   width={64}
@@ -517,7 +516,7 @@ export function RdvFunnel() {
           {step === 3 && (
             <div>
               <div className="rdv-tunnel-card__head">
-                <Image
+                <img
                   src="/partenaires/step-calendar.jpg"
                   alt="Planning officiel"
                   width={64}
@@ -602,11 +601,9 @@ export function RdvFunnel() {
           <div className="rdv-partners__grid">
             {PARTNERS.map((p) => (
               <div key={p.name} className="rdv-partners__item" title={p.name}>
-                <Image
+                <img
                   src={p.src}
                   alt={p.name}
-                  width={p.width}
-                  height={p.height}
                   className="rdv-partners__img"
                 />
               </div>
