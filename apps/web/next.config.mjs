@@ -14,6 +14,14 @@ const nextConfig = {
   experimental: {
     optimizePackageImports: ["lucide-react"],
   },
+  async rewrites() {
+    return [
+      {
+        source: "/rdv/:id",
+        destination: "/rdv?id=:id",
+      },
+    ];
+  },
   async headers() {
     return [
       {
