@@ -101,7 +101,7 @@ export default function sitemap(): MetadataRoute.Sitemap {
 
     // ── Rendez-vous BTP / Audit Assurances ────────────────────
     {
-      url: `${base}/rdv`,
+      url: `${base}/rendez-vous-rcd-decennale-mutuelle`,
       lastModified: now,
       changeFrequency: "weekly",
       priority: 0.9,

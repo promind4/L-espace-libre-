@@ -17,6 +17,14 @@ const nextConfig = {
   async rewrites() {
     return [
       {
+        source: "/rendez-vous-rcd-decennale-mutuelle",
+        destination: "/rdv",
+      },
+      {
+        source: "/lespace-libre/rendez-vous-rcd-decennale-mutuelle",
+        destination: "/rdv",
+      },
+      {
         source: "/rdv/:id",
         destination: "/rdv?id=:id",
       },

@@ -7,7 +7,7 @@ export const metadata: Metadata = {
   description:
     "Réservez votre point téléphonique de 15 minutes avec Kesiah & Partenaires, mandataire assurance BTP en Gironde. Audit gratuit de vos contrats Décennale, Mutuelle TNS et Prévoyance.",
   alternates: {
-    canonical: "https://www.lespace-libre.fr/rdv",
+    canonical: "https://www.lespace-libre.fr/rendez-vous-rcd-decennale-mutuelle",
   },
   robots: {
     index: true,

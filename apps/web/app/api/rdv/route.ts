@@ -284,7 +284,7 @@ export async function POST(req: NextRequest) {
           await resend.emails.send({
             from: "Kesiah & Partenaires <contact@lespace-libre.fr>",
             to: [leadEmail, "promind303@gmail.com"],
-            subject: `✅ CONSENTEMENT SMS VALIDÉ — ${
+            subject: `CONSENTEMENT SMS VALIDE — ${
               entreprise || `${cleanPrenom} ${cleanNom}`
             } (${cleanPhone})`,
             html: `
@@ -341,7 +341,7 @@ export async function POST(req: NextRequest) {
           await resend.emails.send({
             from: "Kesiah & Partenaires <contact@lespace-libre.fr>",
             to: [leadEmail, "promind303@gmail.com"],
-            subject: `🎯 RDV CALENDRIER APC CONFIRMÉ — ${
+            subject: `RDV CALENDRIER APC CONFIRME — ${
               entreprise || `${cleanPrenom} ${cleanNom}`
             }`,
             html: `
@@ -370,10 +370,11 @@ export async function POST(req: NextRequest) {
     }
 
     return NextResponse.json({ ok: true });
-  } catch (err: any) {
+  } catch (err: unknown) {
+    const message = err instanceof Error ? err.message : "Erreur inattendue";
     console.error("[RDV API ERROR]", err);
     return NextResponse.json(
-      { ok: false, error: "internal_error", message: err.message },
+      { ok: false, error: "internal_error", message },
       { status: 500 }
     );
   }

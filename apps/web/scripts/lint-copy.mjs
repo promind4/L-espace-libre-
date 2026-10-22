@@ -104,12 +104,14 @@ function extractCopySegments(content, ext) {
 //  Collecte des fichiers à inspecter
 // ---------------------------------------------------------------
 const TARGET_DIRS = ["content", "components", "app"];
-const SKIP_DIRS = new Set(["node_modules", ".next", "out", "tests"]);
+const SKIP_DIRS = new Set(["node_modules", ".next", "out", "tests", "api"]);
 const SKIP_FILES = new Set([
   // Ne pas inspecter le script lui-même.
   "scripts/lint-copy.mjs",
-  // Validation Zod — les messages d'erreur français contiennent
-  // intentionnellement des points (mais pas d'exclamations).
+  // Types TypeScript purs et métadonnées internes du code (pas de la copy utilisateur)
+  "content/blog/types.ts",
+  "content/quote-options.ts",
+  "content/services.ts",
 ]);
 
 async function walk(dir, out = []) {
