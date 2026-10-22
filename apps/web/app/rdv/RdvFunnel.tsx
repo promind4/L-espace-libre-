@@ -53,10 +53,6 @@ const FAQ_ITEMS = [
     q: "Qui s'occupe de résilier mon contrat actuel si je change ?",
     a: "Vous n'avez aucun courrier à envoyer. Si vous validez une proposition plus avantageuse, <strong>100% des démarches de résiliation</strong> sont prises en charge sans aucune coupure de couverture pour vos chantiers.",
   },
-  {
-    q: "De quels documents ai-je besoin pour le rendez-vous ?",
-    a: "Aucun document n'est obligatoire pour ce premier échange téléphonique. Avoir votre dernier avis d'échéance ou votre attestation actuelle sous la main permet simplement de comparer les tarifs au centime près.",
-  },
 ];
 
 export function RdvFunnel() {
@@ -251,6 +247,29 @@ export function RdvFunnel() {
           </div>
         </div>
       </header>
+
+      {/* ===== BANDEAU PARTENAIRES COMPAGNIES (Juste sous le header) ===== */}
+      <section
+        className="rdv-partners"
+        aria-label="Compagnies d'assurance comparées"
+      >
+        <div className="rdv-partners__inner">
+          <div className="rdv-partners__label">
+            Comparatif réalisé auprès des compagnies de premier plan
+          </div>
+          <div className="rdv-partners__grid">
+            {PARTNERS.map((p) => (
+              <div key={p.name} className="rdv-partners__item" title={p.name}>
+                <img
+                  src={p.src}
+                  alt={p.name}
+                  className="rdv-partners__img"
+                />
+              </div>
+            ))}
+          </div>
+        </div>
+      </section>
 
       {/* ===== ZONE PRINCIPALE : TUNNEL EN 3 ÉTAPES ===== */}
       <main className="rdv-stage">
@@ -588,29 +607,6 @@ export function RdvFunnel() {
           )}
         </div>
       </main>
-
-      {/* ===== BANDEAU PARTENAIRES COMPAGNIES ===== */}
-      <section
-        className="rdv-partners"
-        aria-label="Compagnies d'assurance comparées"
-      >
-        <div className="rdv-partners__inner">
-          <div className="rdv-partners__label">
-            Comparatif réalisé auprès des compagnies de premier plan
-          </div>
-          <div className="rdv-partners__grid">
-            {PARTNERS.map((p) => (
-              <div key={p.name} className="rdv-partners__item" title={p.name}>
-                <img
-                  src={p.src}
-                  alt={p.name}
-                  className="rdv-partners__img"
-                />
-              </div>
-            ))}
-          </div>
-        </div>
-      </section>
 
       {/* ===== LES 4 PILIERS (ICÔNES ILLUSTRÉES IDENTIQUES AU MAIL) ===== */}
       <section style={{ padding: "56px 20px 32px" }}>

@@ -99,6 +99,14 @@ export default function sitemap(): MetadataRoute.Sitemap {
       priority: 0.9,
     },
 
+    // ── Rendez-vous BTP / Audit Assurances ────────────────────
+    {
+      url: `${base}/rdv`,
+      lastModified: now,
+      changeFrequency: "weekly",
+      priority: 0.9,
+    },
+
     // NB : /a-propos et /espace-pro sont masquées (Phase 1, contenu
     //      placeholder) — noindex posé sur chaque page, exclues du sitemap.
   ];

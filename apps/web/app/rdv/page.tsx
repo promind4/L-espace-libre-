@@ -3,12 +3,19 @@ import type { Metadata } from "next";
 import { RdvFunnel } from "./RdvFunnel";
 
 export const metadata: Metadata = {
-  title: "Point Téléphonique 10 min — Optimisation Assurances BTP | Kesiah & Partenaires",
+  title: "Point Téléphonique 15 min — Optimisation Assurances BTP | Kesiah & Partenaires",
   description:
-    "Réservez votre point téléphonique de 10 minutes avec Kesiah Ntumba, mandataire assurance BTP en Gironde. Audit gratuit de vos contrats Décennale, Mutuelle TNS et Prévoyance.",
+    "Réservez votre point téléphonique de 15 minutes avec Kesiah & Partenaires, mandataire assurance BTP en Gironde. Audit gratuit de vos contrats Décennale, Mutuelle TNS et Prévoyance.",
+  alternates: {
+    canonical: "https://www.lespace-libre.fr/rdv",
+  },
   robots: {
-    index: false,
-    follow: false,
+    index: true,
+    follow: true,
+    googleBot: {
+      index: true,
+      follow: true,
+    },
   },
 };
 
