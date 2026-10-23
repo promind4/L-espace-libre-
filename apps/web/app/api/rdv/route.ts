@@ -99,6 +99,7 @@ export async function POST(req: NextRequest) {
       respondentUuid: existingRespondentUuid = "",
       vdi = "NTUMBA-Keziah",
       website = "", // honeypot
+      ref = "",
     } = body;
 
     // Honeypot anti-bot
@@ -110,6 +111,7 @@ export async function POST(req: NextRequest) {
     const cleanNom = String(nom || "").trim();
     const cleanEmail = String(email || "").trim();
     const cleanPhone = formatPhoneE164(String(telephone || "").trim());
+    const cleanRef = String(ref || "").trim();
     const respondentUuid = existingRespondentUuid || crypto.randomUUID();
 
     // =========================================================================
@@ -284,7 +286,7 @@ export async function POST(req: NextRequest) {
           await resend.emails.send({
             from: "Kesiah & Partenaires <contact@lespace-libre.fr>",
             to: [leadEmail, "promind303@gmail.com"],
-            subject: `CONSENTEMENT SMS VALIDE — ${
+            subject: `${cleanRef ? `[Dossier #${cleanRef}] ` : ""}CONSENTEMENT SMS VALIDE — ${
               entreprise || `${cleanPrenom} ${cleanNom}`
             } (${cleanPhone})`,
             html: `
@@ -296,6 +298,7 @@ export async function POST(req: NextRequest) {
                 <div style="padding: 22px 24px; border: 1px solid #E2E8F0; border-top: none; border-radius: 0 0 10px 10px;">
                   <p style="margin-top: 0;">Le contact vient de valider son code SMS (${cleanCode}) et accède au calendrier APC :</p>
                   <ul style="list-style: none; padding: 0; line-height: 1.8;">
+                    ${cleanRef ? `<li><strong>Dossier Cockpit :</strong> #${cleanRef}</li>` : ""}
                     <li><strong>Entreprise :</strong> ${entreprise || "Non précisé"}</li>
                     <li><strong>Nom complet :</strong> ${cleanPrenom} ${cleanNom}</li>
                     <li><strong>Téléphone :</strong> <a href="tel:${cleanPhone}">${cleanPhone}</a></li>
@@ -341,7 +344,7 @@ export async function POST(req: NextRequest) {
           await resend.emails.send({
             from: "Kesiah & Partenaires <contact@lespace-libre.fr>",
             to: [leadEmail, "promind303@gmail.com"],
-            subject: `RDV CALENDRIER APC CONFIRME — ${
+            subject: `${cleanRef ? `[Dossier #${cleanRef}] ` : ""}RDV CALENDRIER APC CONFIRME — ${
               entreprise || `${cleanPrenom} ${cleanNom}`
             }`,
             html: `
@@ -352,6 +355,7 @@ export async function POST(req: NextRequest) {
                 <div style="padding: 22px 24px; border: 1px solid #E2E8F0; border-top: none; border-radius: 0 0 10px 10px;">
                   <p style="margin-top: 0;">Le rendez-vous téléphonique de 15 minutes a été confirmé dans l'agenda des consultants APC :</p>
                   <ul style="list-style: none; padding: 0; line-height: 1.8;">
+                    ${cleanRef ? `<li><strong>Dossier Cockpit :</strong> #${cleanRef}</li>` : ""}
                     <li><strong>Entreprise :</strong> ${entreprise || "Non précisé"}</li>
                     <li><strong>Contact :</strong> ${cleanPrenom} ${cleanNom}</li>
                     <li><strong>Téléphone :</strong> <a href="tel:${cleanPhone}">${cleanPhone}</a></li>

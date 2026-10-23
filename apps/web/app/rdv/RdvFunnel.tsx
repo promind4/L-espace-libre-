@@ -72,6 +72,7 @@ export function RdvFunnel() {
   const [calendarUrl, setCalendarUrl] = useState("");
   const [bookingConfirmed, setBookingConfirmed] = useState(false);
   const [website, setWebsite] = useState(""); // Honeypot
+  const [refId, setRefId] = useState("");
 
   const [isSubmitting, setIsSubmitting] = useState(false);
   const [errorMessage, setErrorMessage] = useState("");
@@ -84,6 +85,7 @@ export function RdvFunnel() {
     const qTel = searchParams.get("tel") || searchParams.get("telephone") || "";
     const qEmail = searchParams.get("email") || "";
     const qStep = searchParams.get("step");
+    const qRef = searchParams.get("ref") || "";
 
     if (qSte) setEntreprise(qSte);
     if (qPrenom) setPrenom(qPrenom);
@@ -92,6 +94,7 @@ export function RdvFunnel() {
     if (qEmail) setEmail(qEmail);
     if (qStep === "2") setStep(2);
     if (qStep === "3") setStep(3);
+    if (qRef) setRefId(qRef);
   }, [searchParams]);
 
   // Écoute de la confirmation du calendrier HubSpot APC en Étape 3
@@ -113,6 +116,7 @@ export function RdvFunnel() {
             nom,
             telephone: formattedPhone || telephone,
             email,
+            ref: refId,
           }),
         }).catch(() => {});
       }
@@ -120,7 +124,7 @@ export function RdvFunnel() {
 
     window.addEventListener("message", handleHubSpotMessage);
     return () => window.removeEventListener("message", handleHubSpotMessage);
-  }, [entreprise, prenom, nom, telephone, formattedPhone, email]);
+  }, [entreprise, prenom, nom, telephone, formattedPhone, email, refId]);
 
   // Soumission Étape 1 -> Envoi invisible vers Tally Form A -> Déclenche le SMS
   async function handleStep1Submit(e: FormEvent) {
@@ -145,6 +149,7 @@ export function RdvFunnel() {
           telephone,
           email,
           website,
+          ref: refId,
         }),
       });
 
@@ -193,6 +198,7 @@ export function RdvFunnel() {
           email,
           codeSms,
           respondentUuid,
+          ref: refId,
         }),
       });
 
