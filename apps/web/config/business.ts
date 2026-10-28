@@ -22,8 +22,8 @@ export const BUSINESS = {
   },
 
   contact: {
-    telephone: "+33 7 51 35 22 49",
-    telephoneAffichage: "07 51 35 22 49",
+    telephone: "+33 7 67 29 07 87",
+    telephoneAffichage: "07 67 29 07 87",
     email: "contact@lespace-libre.fr",
     // Adresse de réception back-office des leads — validée par le PO (R12).
     emailLeads: process.env["LEADS_INBOX_EMAIL"] ?? "contact@lespace-libre.fr",
