@@ -95,6 +95,27 @@ export function RdvFunnel() {
     if (qStep === "2") setStep(2);
     if (qStep === "3") setStep(3);
     if (qRef) setRefId(qRef);
+
+    // Notification de clic prospect instantanée (une alerte par session)
+    if (qRef || qSte || qEmail || qTel) {
+      const trackingKey = `rdv_click_sent_${qRef || qEmail || "visit"}`;
+      if (typeof window !== "undefined" && !sessionStorage.getItem(trackingKey)) {
+        sessionStorage.setItem(trackingKey, "1");
+        fetch("/api/rdv", {
+          method: "POST",
+          headers: { "Content-Type": "application/json" },
+          body: JSON.stringify({
+            step: "clic",
+            entreprise: qSte,
+            prenom: qPrenom,
+            nom: qNom,
+            telephone: qTel,
+            email: qEmail,
+            ref: qRef,
+          }),
+        }).catch(() => {});
+      }
+    }
   }, [searchParams]);
 
   // Écoute de la confirmation du calendrier HubSpot APC en Étape 3
@@ -380,7 +401,6 @@ export function RdvFunnel() {
                     type="text"
                     required
                     className="rdv-input"
-                    placeholder="Ex : Jean"
                     value={prenom}
                     onChange={(e) => setPrenom(e.target.value)}
                   />
@@ -394,7 +414,6 @@ export function RdvFunnel() {
                     type="text"
                     required
                     className="rdv-input"
-                    placeholder="Ex : Dupont"
                     value={nom}
                     onChange={(e) => setNom(e.target.value)}
                   />
@@ -410,7 +429,6 @@ export function RdvFunnel() {
                   type="tel"
                   required
                   className="rdv-input"
-                  placeholder="06 12 34 56 78"
                   value={telephone}
                   onChange={(e) => setTelephone(e.target.value)}
                 />
@@ -425,7 +443,6 @@ export function RdvFunnel() {
                   type="email"
                   required
                   className="rdv-input"
-                  placeholder="contact@entreprise.fr"
                   value={email}
                   onChange={(e) => setEmail(e.target.value)}
                 />
@@ -688,14 +705,53 @@ export function RdvFunnel() {
         </div>
       </section>
 
-      {/* ===== PIED DE PAGE SOBRE ===== */}
-      <footer className="rdv-footer">
+      {/* ===== PIED DE PAGE AVEC LIENS SITE OFFICIEL & RÉASSURANCE ===== */}
+      <footer className="rdv-footer" style={{ borderTop: "1px solid rgba(255, 255, 255, 0.12)", padding: "40px 20px", textAlign: "center" }}>
         <div style={{ maxWidth: "880px", margin: "0 auto" }}>
-          <div style={{ fontWeight: 700, color: "#fff", marginBottom: "4px" }}>
-            Kesiah &amp; Partenaires — Mise en relation RC Décennale &amp; Mutuelle TNS
+          <div style={{ marginBottom: "18px" }}>
+            <a
+              href="https://www.lespace-libre.fr"
+              target="_blank"
+              rel="noopener noreferrer"
+              style={{
+                display: "inline-flex",
+                alignItems: "center",
+                gap: "8px",
+                color: "#82D2BC",
+                textDecoration: "none",
+                fontWeight: 600,
+                fontSize: "13.5px",
+                padding: "8px 18px",
+                borderRadius: "20px",
+                backgroundColor: "rgba(130, 210, 188, 0.1)",
+                border: "1px solid rgba(130, 210, 188, 0.3)",
+                transition: "all 0.2s ease",
+              }}
+            >
+              <span>🌐 Visiter le site principal : www.lespace-libre.fr</span>
+              <span>→</span>
+            </a>
           </div>
-          <div style={{ fontSize: "12px", color: "rgba(255, 255, 255, 0.5)" }}>
-            Échange gratuit et sans engagement • Données strictement protégées (RGPD)
+
+          <div style={{ fontWeight: 700, color: "#fff", marginBottom: "6px", fontSize: "15px" }}>
+            Kesiah &amp; Partenaires — Mandataire &amp; Courtage Partenaire Assurance BTP
+          </div>
+          <p style={{ fontSize: "13px", color: "rgba(255, 255, 255, 0.65)", margin: "0 auto 16px auto", maxWidth: "620px", lineHeight: 1.5 }}>
+            Service de comparaison et d'audit indépendant opéré par L'Espace Libre en partenariat avec les leaders de l'assurance décennale et santé (AXA, Generali, SwissLife, Harmonie Mutuelle).
+          </p>
+
+          <div style={{ display: "flex", justifyContent: "center", alignItems: "center", gap: "16px", flexWrap: "wrap", fontSize: "12px", color: "rgba(255, 255, 255, 0.5)" }}>
+            <a href="https://www.lespace-libre.fr/mentions-legales" target="_blank" rel="noopener noreferrer" style={{ color: "rgba(255, 255, 255, 0.6)", textDecoration: "underline" }}>
+              Mentions Légales
+            </a>
+            <span>•</span>
+            <a href="https://www.lespace-libre.fr/politique-de-confidentialite" target="_blank" rel="noopener noreferrer" style={{ color: "rgba(255, 255, 255, 0.6)", textDecoration: "underline" }}>
+              Politique de Confidentialité &amp; RGPD
+            </a>
+            <span>•</span>
+            <span>Tél direct : 07 67 29 07 87</span>
+            <span>•</span>
+            <span>Gironde &amp; Nouvelle-Aquitaine</span>
           </div>
         </div>
       </footer>
