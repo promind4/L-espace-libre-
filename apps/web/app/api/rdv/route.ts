@@ -52,8 +52,9 @@ function httpsRequest(
 }
 
 /**
- * Envoie une notification instantanée à Kesiah et à son adresse de secours
- * via l'API Brevo officielle (avec repli Resend).
+ * Envoie une notification instantanée à Kesiah et à son adresse de secours.
+ * Priorité à Resend afin de préserver 100% du quota journalier Brevo (300/jour)
+ * pour la prospection BTP, avec bascule automatique sur Brevo en cas d'erreur.
  */
 async function sendAlertNotification({
   subject,
@@ -62,15 +63,33 @@ async function sendAlertNotification({
   subject: string;
   htmlContent: string;
 }): Promise<void> {
-  // Clé Brevo par variable d'environnement ou repli système
+  const resendKey =
+    process.env["RESEND_API_KEY"] ||
+    ["re", "FfoGSvUW", "GgcuuwMc1XyqHFU4Q3dXdVzP"].join("_");
+
+  if (resendKey) {
+    try {
+      const resend = new Resend(resendKey);
+      const { error } = await resend.emails.send({
+        from: "Kesiah & Partenaires <contact@lespace-libre.fr>",
+        to: ["kesiah@lespace-libre.fr", "flowmind303@gmail.com"],
+        subject,
+        html: htmlContent,
+      });
+      if (!error) {
+        console.log("[RESEND ALERT NOTIFICATION OK]", subject);
+        return;
+      }
+      console.warn("[RESEND ALERT RETURNED ERROR - FALLING BACK TO BREVO]", error);
+    } catch (resendErr) {
+      console.warn("[RESEND ALERT FAILED - FALLING BACK TO BREVO]", resendErr);
+    }
+  }
+
+  // Repli sur Brevo (1 seul destinataire car kesiah@lespace-libre.fr redirige déjà vers flowmind303@gmail.com)
   const brevoApiKey =
     process.env["BREVO_API_KEY"] ||
     ["xkeysib", "80c7f6fd95e845f68f89793c5599aa43d0b2367401a8229ed73c047f087f6768", "UtYOGlxazYHT5l8e"].join("-");
-
-  const recipients = [
-    { email: "kesiah@lespace-libre.fr", name: "Kesiah" },
-    { email: "flowmind303@gmail.com", name: "Flowmind" },
-  ];
 
   try {
     const brevoPayload = {
@@ -78,7 +97,7 @@ async function sendAlertNotification({
         name: "Kesiah & Partenaires (Alertes Leads)",
         email: "kesiah@lespace-libre.fr",
       },
-      to: recipients,
+      to: [{ email: "kesiah@lespace-libre.fr", name: "Kesiah" }],
       subject,
       htmlContent,
     };
@@ -95,23 +114,7 @@ async function sendAlertNotification({
 
     console.log("[BREVO ALERT NOTIFICATION]", res.status, res.text);
   } catch (brevoErr) {
-    console.warn("[BREVO ALERT FAILED - TRYING RESEND]", brevoErr);
-    const resendKey =
-      process.env["RESEND_API_KEY"] ||
-      ["re", "FfoGSvUW", "GgcuuwMc1XyqHFU4Q3dXdVzP"].join("_");
-    if (resendKey) {
-      try {
-        const resend = new Resend(resendKey);
-        await resend.emails.send({
-          from: "Kesiah & Partenaires <contact@lespace-libre.fr>",
-          to: ["kesiah@lespace-libre.fr", "flowmind303@gmail.com"],
-          subject,
-          html: htmlContent,
-        });
-      } catch (resendErr) {
-        console.error("[RESEND ALERT ALSO FAILED]", resendErr);
-      }
-    }
+    console.error("[BREVO ALERT ALSO FAILED]", brevoErr);
   }
 }
 
