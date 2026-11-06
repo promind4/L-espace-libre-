@@ -1,33 +1,41 @@
 import { NextResponse, type NextRequest } from "next/server";
 import { Resend } from "resend";
 import crypto from "crypto";
+import http from "http";
 import https from "https";
 
 export const runtime = "nodejs";
 export const dynamic = "force-dynamic";
 
+const COCKPIT_BASE_URL =
+  process.env["COCKPIT_API_URL"] || "http://84.235.229.203:8088";
+
 /**
- * Helper HTTPS résilient (évite l'erreur UNABLE_TO_VERIFY_LEAF_SIGNATURE
- * sous Windows local lorsque Node.js n'utilise pas le magasin CA système).
+ * Helper HTTP/HTTPS résilient (évite l'erreur UNABLE_TO_VERIFY_LEAF_SIGNATURE
+ * sous Windows local et supporte les appels vers le Cockpit VPS en HTTP).
  */
-function httpsRequest(
+function httpRequest(
   urlStr: string,
   options: {
-    method?: "GET" | "POST";
+    method?: "GET" | "POST" | "PATCH";
     headers?: Record<string, string>;
     body?: string;
+    timeoutMs?: number;
   } = {}
 ): Promise<{ status: number; ok: boolean; text: string }> {
   return new Promise((resolve, reject) => {
     const url = new URL(urlStr);
-    const req = https.request(
+    const isHttps = url.protocol === "https:";
+    const lib = isHttps ? https : http;
+    const req = lib.request(
       {
         hostname: url.hostname,
-        port: url.port || 443,
+        port: url.port || (isHttps ? 443 : 80),
         path: url.pathname + url.search,
         method: options.method || "GET",
         headers: options.headers || {},
-        rejectUnauthorized: false,
+        ...(isHttps ? { rejectUnauthorized: false } : {}),
+        timeout: options.timeoutMs || 6000,
       },
       (res) => {
         const chunks: Buffer[] = [];
@@ -43,12 +51,79 @@ function httpsRequest(
         });
       }
     );
+    req.on("timeout", () => {
+      req.destroy(new Error("Request timeout"));
+    });
     req.on("error", reject);
     if (options.body) {
       req.write(options.body);
     }
     req.end();
   });
+}
+
+const httpsRequest = httpRequest;
+
+/**
+ * Récupère la fiche prospect depuis le Cockpit VPS par son ID (`ref`)
+ */
+async function fetchCockpitProspect(refId: string): Promise<{
+  id?: number;
+  nom_entreprise?: string;
+  metier?: string;
+  dirigeant_prenom?: string;
+  dirigeant_nom?: string;
+  telephone?: string;
+  email?: string;
+  ville?: string;
+} | null> {
+  const clean = String(refId || "").trim();
+  if (!/^\d+$/.test(clean)) return null;
+  try {
+    const res = await httpRequest(
+      `${COCKPIT_BASE_URL}/api/public/rdv/${clean}`,
+      { method: "GET", timeoutMs: 3500 }
+    );
+    if (res.ok && res.text) {
+      return JSON.parse(res.text);
+    }
+  } catch (e) {
+    console.warn("[COCKPIT PREFILL FETCH WARN]", e);
+  }
+  return null;
+}
+
+/**
+ * Synchronise le statut du prospect dans le Cockpit VPS
+ */
+async function updateCockpitProspectStatus(
+  refId: string,
+  updates: Record<string, unknown>
+): Promise<void> {
+  const clean = String(refId || "").trim();
+  if (!/^\d+$/.test(clean)) return;
+  try {
+    await httpRequest(`${COCKPIT_BASE_URL}/api/prospects/${clean}`, {
+      method: "PATCH",
+      headers: { "Content-Type": "application/json" },
+      body: JSON.stringify(updates),
+      timeoutMs: 3500,
+    });
+  } catch (e) {
+    console.warn("[COCKPIT STATUS UPDATE WARN]", e);
+  }
+}
+
+export async function GET(req: NextRequest) {
+  const ref = req.nextUrl.searchParams.get("ref") || "";
+  if (!ref || !/^\d+$/.test(ref.trim())) {
+    return NextResponse.json({ ok: false, prospect: null });
+  }
+  const prospect = await fetchCockpitProspect(ref);
+  if (!prospect) {
+    return NextResponse.json({ ok: false, prospect: null }, { status: 404 });
+  }
+  return NextResponse.json({ ok: true, prospect });
 }
 
 /**
@@ -185,9 +260,36 @@ export async function POST(req: NextRequest) {
     // ÉTAPE CLIC : Notification instantanée quand un prospect consulte la page
     // =========================================================================
     if (step === "clic") {
-      const subject = `👀 [CLIC PROSPECT BTP] Consultation page RDV ${
-        cleanRef ? `(Dossier #${cleanRef})` : ""
-      }${entreprise ? ` — ${entreprise}` : ""}`;
+      let resolvedSte = String(entreprise || "").trim();
+      let resolvedPrenom = cleanPrenom;
+      let resolvedNom = cleanNom;
+      let resolvedPhone = String(telephone || "").trim();
+      let resolvedEmail = cleanEmail;
+      let resolvedVille = "";
+      let resolvedMetier = "";
+
+      if (cleanRef && (!resolvedSte || !resolvedPhone || !resolvedEmail)) {
+        const pData = await fetchCockpitProspect(cleanRef);
+        if (pData) {
+          resolvedSte = resolvedSte || pData.nom_entreprise || "";
+          resolvedPrenom = resolvedPrenom || pData.dirigeant_prenom || "";
+          resolvedNom = resolvedNom || pData.dirigeant_nom || "";
+          resolvedPhone = resolvedPhone || pData.telephone || "";
+          resolvedEmail = resolvedEmail || pData.email || "";
+          resolvedVille = pData.ville || "";
+          resolvedMetier = pData.metier || "";
+        }
+      }
+
+      if (cleanRef) {
+        await updateCockpitProspectStatus(cleanRef, { statut_email: "CLIQUE" });
+      }
+
+      const subject = `👀 [CLIC PROSPECT BTP] ${
+        resolvedSte || "Artisan"
+      }${resolvedVille ? ` (${resolvedVille})` : ""}${
+        cleanRef ? ` — Dossier #${cleanRef}` : ""
+      }`;
 
       const htmlContent = `
         <div style="font-family: Arial, sans-serif; max-width: 560px; margin: 0 auto; color: #0F172A;">
@@ -199,13 +301,15 @@ export async function POST(req: NextRequest) {
             <p style="margin-top: 0;">Un artisan vient d'ouvrir votre lien de rendez-vous Décennale &amp; Mutuelle :</p>
             <ul style="list-style: none; padding: 0; line-height: 1.8;">
               ${cleanRef ? `<li><strong>ID Dossier :</strong> #${cleanRef}</li>` : ""}
-              ${entreprise ? `<li><strong>Entreprise :</strong> ${entreprise}</li>` : ""}
-              ${cleanPrenom || cleanNom ? `<li><strong>Contact :</strong> ${cleanPrenom} ${cleanNom}</li>` : ""}
-              ${cleanPhone ? `<li><strong>Téléphone :</strong> ${cleanPhone}</li>` : ""}
-              ${cleanEmail ? `<li><strong>Email :</strong> ${cleanEmail}</li>` : ""}
+              ${resolvedSte ? `<li><strong>Entreprise :</strong> ${resolvedSte}</li>` : ""}
+              ${resolvedMetier ? `<li><strong>Métier :</strong> ${resolvedMetier}</li>` : ""}
+              ${resolvedVille ? `<li><strong>Ville :</strong> ${resolvedVille}</li>` : ""}
+              ${resolvedPrenom || resolvedNom ? `<li><strong>Dirigeant :</strong> ${resolvedPrenom} ${resolvedNom}</li>` : ""}
+              ${resolvedPhone ? `<li><strong>Téléphone direct :</strong> <a href="tel:${resolvedPhone}" style="color: #0E8F70; font-weight: bold;">${resolvedPhone}</a></li>` : ""}
+              ${resolvedEmail ? `<li><strong>Email :</strong> ${resolvedEmail}</li>` : ""}
               <li><strong>Heure :</strong> ${new Date().toLocaleString("fr-FR", { timeZone: "Europe/Paris" })}</li>
             </ul>
-            <p style="font-size: 12px; color: #64748B; margin-bottom: 0;">Restez attentif, le prospect est actuellement sur la page de réservation.</p>
+            <p style="font-size: 12px; color: #64748B; margin-bottom: 0;">Restez attentif, le prospect est actuellement sur la page de réservation (ses coordonnées ont été pré-remplies automatiquement).</p>
           </div>
         </div>
       `;
@@ -280,6 +384,42 @@ export async function POST(req: NextRequest) {
         cleanEmail,
         cleanPhone,
       });
+
+      if (cleanRef) {
+        await updateCockpitProspectStatus(cleanRef, {
+          dirigeant_prenom: cleanPrenom,
+          dirigeant_nom: cleanNom,
+          telephone: cleanPhone,
+          email: cleanEmail,
+          statut_email: "FORMULAIRE_REMPLI",
+          statut_appel: "RAPPELER",
+        });
+      }
+
+      // Alerte instantanée à Kesiah dès qu'un prospect valide l'étape 1 (demande de créneau / envoi SMS)
+      const step1Subject = `📝 [ETAPE 1 VALIDEE - SMS ENVOYE] ${
+        entreprise || `${cleanPrenom} ${cleanNom}`
+      } (${cleanPhone})${cleanRef ? ` — Dossier #${cleanRef}` : ""}`;
+      const step1Html = `
+        <div style="font-family: Arial, sans-serif; max-width: 560px; margin: 0 auto; color: #0F172A;">
+          <div style="background: #0F172A; color: #fff; padding: 18px 24px; border-radius: 10px 10px 0 0;">
+            <h2 style="margin: 0; font-size: 18px;">📝 Un prospect vient de valider ses coordonnées (Étape 1/3)</h2>
+            <p style="margin: 4px 0 0; color: #82D2BC; font-size: 13px;">Code SMS envoyé au ${cleanPhone}</p>
+          </div>
+          <div style="padding: 22px 24px; border: 1px solid #E2E8F0; border-top: none; border-radius: 0 0 10px 10px;">
+            <p style="margin-top: 0;">L'artisan a soumis le formulaire de coordonnées et reçoit actuellement son code SMS :</p>
+            <ul style="list-style: none; padding: 0; line-height: 1.8;">
+              ${cleanRef ? `<li><strong>Dossier Cockpit :</strong> #${cleanRef}</li>` : ""}
+              <li><strong>Entreprise :</strong> ${entreprise || "Non précisé"}</li>
+              <li><strong>Nom complet :</strong> ${cleanPrenom} ${cleanNom}</li>
+              <li><strong>Téléphone :</strong> <a href="tel:${cleanPhone}" style="color: #0E8F70; font-weight: bold;">${cleanPhone}</a></li>
+              <li><strong>E-mail :</strong> ${cleanEmail}</li>
+              <li><strong>Heure :</strong> ${new Date().toLocaleString("fr-FR", { timeZone: "Europe/Paris" })}</li>
+            </ul>
+          </div>
+        </div>
+      `;
+      await sendAlertNotification({ subject: step1Subject, htmlContent: step1Html });
 
       return NextResponse.json({
         ok: true,
@@ -401,6 +541,13 @@ export async function POST(req: NextRequest) {
         </div>
       `;
 
+      if (cleanRef) {
+        await updateCockpitProspectStatus(cleanRef, {
+          statut_email: "SMS_VALIDE",
+          statut_appel: "RDV_POSE",
+        });
+      }
+
       await sendAlertNotification({ subject, htmlContent });
 
       // Construction de l'URL du calendrier officiel HubSpot APC avec pré-remplissage
@@ -451,6 +598,13 @@ export async function POST(req: NextRequest) {
           </div>
         </div>
       `;
+
+      if (cleanRef) {
+        await updateCockpitProspectStatus(cleanRef, {
+          statut_email: "SMS_VALIDE",
+          statut_appel: "RDV_POSE",
+        });
+      }
 
       await sendAlertNotification({ subject, htmlContent });
 

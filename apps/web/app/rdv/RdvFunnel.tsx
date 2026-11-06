@@ -42,8 +42,8 @@ const BENEFITS = [
 
 const FAQ_ITEMS = [
   {
-    q: "Pourquoi dois-je confirmer mon numéro par un code SMS ?",
-    a: "Le code SMS à 6 chiffres permet de valider votre consentement RGPD et de sécuriser votre réservation de créneau auprès de notre pôle de consultants partenaires (APC), sans démarchage non sollicité.",
+    q: "Pourquoi y a-t-il une étape de confirmation par SMS ?",
+    a: "Le code SMS à 6 chiffres permet de sécuriser votre réservation de créneau auprès de notre pôle de consultants partenaires (APC) et de valider votre demande conformément au RGPD, sans démarchage non sollicité.",
   },
   {
     q: "Ce point téléphonique de 15 minutes m'engage-t-il à quelque chose ?",
@@ -62,6 +62,7 @@ export function RdvFunnel() {
   const [step, setStep] = useState<1 | 2 | 3>(1);
 
   const [entreprise, setEntreprise] = useState("");
+  const [ville, setVille] = useState("");
   const [prenom, setPrenom] = useState("");
   const [nom, setNom] = useState("");
   const [telephone, setTelephone] = useState("");
@@ -73,21 +74,24 @@ export function RdvFunnel() {
   const [bookingConfirmed, setBookingConfirmed] = useState(false);
   const [website, setWebsite] = useState(""); // Honeypot
   const [refId, setRefId] = useState("");
+  const [prefillLoaded, setPrefillLoaded] = useState(false);
 
   const [isSubmitting, setIsSubmitting] = useState(false);
   const [errorMessage, setErrorMessage] = useState("");
 
-  // Pré-remplissage automatique depuis le lien de l'e-mail
+  // Pré-remplissage automatique depuis le lien de l'e-mail (?ref={id})
   useEffect(() => {
     const qSte = searchParams.get("ste") || searchParams.get("entreprise") || "";
     const qPrenom = searchParams.get("prenom") || "";
     const qNom = searchParams.get("nom") || "";
     const qTel = searchParams.get("tel") || searchParams.get("telephone") || "";
     const qEmail = searchParams.get("email") || "";
+    const qVille = searchParams.get("ville") || "";
     const qStep = searchParams.get("step");
     const qRef = searchParams.get("ref") || "";
 
     if (qSte) setEntreprise(qSte);
+    if (qVille) setVille(qVille);
     if (qPrenom) setPrenom(qPrenom);
     if (qNom) setNom(qNom);
     if (qTel) setTelephone(qTel);
@@ -96,26 +100,74 @@ export function RdvFunnel() {
     if (qStep === "3") setStep(3);
     if (qRef) setRefId(qRef);
 
-    // Notification de clic prospect instantanée (une alerte par session)
-    if (qRef || qSte || qEmail || qTel) {
-      const trackingKey = `rdv_click_sent_${qRef || qEmail || "visit"}`;
-      if (typeof window !== "undefined" && !sessionStorage.getItem(trackingKey)) {
-        sessionStorage.setItem(trackingKey, "1");
-        fetch("/api/rdv", {
-          method: "POST",
-          headers: { "Content-Type": "application/json" },
-          body: JSON.stringify({
-            step: "clic",
-            entreprise: qSte,
-            prenom: qPrenom,
-            nom: qNom,
-            telephone: qTel,
-            email: qEmail,
-            ref: qRef,
-          }),
-        }).catch(() => {});
+    async function loadPrefillAndTrack() {
+      let fetchedSte = qSte;
+      let fetchedPrenom = qPrenom;
+      let fetchedNom = qNom;
+      let fetchedTel = qTel;
+      let fetchedEmail = qEmail;
+
+      if (qRef && /^\d+$/.test(qRef.trim())) {
+        try {
+          const res = await fetch(`/api/rdv?ref=${encodeURIComponent(qRef.trim())}`);
+          if (res.ok) {
+            const data = await res.json();
+            const p = data?.prospect;
+            if (p) {
+              if (!qSte && p.nom_entreprise) {
+                setEntreprise(p.nom_entreprise);
+                fetchedSte = p.nom_entreprise;
+              }
+              if (!qVille && p.ville) {
+                setVille(p.ville);
+              }
+              if (!qPrenom && p.dirigeant_prenom) {
+                setPrenom(p.dirigeant_prenom);
+                fetchedPrenom = p.dirigeant_prenom;
+              }
+              if (!qNom && p.dirigeant_nom) {
+                setNom(p.dirigeant_nom);
+                fetchedNom = p.dirigeant_nom;
+              }
+              if (!qTel && p.telephone) {
+                setTelephone(p.telephone);
+                fetchedTel = p.telephone;
+              }
+              if (!qEmail && p.email) {
+                setEmail(p.email);
+                fetchedEmail = p.email;
+              }
+              setPrefillLoaded(true);
+            }
+          }
+        } catch {
+          // Ignore prefill network error
+        }
+      }
+
+      // Notification de clic prospect instantanée (une alerte par session)
+      if (qRef || fetchedSte || fetchedEmail || fetchedTel) {
+        const trackingKey = `rdv_click_sent_${qRef || fetchedEmail || "visit"}`;
+        if (typeof window !== "undefined" && !sessionStorage.getItem(trackingKey)) {
+          sessionStorage.setItem(trackingKey, "1");
+          fetch("/api/rdv", {
+            method: "POST",
+            headers: { "Content-Type": "application/json" },
+            body: JSON.stringify({
+              step: "clic",
+              entreprise: fetchedSte,
+              prenom: fetchedPrenom,
+              nom: fetchedNom,
+              telephone: fetchedTel,
+              email: fetchedEmail,
+              ref: qRef,
+            }),
+          }).catch(() => {});
+        }
       }
     }
+
+    loadPrefillAndTrack();
   }, [searchParams]);
 
   // Écoute de la confirmation du calendrier HubSpot APC en Étape 3
@@ -263,14 +315,24 @@ export function RdvFunnel() {
             <div>
               <div className="rdv-topbar__title">Kesiah &amp; Partenaires</div>
               <div className="rdv-topbar__subtitle">
-                RC Décennale &amp; Mutuelle TNS • Gironde (33)
+                RC Décennale &amp; Mutuelle TNS • {ville ? `${ville} & France entière` : "Nouvelle-Aquitaine & France entière"}
               </div>
             </div>
           </div>
 
-          <div className="rdv-topbar__badge">
-            <span className="rdv-topbar__dot" />
-            <span>Audit gratuit • Sans engagement</span>
+          <div className="rdv-topbar__actions">
+            <a
+              href="tel:+33767290787"
+              className="rdv-topbar__phone"
+              title="Appeler directement Kesiah"
+            >
+              <span>📞</span>
+              <span>07 67 29 07 87</span>
+            </a>
+            <div className="rdv-topbar__badge">
+              <span className="rdv-topbar__dot" />
+              <span>Audit gratuit • Sans engagement</span>
+            </div>
           </div>
         </div>
       </header>
@@ -303,15 +365,15 @@ export function RdvFunnel() {
         <div className="rdv-stage__header">
           <span className="rdv-stage__pill">
             {entreprise
-              ? `Dossier préparé pour ${entreprise}`
+              ? `Dossier préparé pour ${entreprise}${ville ? ` (${ville})` : ""}`
               : "Artisans & Dirigeants du BTP"}
           </span>
           <h1 className="rdv-stage__title">
-            Planifiez votre échange téléphonique en 3&nbsp;étapes simples.
+            Accédez à votre créneau d&apos;échange gratuit de 15&nbsp;minutes.
           </h1>
           <p className="rdv-stage__subtitle">
-            Découvrez en 15&nbsp;minutes combien vous pouvez économiser sur
-            votre RC&nbsp;Décennale et votre mutuelle TNS, à garanties
+            Vérifiez immédiatement combien vous pouvez économiser sur votre
+            RC&nbsp;Décennale et votre mutuelle TNS, à garanties strictement
             identiques.
           </p>
         </div>
@@ -326,7 +388,7 @@ export function RdvFunnel() {
             }`}
           >
             <span className="rdv-step-pill__num">{step > 1 ? "✓" : "1"}</span>
-            <span className="rdv-step-pill__label">Coordonnées</span>
+            <span className="rdv-step-pill__label">Vos infos</span>
           </div>
 
           <div
@@ -339,7 +401,7 @@ export function RdvFunnel() {
             }`}
           >
             <span className="rdv-step-pill__num">{step > 2 ? "✓" : "2"}</span>
-            <span className="rdv-step-pill__label">Code SMS</span>
+            <span className="rdv-step-pill__label">Accès SMS</span>
           </div>
 
           <div
@@ -348,7 +410,7 @@ export function RdvFunnel() {
             }`}
           >
             <span className="rdv-step-pill__num">3</span>
-            <span className="rdv-step-pill__label">Calendrier</span>
+            <span className="rdv-step-pill__label">Planning</span>
           </div>
         </div>
 
@@ -371,14 +433,24 @@ export function RdvFunnel() {
                 />
                 <div>
                   <h2 className="rdv-tunnel-card__title">
-                    1. Vérifiez vos coordonnées
+                    1. Accédez au planning des consultants
                   </h2>
                   <p className="rdv-tunnel-card__desc">
-                    Un code à 6 chiffres vous sera envoyé par SMS pour débloquer
-                    l&apos;accès au calendrier des consultants.
+                    {prefillLoaded || entreprise
+                      ? "Vos informations ont été pré-remplies pour vous faire gagner du temps. Vérifiez votre numéro mobile pour afficher les créneaux disponibles."
+                      : "Indiquez vos coordonnées ci-dessous pour consulter immédiatement les créneaux disponibles de 15 minutes."}
                   </p>
                 </div>
               </div>
+
+              {(prefillLoaded || entreprise) && (
+                <div className="rdv-prefill-banner">
+                  <span>✓</span>
+                  <span>
+                    Dossier <strong>{entreprise || `#${refId}`}</strong> identifié — vérifiez ou complétez vos informations ci-dessous.
+                  </span>
+                </div>
+              )}
 
               {/* Honeypot */}
               <input
@@ -399,6 +471,7 @@ export function RdvFunnel() {
                   <input
                     id="rdv-prenom"
                     type="text"
+                    autoComplete="given-name"
                     required
                     className="rdv-input"
                     value={prenom}
@@ -412,6 +485,7 @@ export function RdvFunnel() {
                   <input
                     id="rdv-nom"
                     type="text"
+                    autoComplete="family-name"
                     required
                     className="rdv-input"
                     value={nom}
@@ -422,11 +496,13 @@ export function RdvFunnel() {
 
               <div className="rdv-field">
                 <label className="rdv-label" htmlFor="rdv-tel">
-                  Téléphone mobile (pour recevoir le code SMS)
+                  Téléphone mobile (pour l&apos;accès au planning)
                 </label>
                 <input
                   id="rdv-tel"
                   type="tel"
+                  inputMode="tel"
+                  autoComplete="tel"
                   required
                   className="rdv-input"
                   value={telephone}
@@ -434,13 +510,15 @@ export function RdvFunnel() {
                 />
               </div>
 
-              <div className="rdv-field" style={{ marginBottom: "24px" }}>
+              <div className="rdv-field" style={{ marginBottom: "22px" }}>
                 <label className="rdv-label" htmlFor="rdv-email">
-                  Adresse e-mail
+                  Adresse e-mail professionnelle
                 </label>
                 <input
                   id="rdv-email"
                   type="email"
+                  inputMode="email"
+                  autoComplete="email"
                   required
                   className="rdv-input"
                   value={email}
@@ -459,8 +537,8 @@ export function RdvFunnel() {
               >
                 <span>
                   {isSubmitting
-                    ? "Envoi du SMS en cours..."
-                    : "Recevoir mon code SMS et continuer →"}
+                    ? "Ouverture de l'accès au planning..."
+                    : "Voir les créneaux disponibles →"}
                 </span>
               </button>
 
@@ -469,12 +547,21 @@ export function RdvFunnel() {
                   textAlign: "center",
                   fontSize: "12px",
                   color: "var(--cr-pearl-500)",
-                  margin: "14px 0 0",
+                  margin: "12px 0 0",
                 }}
               >
-                Vos informations servent uniquement à valider votre demande et à
-                vous transmettre les conditions RGPD.
+                🔒 Gratuit et sans engagement • Un code d&apos;accès par SMS sécurise votre créneau.
               </p>
+
+              <div className="rdv-direct-call-box">
+                <div className="rdv-direct-call-box__text">
+                  <strong>Vous êtes sur chantier ou pressé ?</strong>
+                  <span>Faites le point directement par téléphone avec Kesiah :</span>
+                </div>
+                <a href="tel:+33767290787" className="rdv-direct-call-box__btn">
+                  📞 Appeler le 07 67 29 07 87
+                </a>
+              </div>
             </form>
           )}
 
@@ -491,10 +578,10 @@ export function RdvFunnel() {
                 />
                 <div>
                   <h2 className="rdv-tunnel-card__title">
-                    2. Saisissez le code reçu par SMS
+                    2. Débloquez le planning avec votre code SMS
                   </h2>
                   <p className="rdv-tunnel-card__desc">
-                    Un code à 6 chiffres vient d&apos;être envoyé au{" "}
+                    Pour éviter les faux rendez-vous, un code d&apos;accès à 6 chiffres vient d&apos;être envoyé au{" "}
                     <strong>{formattedPhone || telephone}</strong>.
                   </p>
                 </div>
@@ -749,9 +836,11 @@ export function RdvFunnel() {
               Politique de Confidentialité &amp; RGPD
             </a>
             <span>•</span>
-            <span>Tél direct : 07 67 29 07 87</span>
+            <a href="tel:+33767290787" style={{ color: "rgba(255, 255, 255, 0.75)", textDecoration: "none", fontWeight: 600 }}>
+              Tél direct : 07 67 29 07 87
+            </a>
             <span>•</span>
-            <span>Gironde &amp; Nouvelle-Aquitaine</span>
+            <span>{ville ? `${ville} & France entière` : "Nouvelle-Aquitaine & France entière"}</span>
           </div>
         </div>
       </footer>

@@ -1595,6 +1595,35 @@ body:has([data-isolated-funnel]) footer {
   font-weight: 500;
 }
 
+.rdv-topbar__actions {
+  display: flex;
+  align-items: center;
+  gap: 10px;
+  flex-shrink: 0;
+}
+
+.rdv-topbar__phone {
+  display: inline-flex;
+  align-items: center;
+  gap: 6px;
+  padding: 7px 14px;
+  border-radius: 999px;
+  background: var(--cr-pearl-100);
+  border: 1px solid var(--cr-pearl-200);
+  color: var(--cr-navy-950);
+  font-size: 13px;
+  font-weight: 700;
+  text-decoration: none;
+  transition: all 0.18s ease;
+  white-space: nowrap;
+}
+
+.rdv-topbar__phone:hover {
+  background: var(--cr-emerald-100);
+  border-color: var(--cr-emerald-300);
+  color: var(--cr-emerald-700);
+}
+
 .rdv-topbar__badge {
   display: inline-flex;
   align-items: center;
@@ -1606,6 +1635,7 @@ body:has([data-isolated-funnel]) footer {
   font-size: 12px;
   font-weight: 700;
   letter-spacing: 0.01em;
+  white-space: nowrap;
 }
 
 .rdv-topbar__dot {
@@ -1980,6 +2010,68 @@ body:has([data-isolated-funnel]) footer {
   margin: 0;
 }
 
+.rdv-prefill-banner {
+  display: flex;
+  align-items: center;
+  gap: 10px;
+  padding: 11px 14px;
+  margin-bottom: 18px;
+  border-radius: 12px;
+  background: var(--cr-emerald-100);
+  border: 1px solid var(--cr-emerald-300);
+  color: var(--cr-emerald-700);
+  font-size: 13.5px;
+  line-height: 1.45;
+}
+
+.rdv-direct-call-box {
+  margin-top: 20px;
+  padding: 14px 16px;
+  border-radius: 14px;
+  background: #F8FAFC;
+  border: 1px solid var(--cr-pearl-200);
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  gap: 14px;
+  flex-wrap: wrap;
+}
+
+.rdv-direct-call-box__text {
+  display: flex;
+  flex-direction: column;
+  gap: 2px;
+  font-size: 13px;
+  color: var(--cr-pearl-700);
+}
+
+.rdv-direct-call-box__text strong {
+  color: var(--cr-navy-950);
+  font-size: 13.5px;
+}
+
+.rdv-direct-call-box__btn {
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  gap: 6px;
+  padding: 10px 16px;
+  border-radius: 10px;
+  background: #fff;
+  border: 1.5px solid var(--cr-emerald-600);
+  color: var(--cr-emerald-700);
+  font-size: 13.5px;
+  font-weight: 700;
+  text-decoration: none;
+  white-space: nowrap;
+  transition: all 0.18s ease;
+}
+
+.rdv-direct-call-box__btn:hover {
+  background: var(--cr-emerald-600);
+  color: #fff;
+}
+
 .rdv-footer {
   margin-top: auto;
   background: var(--cr-navy-950);
@@ -1989,22 +2081,145 @@ body:has([data-isolated-funnel]) footer {
   text-align: center;
 }
 
+/* ===== Tablette (<= 860px) ===== */
+@media (max-width: 860px) {
+  .rdv-topbar {
+    padding: 12px 16px;
+  }
+  .rdv-stage {
+    padding: 28px 16px 40px;
+  }
+  .rdv-tunnel-card {
+    padding: 28px 24px;
+  }
+  .rdv-benefits-grid {
+    gap: 16px;
+  }
+}
+
+/* ===== Mobile (<= 640px) ===== */
 @media (max-width: 640px) {
   .rdv-topbar__subtitle {
     display: none;
   }
-  .rdv-tunnel-card {
-    padding: 24px 18px;
+  .rdv-topbar__badge {
+    display: none;
   }
-  .rdv-field-grid {
-    grid-template-columns: 1fr;
-    gap: 12px;
+  .rdv-topbar__phone {
+    font-size: 12.5px;
+    padding: 7px 12px;
   }
-  .rdv-benefits-grid {
-    grid-template-columns: 1fr;
+  .rdv-partners {
+    padding: 16px 12px;
+  }
+  .rdv-partners__label {
+    margin-bottom: 12px;
+    font-size: 10px;
+  }
+  .rdv-partners__grid {
+    gap: 8px 10px;
+  }
+  .rdv-partners__item {
+    height: 32px;
+    padding: 4px 10px;
+  }
+  .rdv-partners__img {
+    max-height: 18px;
+  }
+  .rdv-stage {
+    padding: 20px 14px 36px;
+  }
+  .rdv-stage__header {
+    margin-bottom: 18px;
+  }
+  .rdv-stage__pill {
+    font-size: 11px;
+    padding: 4px 12px;
+    margin-bottom: 10px;
+    max-width: 100%;
+    white-space: normal;
+    line-height: 1.35;
+  }
+  .rdv-stage__title {
+    font-size: 22px;
+  }
+  .rdv-stage__subtitle {
+    font-size: 14px;
+  }
+  .rdv-stepper {
+    gap: 6px;
+    margin-bottom: 18px;
+  }
+  .rdv-step-pill {
+    padding: 8px 10px;
+    gap: 6px;
+    justify-content: center;
   }
   .rdv-step-pill__label {
     font-size: 12px;
+  }
+  .rdv-tunnel-card {
+    padding: 22px 16px;
+    border-radius: 18px;
+  }
+  .rdv-tunnel-card--wide {
+    padding: 18px 12px;
+  }
+  .rdv-tunnel-card__head {
+    gap: 12px;
+    margin-bottom: 18px;
+    padding-bottom: 16px;
+    align-items: flex-start;
+  }
+  .rdv-tunnel-card__illust {
+    width: 48px;
+    height: 48px;
+    border-radius: 12px;
+  }
+  .rdv-tunnel-card__title {
+    font-size: 17px;
+  }
+  .rdv-tunnel-card__desc {
+    font-size: 13px;
+  }
+  .rdv-field-grid {
+    grid-template-columns: 1fr;
+    gap: 14px;
+  }
+  /* font-size 16px évite le zoom automatique forcé sur iOS Safari */
+  .rdv-input {
+    font-size: 16px;
+    height: 50px;
+  }
+  .rdv-submit-btn {
+    height: 54px;
+    font-size: 15px;
+  }
+  .rdv-direct-call-box {
+    flex-direction: column;
+    align-items: stretch;
+    text-align: center;
+  }
+  .rdv-direct-call-box__btn {
+    width: 100%;
+    padding: 12px 16px;
+  }
+  .rdv-benefits-grid {
+    grid-template-columns: 1fr;
+    gap: 14px;
+  }
+  .rdv-benefit-card {
+    padding: 18px 16px;
+  }
+}
+
+/* ===== Très petits mobiles (<= 380px) ===== */
+@media (max-width: 380px) {
+  .rdv-topbar__title {
+    font-size: 13.5px;
+  }
+  .rdv-step-pill__label {
+    font-size: 11px;
   }
 }
 
