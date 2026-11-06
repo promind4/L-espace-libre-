@@ -326,7 +326,6 @@ export function RdvFunnel() {
               className="rdv-topbar__phone"
               title="Appeler directement Kesiah"
             >
-              <span>📞</span>
               <span>07 67 29 07 87</span>
             </a>
             <div className="rdv-topbar__badge">
@@ -445,7 +444,6 @@ export function RdvFunnel() {
 
               {(prefillLoaded || entreprise) && (
                 <div className="rdv-prefill-banner">
-                  <span>✓</span>
                   <span>
                     Dossier <strong>{entreprise || `#${refId}`}</strong> identifié — vérifiez ou complétez vos informations ci-dessous.
                   </span>
@@ -550,7 +548,7 @@ export function RdvFunnel() {
                   margin: "12px 0 0",
                 }}
               >
-                🔒 Gratuit et sans engagement • Un code d&apos;accès par SMS sécurise votre créneau.
+                Gratuit et sans engagement • Un code d&apos;accès par SMS sécurise votre créneau.
               </p>
 
               <div className="rdv-direct-call-box">
@@ -559,7 +557,7 @@ export function RdvFunnel() {
                   <span>Faites le point directement par téléphone avec Kesiah :</span>
                 </div>
                 <a href="tel:+33767290787" className="rdv-direct-call-box__btn">
-                  📞 Appeler le 07 67 29 07 87
+                  Appeler le 07 67 29 07 87
                 </a>
               </div>
             </form>
@@ -678,7 +676,7 @@ export function RdvFunnel() {
                     textAlign: "center",
                   }}
                 >
-                  ✓ Votre rendez-vous téléphonique est parfaitement confirmé !
+                  Votre rendez-vous téléphonique est parfaitement confirmé.
                   Un e-mail récapitulatif vient de vous être envoyé.
                 </div>
               )}
@@ -815,7 +813,7 @@ export function RdvFunnel() {
                 transition: "all 0.2s ease",
               }}
             >
-              <span>🌐 Visiter le site principal : www.lespace-libre.fr</span>
+              <span>Visiter le site principal : www.lespace-libre.fr</span>
               <span>→</span>
             </a>
           </div>
