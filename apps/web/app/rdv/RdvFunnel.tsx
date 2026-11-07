@@ -79,16 +79,44 @@ export function RdvFunnel() {
   const [isSubmitting, setIsSubmitting] = useState(false);
   const [errorMessage, setErrorMessage] = useState("");
 
-  // Pré-remplissage automatique depuis le lien de l'e-mail (?ref={id})
+  // Pré-remplissage automatique depuis le lien de l'e-mail (?ref={id} ou ?t={base64})
+  // Remplit : Prénom, Nom, Email professionnel, Entreprise, Ville.
+  // Laisse volontairement le Téléphone mobile vide pour saisie par le prospect.
   useEffect(() => {
-    const qSte = searchParams.get("ste") || searchParams.get("entreprise") || "";
-    const qPrenom = searchParams.get("prenom") || "";
-    const qNom = searchParams.get("nom") || "";
+    let tokenData: {
+      ste?: string;
+      prenom?: string;
+      nom?: string;
+      email?: string;
+      ville?: string;
+    } = {};
+
+    const rawToken = searchParams.get("t") || "";
+    if (rawToken) {
+      try {
+        const b64 = rawToken.replace(/-/g, "+").replace(/_/g, "/");
+        const padded = b64 + "=".repeat((4 - (b64.length % 4)) % 4);
+        const binary = atob(padded);
+        const bytes = Uint8Array.from(binary, (c) => c.charCodeAt(0));
+        const jsonStr = new TextDecoder("utf-8").decode(bytes);
+        tokenData = JSON.parse(jsonStr);
+      } catch {
+        // Ignore invalid token
+      }
+    }
+
+    const qSte =
+      searchParams.get("ste") ||
+      searchParams.get("entreprise") ||
+      tokenData.ste ||
+      "";
+    const qPrenom = searchParams.get("prenom") || tokenData.prenom || "";
+    const qNom = searchParams.get("nom") || tokenData.nom || "";
     const qTel = searchParams.get("tel") || searchParams.get("telephone") || "";
-    const qEmail = searchParams.get("email") || "";
-    const qVille = searchParams.get("ville") || "";
+    const qEmail = searchParams.get("email") || tokenData.email || "";
+    const qVille = searchParams.get("ville") || tokenData.ville || "";
     const qStep = searchParams.get("step");
-    const qRef = searchParams.get("ref") || "";
+    const qRef = searchParams.get("ref") || searchParams.get("id") || "";
 
     if (qSte) setEntreprise(qSte);
     if (qVille) setVille(qVille);
@@ -99,6 +127,9 @@ export function RdvFunnel() {
     if (qStep === "2") setStep(2);
     if (qStep === "3") setStep(3);
     if (qRef) setRefId(qRef);
+    if (qSte || qPrenom || qNom || qEmail) {
+      setPrefillLoaded(true);
+    }
 
     async function loadPrefillAndTrack() {
       let fetchedSte = qSte;
@@ -129,13 +160,14 @@ export function RdvFunnel() {
                 setNom(p.dirigeant_nom);
                 fetchedNom = p.dirigeant_nom;
               }
-              if (!qTel && p.telephone) {
-                setTelephone(p.telephone);
-                fetchedTel = p.telephone;
-              }
               if (!qEmail && p.email) {
                 setEmail(p.email);
                 fetchedEmail = p.email;
+              }
+              // Le téléphone n'est PAS pré-rempli dans le champ input (laissé au prospect),
+              // mais on le conserve en interne pour l'alerte de clic destinée à Kesiah.
+              if (!fetchedTel && p.telephone) {
+                fetchedTel = p.telephone;
               }
               setPrefillLoaded(true);
             }
@@ -299,10 +331,25 @@ export function RdvFunnel() {
 
   return (
     <div className="rdv-funnel" data-isolated-funnel="true">
-      {/* ===== BARRE SUPÉRIEURE MINIMALISTE ===== */}
+      {/* ===== BARRE SUPÉRIEURE OFFICIELLE RATTACHÉE À L'ESPACE LIBRE ===== */}
       <header className="rdv-topbar">
         <div className="rdv-topbar__inner">
           <div className="rdv-topbar__brand">
+            <a
+              href="https://www.lespace-libre.fr"
+              target="_blank"
+              rel="noopener noreferrer"
+              className="rdv-topbar__logo-link"
+              title="Visiter le site principal L'Espace Libre"
+            >
+              <img
+                src="/logo.png"
+                alt="L'Espace Libre"
+                width={42}
+                height={42}
+                style={{ objectFit: "contain", width: "42px", height: "42px", display: "block" }}
+              />
+            </a>
             <div className="rdv-topbar__avatar">
               <img
                 src="/partenaires/step-contact.jpg"
@@ -313,7 +360,7 @@ export function RdvFunnel() {
               />
             </div>
             <div>
-              <div className="rdv-topbar__title">Kesiah &amp; Partenaires</div>
+              <div className="rdv-topbar__title">Kesiah &amp; Partenaires • L&apos;Espace Libre</div>
               <div className="rdv-topbar__subtitle">
                 RC Décennale &amp; Mutuelle TNS • {ville ? `${ville} & France entière` : "Nouvelle-Aquitaine & France entière"}
               </div>
@@ -321,6 +368,14 @@ export function RdvFunnel() {
           </div>
 
           <div className="rdv-topbar__actions">
+            <a
+              href="https://www.lespace-libre.fr"
+              target="_blank"
+              rel="noopener noreferrer"
+              className="rdv-topbar__site-link"
+            >
+              <span>Site principal</span>
+            </a>
             <a
               href="tel:+33767290787"
               className="rdv-topbar__phone"
@@ -472,6 +527,7 @@ export function RdvFunnel() {
                     autoComplete="given-name"
                     required
                     className="rdv-input"
+                    placeholder="Votre prénom"
                     value={prenom}
                     onChange={(e) => setPrenom(e.target.value)}
                   />
@@ -486,6 +542,7 @@ export function RdvFunnel() {
                     autoComplete="family-name"
                     required
                     className="rdv-input"
+                    placeholder="Votre nom"
                     value={nom}
                     onChange={(e) => setNom(e.target.value)}
                   />
@@ -493,22 +550,6 @@ export function RdvFunnel() {
               </div>
 
               <div className="rdv-field">
-                <label className="rdv-label" htmlFor="rdv-tel">
-                  Téléphone mobile (pour l&apos;accès au planning)
-                </label>
-                <input
-                  id="rdv-tel"
-                  type="tel"
-                  inputMode="tel"
-                  autoComplete="tel"
-                  required
-                  className="rdv-input"
-                  value={telephone}
-                  onChange={(e) => setTelephone(e.target.value)}
-                />
-              </div>
-
-              <div className="rdv-field" style={{ marginBottom: "22px" }}>
                 <label className="rdv-label" htmlFor="rdv-email">
                   Adresse e-mail professionnelle
                 </label>
@@ -519,8 +560,26 @@ export function RdvFunnel() {
                   autoComplete="email"
                   required
                   className="rdv-input"
+                  placeholder="contact@votre-entreprise.fr"
                   value={email}
                   onChange={(e) => setEmail(e.target.value)}
+                />
+              </div>
+
+              <div className="rdv-field" style={{ marginBottom: "22px" }}>
+                <label className="rdv-label" htmlFor="rdv-tel">
+                  Votre numéro de téléphone mobile (pour recevoir votre accès au planning)
+                </label>
+                <input
+                  id="rdv-tel"
+                  type="tel"
+                  inputMode="tel"
+                  autoComplete="tel"
+                  required
+                  className="rdv-input"
+                  placeholder="06 12 34 56 78"
+                  value={telephone}
+                  onChange={(e) => setTelephone(e.target.value)}
                 />
               </div>
 
@@ -790,55 +849,126 @@ export function RdvFunnel() {
         </div>
       </section>
 
-      {/* ===== PIED DE PAGE AVEC LIENS SITE OFFICIEL & RÉASSURANCE ===== */}
-      <footer className="rdv-footer" style={{ borderTop: "1px solid rgba(255, 255, 255, 0.12)", padding: "40px 20px", textAlign: "center" }}>
-        <div style={{ maxWidth: "880px", margin: "0 auto" }}>
-          <div style={{ marginBottom: "18px" }}>
-            <a
-              href="https://www.lespace-libre.fr"
-              target="_blank"
-              rel="noopener noreferrer"
-              style={{
-                display: "inline-flex",
-                alignItems: "center",
-                gap: "8px",
-                color: "#82D2BC",
-                textDecoration: "none",
-                fontWeight: 600,
-                fontSize: "13.5px",
-                padding: "8px 18px",
-                borderRadius: "20px",
-                backgroundColor: "rgba(130, 210, 188, 0.1)",
-                border: "1px solid rgba(130, 210, 188, 0.3)",
-                transition: "all 0.2s ease",
-              }}
-            >
-              <span>Visiter le site principal : www.lespace-libre.fr</span>
-              <span>→</span>
-            </a>
-          </div>
+      {/* ===== PIED DE PAGE OFFICIEL L'ESPACE LIBRE (DESKTOP & MOBILE) ===== */}
+      <footer className="rdv-footer">
+        <div className="rdv-footer__main">
+          <div className="rdv-footer__container">
+            <div className="rdv-footer__top">
+              <a
+                href="https://www.lespace-libre.fr"
+                target="_blank"
+                rel="noopener noreferrer"
+                className="rdv-footer__brand"
+                aria-label="L'Espace Libre — accueil"
+              >
+                <img
+                  src="/logo.png"
+                  alt="L'Espace Libre"
+                  width={76}
+                  height={76}
+                  style={{ display: "block", width: "76px", height: "auto" }}
+                />
+                <div>
+                  <div className="rdv-footer__brand-title">
+                    L&apos;Espace Libre • Kesiah &amp; Partenaires
+                  </div>
+                  <div className="rdv-footer__brand-sub">
+                    Pôle Partenaires &amp; Courtage Assurance BTP (RC Décennale, Mutuelle TNS, Prévoyance)
+                  </div>
+                </div>
+              </a>
 
-          <div style={{ fontWeight: 700, color: "#fff", marginBottom: "6px", fontSize: "15px" }}>
-            Kesiah &amp; Partenaires — Mandataire &amp; Courtage Partenaire Assurance BTP
-          </div>
-          <p style={{ fontSize: "13px", color: "rgba(255, 255, 255, 0.65)", margin: "0 auto 16px auto", maxWidth: "620px", lineHeight: 1.5 }}>
-            Service de comparaison et d'audit indépendant opéré par L'Espace Libre en partenariat avec les leaders de l'assurance décennale et santé (AXA, Generali, SwissLife, Harmonie Mutuelle).
-          </p>
+              <a
+                href="https://www.lespace-libre.fr"
+                target="_blank"
+                rel="noopener noreferrer"
+                className="rdv-footer__visit-btn"
+              >
+                <span>Visiter le site principal : www.lespace-libre.fr</span>
+                <span>→</span>
+              </a>
+            </div>
 
-          <div style={{ display: "flex", justifyContent: "center", alignItems: "center", gap: "16px", flexWrap: "wrap", fontSize: "12px", color: "rgba(255, 255, 255, 0.5)" }}>
-            <a href="https://www.lespace-libre.fr/mentions-legales" target="_blank" rel="noopener noreferrer" style={{ color: "rgba(255, 255, 255, 0.6)", textDecoration: "underline" }}>
-              Mentions Légales
-            </a>
-            <span>•</span>
-            <a href="https://www.lespace-libre.fr/politique-de-confidentialite" target="_blank" rel="noopener noreferrer" style={{ color: "rgba(255, 255, 255, 0.6)", textDecoration: "underline" }}>
-              Politique de Confidentialité &amp; RGPD
-            </a>
-            <span>•</span>
-            <a href="tel:+33767290787" style={{ color: "rgba(255, 255, 255, 0.75)", textDecoration: "none", fontWeight: 600 }}>
-              Tél direct : 07 67 29 07 87
-            </a>
-            <span>•</span>
-            <span>{ville ? `${ville} & France entière` : "Nouvelle-Aquitaine & France entière"}</span>
+            <div className="rdv-footer__grid">
+              <div className="rdv-footer__col">
+                <h3 className="rdv-footer__heading">Siège &amp; Zone</h3>
+                <p className="rdv-footer__text">
+                  9 Cours de Gourgue<br />
+                  33000 Bordeaux<br />
+                  {ville ? `${ville} & France entière` : "Nouvelle-Aquitaine & France entière"}
+                </p>
+              </div>
+
+              <div className="rdv-footer__col">
+                <h3 className="rdv-footer__heading">Contact direct</h3>
+                <p className="rdv-footer__phone">
+                  <a href="tel:+33767290787">07 67 29 07 87</a>
+                </p>
+                <a
+                  href="mailto:kesiah@lespace-libre.fr"
+                  className="rdv-footer__link"
+                >
+                  kesiah@lespace-libre.fr
+                </a>
+              </div>
+
+              <div className="rdv-footer__col">
+                <h3 className="rdv-footer__heading">Disponibilités</h3>
+                <p className="rdv-footer__text">
+                  Échanges téléphoniques :<br />
+                  <strong>Lundi au Samedi de 8h à 20h</strong>
+                </p>
+              </div>
+
+              <div className="rdv-footer__col">
+                <h3 className="rdv-footer__heading">Informations &amp; Accès</h3>
+                <ul className="rdv-footer__list">
+                  <li>
+                    <a href="https://www.lespace-libre.fr" target="_blank" rel="noopener noreferrer">
+                      Accueil L&apos;Espace Libre
+                    </a>
+                  </li>
+                  <li>
+                    <a href="https://www.lespace-libre.fr/a-propos" target="_blank" rel="noopener noreferrer">
+                      À propos de L&apos;Espace Libre
+                    </a>
+                  </li>
+                  <li>
+                    <a href="https://www.lespace-libre.fr/contact" target="_blank" rel="noopener noreferrer">
+                      Formulaire de contact
+                    </a>
+                  </li>
+                  <li>
+                    <a href="https://www.lespace-libre.fr/politique-de-confidentialite" target="_blank" rel="noopener noreferrer">
+                      Protection des données (RGPD)
+                    </a>
+                  </li>
+                </ul>
+              </div>
+            </div>
+          </div>
+        </div>
+
+        {/* Bande sous-footer verte officielle de la charte L'Espace Libre */}
+        <div className="rdv-footer__bottom">
+          <div className="rdv-footer__bottom-inner">
+            <div className="rdv-footer__bottom-links">
+              <a href="https://www.lespace-libre.fr/mentions-legales" target="_blank" rel="noopener noreferrer">
+                Mentions Légales
+              </a>
+              <a href="https://www.lespace-libre.fr/politique-de-confidentialite" target="_blank" rel="noopener noreferrer">
+                Politique de Confidentialité
+              </a>
+              <a href="https://www.lespace-libre.fr/cgv" target="_blank" rel="noopener noreferrer">
+                CGV
+              </a>
+              <a href="https://www.lespace-libre.fr/plan-du-site" target="_blank" rel="noopener noreferrer">
+                Plan du site
+              </a>
+            </div>
+            <div className="rdv-footer__copy">
+              © {new Date().getFullYear()} L&apos;Espace Libre — Kesiah &amp; Partenaires. Tous droits réservés.
+            </div>
           </div>
         </div>
       </footer>

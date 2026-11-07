@@ -3,6 +3,20 @@ import { Resend } from "resend";
 import crypto from "crypto";
 import http from "http";
 import https from "https";
+import prospectsPrefillData from "./prospects-prefill.json";
+
+type ProspectRecord = {
+  id?: number;
+  nom_entreprise?: string;
+  metier?: string;
+  dirigeant_prenom?: string;
+  dirigeant_nom?: string;
+  telephone?: string;
+  email?: string;
+  ville?: string;
+};
+
+const PROSPECTS_PREFILL = prospectsPrefillData as Record<string, ProspectRecord>;
 
 export const runtime = "nodejs";
 export const dynamic = "force-dynamic";
@@ -67,22 +81,17 @@ const httpsRequest = httpRequest;
 /**
  * Récupère la fiche prospect depuis le Cockpit VPS par son ID (`ref`)
  */
-async function fetchCockpitProspect(refId: string): Promise<{
-  id?: number;
-  nom_entreprise?: string;
-  metier?: string;
-  dirigeant_prenom?: string;
-  dirigeant_nom?: string;
-  telephone?: string;
-  email?: string;
-  ville?: string;
-} | null> {
+async function fetchCockpitProspect(refId: string): Promise<ProspectRecord | null> {
   const clean = String(refId || "").trim();
   if (!/^\d+$/.test(clean)) return null;
+  const localHit = PROSPECTS_PREFILL[clean];
+  if (localHit) {
+    return localHit;
+  }
   try {
     const res = await httpRequest(
       `${COCKPIT_BASE_URL}/api/public/rdv/${clean}`,
-      { method: "GET", timeoutMs: 3500 }
+      { method: "GET", timeoutMs: 2500 }
     );
     if (res.ok && res.text) {
       return JSON.parse(res.text);

@@ -1526,10 +1526,11 @@ ul, ol { list-style: none; padding: 0; margin: 0; }
 
 /* ============================================================
    Isolation du tunnel d'atterrissage BTP /rdv (UI/UX Pro Max)
-   Masque l'en-tête et le pied de page généralistes Débarras
+   Masque l'en-tête et le pied de page généralistes Débarras,
+   tout en affichant le footer officiel .rdv-footer
    ============================================================ */
 body:has([data-isolated-funnel]) header.header,
-body:has([data-isolated-funnel]) footer {
+body:has([data-isolated-funnel]) footer:not(.rdv-footer) {
   display: none !important;
 }
 
@@ -2220,6 +2221,260 @@ body:has([data-isolated-funnel]) footer {
   }
   .rdv-step-pill__label {
     font-size: 11px;
+  }
+}
+
+/* ===== Liens Topbar L'Espace Libre & Pied de page officiel (.rdv-footer) ===== */
+.rdv-topbar__logo-link {
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  flex-shrink: 0;
+  border-radius: 50%;
+  transition: transform 0.18s ease;
+}
+
+.rdv-topbar__logo-link:hover {
+  transform: scale(1.04);
+}
+
+.rdv-topbar__site-link {
+  display: inline-flex;
+  align-items: center;
+  gap: 6px;
+  padding: 7px 14px;
+  border-radius: 999px;
+  background: transparent;
+  border: 1px solid var(--cr-pearl-200);
+  color: var(--cr-navy-900);
+  font-size: 13px;
+  font-weight: 600;
+  text-decoration: none;
+  transition: all 0.18s ease;
+  white-space: nowrap;
+}
+
+.rdv-topbar__site-link:hover {
+  background: var(--cr-pearl-100);
+  border-color: var(--cr-pearl-300);
+}
+
+.rdv-footer {
+  margin-top: auto;
+  background-color: #0C1F33;
+  color: #ffffff;
+  display: flex;
+  flex-direction: column;
+  width: 100%;
+  border-top: 1px solid rgba(255, 255, 255, 0.1);
+}
+
+.rdv-footer__main {
+  padding: 44px 24px 36px;
+  background: linear-gradient(180deg, #0C1F33 0%, #081523 100%);
+}
+
+.rdv-footer__container {
+  max-width: 1040px;
+  margin: 0 auto;
+  width: 100%;
+}
+
+.rdv-footer__top {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  gap: 20px;
+  flex-wrap: wrap;
+  padding-bottom: 28px;
+  margin-bottom: 28px;
+  border-bottom: 1px solid rgba(255, 255, 255, 0.12);
+}
+
+.rdv-footer__brand {
+  display: flex;
+  align-items: center;
+  gap: 16px;
+  text-decoration: none;
+  color: #ffffff;
+}
+
+.rdv-footer__brand-title {
+  font-size: 17px;
+  font-weight: 800;
+  color: #ffffff;
+  margin-bottom: 4px;
+}
+
+.rdv-footer__brand-sub {
+  font-size: 13px;
+  color: rgba(255, 255, 255, 0.72);
+  line-height: 1.4;
+}
+
+.rdv-footer__visit-btn {
+  display: inline-flex;
+  align-items: center;
+  gap: 8px;
+  color: #82D2BC;
+  text-decoration: none;
+  font-weight: 700;
+  font-size: 13.5px;
+  padding: 10px 18px;
+  border-radius: 999px;
+  background-color: rgba(130, 210, 188, 0.12);
+  border: 1px solid rgba(130, 210, 188, 0.35);
+  transition: all 0.2s ease;
+  white-space: nowrap;
+}
+
+.rdv-footer__visit-btn:hover {
+  background-color: rgba(130, 210, 188, 0.22);
+  border-color: #82D2BC;
+}
+
+.rdv-footer__grid {
+  display: grid;
+  grid-template-columns: repeat(4, 1fr);
+  gap: 28px;
+}
+
+.rdv-footer__heading {
+  font-size: 12px;
+  font-weight: 700;
+  text-transform: uppercase;
+  letter-spacing: 0.12em;
+  color: #82D2BC;
+  margin: 0 0 12px;
+}
+
+.rdv-footer__text {
+  font-size: 14px;
+  line-height: 1.6;
+  color: rgba(255, 255, 255, 0.85);
+  margin: 0;
+}
+
+.rdv-footer__phone {
+  font-size: 20px;
+  font-weight: 800;
+  margin: 0 0 6px;
+}
+
+.rdv-footer__phone a {
+  color: #ffffff;
+  text-decoration: none;
+}
+
+.rdv-footer__link {
+  font-size: 13.5px;
+  color: rgba(255, 255, 255, 0.78);
+  text-decoration: underline;
+}
+
+.rdv-footer__list {
+  list-style: none;
+  padding: 0;
+  margin: 0;
+  display: flex;
+  flex-direction: column;
+  gap: 7px;
+}
+
+.rdv-footer__list a {
+  font-size: 13.5px;
+  color: rgba(255, 255, 255, 0.82);
+  text-decoration: none;
+}
+
+.rdv-footer__list a:hover {
+  color: #82D2BC;
+  text-decoration: underline;
+}
+
+.rdv-footer__bottom {
+  background-color: #0A6E55;
+  padding: 14px 24px;
+}
+
+.rdv-footer__bottom-inner {
+  max-width: 1040px;
+  margin: 0 auto;
+  display: flex;
+  flex-wrap: wrap;
+  justify-content: space-between;
+  align-items: center;
+  gap: 14px;
+}
+
+.rdv-footer__bottom-links {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 18px;
+  font-size: 13px;
+  font-weight: 500;
+}
+
+.rdv-footer__bottom-links a {
+  color: rgba(255, 255, 255, 0.92);
+  text-decoration: none;
+}
+
+.rdv-footer__bottom-links a:hover {
+  text-decoration: underline;
+}
+
+.rdv-footer__copy {
+  font-size: 12.5px;
+  color: rgba(255, 255, 255, 0.8);
+}
+
+@media (max-width: 860px) {
+  .rdv-footer__grid {
+    grid-template-columns: repeat(2, 1fr);
+    gap: 24px;
+  }
+}
+
+@media (max-width: 640px) {
+  .rdv-topbar__site-link {
+    display: none;
+  }
+  .rdv-topbar__logo-link img {
+    width: 34px !important;
+    height: 34px !important;
+  }
+  .rdv-footer__main {
+    padding: 32px 18px 28px;
+  }
+  .rdv-footer__top {
+    flex-direction: column;
+    align-items: flex-start;
+    gap: 16px;
+    padding-bottom: 22px;
+    margin-bottom: 22px;
+  }
+  .rdv-footer__visit-btn {
+    width: 100%;
+    justify-content: center;
+    white-space: normal;
+    text-align: center;
+    box-sizing: border-box;
+  }
+  .rdv-footer__grid {
+    grid-template-columns: 1fr;
+    gap: 20px;
+  }
+  .rdv-footer__bottom {
+    padding: 16px 18px;
+  }
+  .rdv-footer__bottom-inner {
+    flex-direction: column;
+    align-items: flex-start;
+    gap: 10px;
+  }
+  .rdv-footer__bottom-links {
+    gap: 12px 16px;
   }
 }
 
