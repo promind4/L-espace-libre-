@@ -2,6 +2,7 @@
 
 import { useState, useEffect, type FormEvent } from "react";
 import { useSearchParams } from "next/navigation";
+import { BUSINESS } from "@/config/business";
 
 const PARTNERS = [
   { name: "AXA", src: "/partenaires/Logo-AXA.png", width: 70, height: 24 },
@@ -893,8 +894,8 @@ export function RdvFunnel() {
               <div className="rdv-footer__col">
                 <h3 className="rdv-footer__heading">Siège &amp; Zone</h3>
                 <p className="rdv-footer__text">
-                  9 Cours de Gourgue<br />
-                  33000 Bordeaux<br />
+                  {BUSINESS.adresse.rue}<br />
+                  {BUSINESS.adresse.codePostal} {BUSINESS.adresse.ville}<br />
                   {ville ? `${ville} & France entière` : "Nouvelle-Aquitaine & France entière"}
                 </p>
               </div>
