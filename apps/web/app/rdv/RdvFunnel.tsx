@@ -385,9 +385,19 @@ export function RdvFunnel() {
             >
               <span>07 67 29 07 87</span>
             </a>
-            <div className="rdv-topbar__badge">
-              <span className="rdv-topbar__dot" />
-              <span>Audit gratuit • Sans engagement</span>
+            <div
+              className="rdv-topbar__badge"
+              style={{
+                background: "#F8FAFC",
+                color: "#1E293B",
+                border: "1px solid #CBD5E1",
+                fontWeight: 600,
+                fontSize: "12px",
+                padding: "6px 12px",
+                borderRadius: "6px",
+              }}
+            >
+              <span>Devis gratuit sans engagement</span>
             </div>
           </div>
         </div>
@@ -432,66 +442,16 @@ export function RdvFunnel() {
             RC&nbsp;Décennale et votre mutuelle TNS, à garanties strictement
             identiques.
           </p>
-
-          {/* 3 BADGES VISUELS DE RÉASSURANCE (Lecture en 3 secondes, sans pavé de texte) */}
-          <div
+          <p
             style={{
-              display: "flex",
-              flexWrap: "wrap",
-              justifyContent: "center",
-              gap: "8px",
-              marginTop: "16px",
+              fontSize: "13px",
+              color: "var(--cr-pearl-500)",
+              margin: "12px 0 0",
+              fontWeight: 500,
             }}
           >
-            <span
-              style={{
-                display: "inline-flex",
-                alignItems: "center",
-                gap: "6px",
-                background: "#ECFDF5",
-                border: "1px solid #A7F3D0",
-                color: "#065F46",
-                fontSize: "12.5px",
-                fontWeight: 700,
-                padding: "6px 12px",
-                borderRadius: "999px",
-              }}
-            >
-              💰 300&nbsp;€ à 800&nbsp;€ / an d&apos;économie moyenne
-            </span>
-            <span
-              style={{
-                display: "inline-flex",
-                alignItems: "center",
-                gap: "6px",
-                background: "#F8FAFC",
-                border: "1px solid #E2E8F0",
-                color: "#1E293B",
-                fontSize: "12.5px",
-                fontWeight: 700,
-                padding: "6px 12px",
-                borderRadius: "999px",
-              }}
-            >
-              🛡️ 7 compagnies comparées (AXA, Generali, SwissLife...)
-            </span>
-            <span
-              style={{
-                display: "inline-flex",
-                alignItems: "center",
-                gap: "6px",
-                background: "#F8FAFC",
-                border: "1px solid #E2E8F0",
-                color: "#1E293B",
-                fontSize: "12.5px",
-                fontWeight: 700,
-                padding: "6px 12px",
-                borderRadius: "999px",
-              }}
-            >
-              ✅ 0&nbsp;€ de frais • 0 papier (résiliation 100&nbsp;% gérée)
-            </span>
-          </div>
+            7 compagnies comparées • Sans engagement • Démarches de résiliation 100% prises en charge
+          </p>
         </div>
 
         {/* Indicateur de progression */}
@@ -568,25 +528,19 @@ export function RdvFunnel() {
               <div style={{ display: "grid", gap: "10px", marginBottom: "18px" }}>
                 {[
                   {
-                    id: "RC Décennale + Mutuelle TNS (Bilan complet)",
-                    badge: "⚡ Le plus choisi",
-                    title: "Les deux : RC Décennale + Mutuelle TNS",
-                    sub: "Vérifier mes 2 contrats en 10 min • Jusqu'à 800 € / an d'économie cumulée",
-                    highlight: true,
+                    id: "RC Décennale + Mutuelle TNS",
+                    title: "RC Décennale + Mutuelle TNS",
+                    sub: "Étude globale de vos 2 contrats professionnels (10 min)",
                   },
                   {
-                    id: "Ma RC Décennale BTP",
-                    badge: "🏗️ Assurance chantier",
-                    title: "Ma RC Décennale BTP uniquement",
-                    sub: "Baisser ma cotisation actuelle à garanties et activités strictement identiques",
-                    highlight: false,
+                    id: "RC Décennale BTP",
+                    title: "RC Décennale BTP",
+                    sub: "Optimisation de votre contrat chantier à garanties identiques",
                   },
                   {
-                    id: "Ma Mutuelle TNS / Prévoyance",
-                    badge: "🏥 Loi Madelin",
-                    title: "Ma Mutuelle TNS / Prévoyance uniquement",
-                    sub: "Réduire mes mensualités ou améliorer mes remboursements (optique, dentaire)",
-                    highlight: false,
+                    id: "Mutuelle TNS / Prévoyance",
+                    title: "Mutuelle TNS / Prévoyance",
+                    sub: "Contrat Loi Madelin déductible fiscalement",
                   },
                 ].map((opt) => (
                   <button
@@ -600,39 +554,21 @@ export function RdvFunnel() {
                       gap: "12px",
                       width: "100%",
                       textAlign: "left",
-                      padding: "14px 16px",
-                      borderRadius: "14px",
-                      border: opt.highlight
-                        ? "2px solid #059669"
-                        : "1.5px solid #CBD5E1",
-                      background: opt.highlight ? "#ECFDF5" : "#FFFFFF",
+                      padding: "16px 18px",
+                      borderRadius: "10px",
+                      border: "1px solid #CBD5E1",
+                      background: "#FFFFFF",
                       cursor: "pointer",
-                      transition: "all 0.15s ease",
-                      boxShadow: opt.highlight
-                        ? "0 4px 14px rgba(5, 150, 105, 0.12)"
-                        : "0 1px 3px rgba(15, 23, 42, 0.04)",
+                      transition: "border-color 0.15s ease, background-color 0.15s ease",
                     }}
                   >
                     <div>
-                      <span
-                        style={{
-                          display: "inline-block",
-                          fontSize: "11px",
-                          fontWeight: 800,
-                          textTransform: "uppercase",
-                          letterSpacing: "0.04em",
-                          color: opt.highlight ? "#047857" : "#475569",
-                          marginBottom: "4px",
-                        }}
-                      >
-                        {opt.badge}
-                      </span>
                       <div
                         style={{
-                          fontSize: "15.5px",
-                          fontWeight: 800,
+                          fontSize: "15px",
+                          fontWeight: 700,
                           color: "#0F172A",
-                          marginBottom: "2px",
+                          marginBottom: "3px",
                         }}
                       >
                         {opt.title}
@@ -640,7 +576,7 @@ export function RdvFunnel() {
                       <div
                         style={{
                           fontSize: "13px",
-                          color: "#475569",
+                          color: "#64748B",
                           lineHeight: 1.35,
                         }}
                       >
@@ -650,16 +586,8 @@ export function RdvFunnel() {
                     <span
                       style={{
                         flexShrink: 0,
-                        display: "inline-flex",
-                        alignItems: "center",
-                        justifyContent: "center",
-                        width: "34px",
-                        height: "34px",
-                        borderRadius: "999px",
-                        background: opt.highlight ? "#059669" : "#F1F5F9",
-                        color: opt.highlight ? "#FFFFFF" : "#0F172A",
-                        fontWeight: 800,
                         fontSize: "16px",
+                        color: "#64748B",
                       }}
                     >
                       →
@@ -668,27 +596,16 @@ export function RdvFunnel() {
                 ))}
               </div>
 
-              {/* Mini-frise visuelle "Comment ça se passe" en 1 coup d'œil */}
+              {/* Frise sobre sans émoticône */}
               <div
                 style={{
-                  background: "#F8FAFC",
-                  border: "1px solid #E2E8F0",
-                  borderRadius: "12px",
-                  padding: "11px 14px",
                   fontSize: "12.5px",
-                  color: "#334155",
-                  display: "flex",
-                  flexWrap: "wrap",
-                  justifyContent: "center",
-                  gap: "6px 14px",
+                  color: "#64748B",
                   textAlign: "center",
+                  padding: "8px 0",
                 }}
               >
-                <span><strong>①</strong> Choix du contrat (1 clic)</span>
-                <span style={{ color: "#94A3B8" }}>•</span>
-                <span><strong>②</strong> Code d&apos;accès SMS</span>
-                <span style={{ color: "#94A3B8" }}>•</span>
-                <span><strong>③</strong> Point de 10 min sans engagement</span>
+                1. Choix du contrat · 2. Accès par code SMS · 3. Choix du créneau
               </div>
 
               <div className="rdv-direct-call-box" style={{ marginTop: "16px" }}>
@@ -705,24 +622,24 @@ export function RdvFunnel() {
 
           {step === 1 && selectedNeed && (
             <form onSubmit={handleStep1Submit} noValidate>
-              {/* Rappel du choix + bouton Modifier */}
+              {/* Rappel sobre du choix + bouton Modifier */}
               <div
                 style={{
                   display: "flex",
                   alignItems: "center",
                   justifyContent: "space-between",
                   gap: "10px",
-                  background: "#ECFDF5",
-                  border: "1px solid #A7F3D0",
-                  borderRadius: "10px",
+                  background: "#F8FAFC",
+                  border: "1px solid #E2E8F0",
+                  borderRadius: "8px",
                   padding: "8px 12px",
                   marginBottom: "16px",
                   fontSize: "13px",
-                  color: "#065F46",
+                  color: "#334155",
                 }}
               >
                 <span>
-                  ✓ Priorité : <strong>{selectedNeed}</strong>
+                  Option sélectionnée : <strong>{selectedNeed}</strong>
                 </span>
                 <button
                   type="button"
@@ -730,11 +647,10 @@ export function RdvFunnel() {
                   style={{
                     background: "transparent",
                     border: "none",
-                    color: "#047857",
-                    fontWeight: 700,
+                    color: "#2563EB",
                     fontSize: "12.5px",
-                    textDecoration: "underline",
                     cursor: "pointer",
+                    textDecoration: "underline",
                     padding: 0,
                   }}
                 >
@@ -847,20 +763,16 @@ export function RdvFunnel() {
                   value={telephone}
                   onChange={(e) => setTelephone(e.target.value)}
                 />
-                <div
+                <p
                   style={{
-                    marginTop: "7px",
+                    marginTop: "6px",
                     fontSize: "12px",
-                    color: "#047857",
-                    background: "#F0FDF4",
-                    border: "1px solid #BBF7D0",
-                    borderRadius: "8px",
-                    padding: "6px 10px",
+                    color: "var(--cr-pearl-500)",
                     lineHeight: 1.35,
                   }}
                 >
-                  🔒 Utilisé uniquement pour l&apos;envoi de votre code d&apos;accès SMS et votre appel de 10&nbsp;min. <strong>Zéro spam • Jamais partagé.</strong>
-                </div>
+                  Ce numéro sert uniquement à l&apos;envoi de votre code d&apos;accès par SMS et à votre échange téléphonique de 10 minutes. Aucun démarchage commercial.
+                </p>
               </div>
 
               {errorMessage && (
