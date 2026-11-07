@@ -61,6 +61,7 @@ export function RdvFunnel() {
 
   // Étape active du tunnel : 1 (Coordonnées) -> 2 (Code SMS) -> 3 (Calendrier APC)
   const [step, setStep] = useState<1 | 2 | 3>(1);
+  const [selectedNeed, setSelectedNeed] = useState("");
 
   const [entreprise, setEntreprise] = useState("");
   const [ville, setVille] = useState("");
@@ -431,6 +432,66 @@ export function RdvFunnel() {
             RC&nbsp;Décennale et votre mutuelle TNS, à garanties strictement
             identiques.
           </p>
+
+          {/* 3 BADGES VISUELS DE RÉASSURANCE (Lecture en 3 secondes, sans pavé de texte) */}
+          <div
+            style={{
+              display: "flex",
+              flexWrap: "wrap",
+              justifyContent: "center",
+              gap: "8px",
+              marginTop: "16px",
+            }}
+          >
+            <span
+              style={{
+                display: "inline-flex",
+                alignItems: "center",
+                gap: "6px",
+                background: "#ECFDF5",
+                border: "1px solid #A7F3D0",
+                color: "#065F46",
+                fontSize: "12.5px",
+                fontWeight: 700,
+                padding: "6px 12px",
+                borderRadius: "999px",
+              }}
+            >
+              💰 300&nbsp;€ à 800&nbsp;€ / an d&apos;économie moyenne
+            </span>
+            <span
+              style={{
+                display: "inline-flex",
+                alignItems: "center",
+                gap: "6px",
+                background: "#F8FAFC",
+                border: "1px solid #E2E8F0",
+                color: "#1E293B",
+                fontSize: "12.5px",
+                fontWeight: 700,
+                padding: "6px 12px",
+                borderRadius: "999px",
+              }}
+            >
+              🛡️ 7 compagnies comparées (AXA, Generali, SwissLife...)
+            </span>
+            <span
+              style={{
+                display: "inline-flex",
+                alignItems: "center",
+                gap: "6px",
+                background: "#F8FAFC",
+                border: "1px solid #E2E8F0",
+                color: "#1E293B",
+                fontSize: "12.5px",
+                fontWeight: 700,
+                padding: "6px 12px",
+                borderRadius: "999px",
+              }}
+            >
+              ✅ 0&nbsp;€ de frais • 0 papier (résiliation 100&nbsp;% gérée)
+            </span>
+          </div>
         </div>
 
         {/* Indicateur de progression */}
@@ -475,9 +536,212 @@ export function RdvFunnel() {
             step === 3 ? "rdv-tunnel-card--wide" : ""
           }`}
         >
-          {/* ================= ÉTAPE 1 : COORDONNÉES ================= */}
-          {step === 1 && (
+          {/* ================= ÉTAPE 1 : PALIER 1-CLIC PUIS COORDONNÉES ================= */}
+          {step === 1 && !selectedNeed && (
+            <div>
+              <div className="rdv-tunnel-card__head" style={{ marginBottom: "18px" }}>
+                <img
+                  src="/partenaires/step-contact.jpg"
+                  alt="Votre priorité"
+                  width={64}
+                  height={64}
+                  className="rdv-tunnel-card__illust"
+                />
+                <div>
+                  <h2 className="rdv-tunnel-card__title">
+                    Quel contrat souhaitez-vous vérifier en priorité&nbsp;?
+                  </h2>
+                  <p className="rdv-tunnel-card__desc">
+                    Sélectionnez votre besoin en 1 clic pour accéder au planning et comparer vos tarifs actuels à garanties égales.
+                  </p>
+                </div>
+              </div>
+
+              {(prefillLoaded || entreprise) && (
+                <div className="rdv-prefill-banner" style={{ marginBottom: "16px" }}>
+                  <span>
+                    Dossier <strong>{entreprise || `#${refId}`}</strong> identifié — cliquez sur votre priorité ci-dessous :
+                  </span>
+                </div>
+              )}
+
+              <div style={{ display: "grid", gap: "10px", marginBottom: "18px" }}>
+                {[
+                  {
+                    id: "RC Décennale + Mutuelle TNS (Bilan complet)",
+                    badge: "⚡ Le plus choisi",
+                    title: "Les deux : RC Décennale + Mutuelle TNS",
+                    sub: "Vérifier mes 2 contrats en 10 min • Jusqu'à 800 € / an d'économie cumulée",
+                    highlight: true,
+                  },
+                  {
+                    id: "Ma RC Décennale BTP",
+                    badge: "🏗️ Assurance chantier",
+                    title: "Ma RC Décennale BTP uniquement",
+                    sub: "Baisser ma cotisation actuelle à garanties et activités strictement identiques",
+                    highlight: false,
+                  },
+                  {
+                    id: "Ma Mutuelle TNS / Prévoyance",
+                    badge: "🏥 Loi Madelin",
+                    title: "Ma Mutuelle TNS / Prévoyance uniquement",
+                    sub: "Réduire mes mensualités ou améliorer mes remboursements (optique, dentaire)",
+                    highlight: false,
+                  },
+                ].map((opt) => (
+                  <button
+                    key={opt.id}
+                    type="button"
+                    onClick={() => setSelectedNeed(opt.id)}
+                    style={{
+                      display: "flex",
+                      alignItems: "center",
+                      justifyContent: "space-between",
+                      gap: "12px",
+                      width: "100%",
+                      textAlign: "left",
+                      padding: "14px 16px",
+                      borderRadius: "14px",
+                      border: opt.highlight
+                        ? "2px solid #059669"
+                        : "1.5px solid #CBD5E1",
+                      background: opt.highlight ? "#ECFDF5" : "#FFFFFF",
+                      cursor: "pointer",
+                      transition: "all 0.15s ease",
+                      boxShadow: opt.highlight
+                        ? "0 4px 14px rgba(5, 150, 105, 0.12)"
+                        : "0 1px 3px rgba(15, 23, 42, 0.04)",
+                    }}
+                  >
+                    <div>
+                      <span
+                        style={{
+                          display: "inline-block",
+                          fontSize: "11px",
+                          fontWeight: 800,
+                          textTransform: "uppercase",
+                          letterSpacing: "0.04em",
+                          color: opt.highlight ? "#047857" : "#475569",
+                          marginBottom: "4px",
+                        }}
+                      >
+                        {opt.badge}
+                      </span>
+                      <div
+                        style={{
+                          fontSize: "15.5px",
+                          fontWeight: 800,
+                          color: "#0F172A",
+                          marginBottom: "2px",
+                        }}
+                      >
+                        {opt.title}
+                      </div>
+                      <div
+                        style={{
+                          fontSize: "13px",
+                          color: "#475569",
+                          lineHeight: 1.35,
+                        }}
+                      >
+                        {opt.sub}
+                      </div>
+                    </div>
+                    <span
+                      style={{
+                        flexShrink: 0,
+                        display: "inline-flex",
+                        alignItems: "center",
+                        justifyContent: "center",
+                        width: "34px",
+                        height: "34px",
+                        borderRadius: "999px",
+                        background: opt.highlight ? "#059669" : "#F1F5F9",
+                        color: opt.highlight ? "#FFFFFF" : "#0F172A",
+                        fontWeight: 800,
+                        fontSize: "16px",
+                      }}
+                    >
+                      →
+                    </span>
+                  </button>
+                ))}
+              </div>
+
+              {/* Mini-frise visuelle "Comment ça se passe" en 1 coup d'œil */}
+              <div
+                style={{
+                  background: "#F8FAFC",
+                  border: "1px solid #E2E8F0",
+                  borderRadius: "12px",
+                  padding: "11px 14px",
+                  fontSize: "12.5px",
+                  color: "#334155",
+                  display: "flex",
+                  flexWrap: "wrap",
+                  justifyContent: "center",
+                  gap: "6px 14px",
+                  textAlign: "center",
+                }}
+              >
+                <span><strong>①</strong> Choix du contrat (1 clic)</span>
+                <span style={{ color: "#94A3B8" }}>•</span>
+                <span><strong>②</strong> Code d&apos;accès SMS</span>
+                <span style={{ color: "#94A3B8" }}>•</span>
+                <span><strong>③</strong> Point de 10 min sans engagement</span>
+              </div>
+
+              <div className="rdv-direct-call-box" style={{ marginTop: "16px" }}>
+                <div className="rdv-direct-call-box__text">
+                  <strong>Vous êtes sur chantier ou pressé ?</strong>
+                  <span>Faites le point directement par téléphone avec Kesiah :</span>
+                </div>
+                <a href="tel:+33767290787" className="rdv-direct-call-box__btn">
+                  Appeler le 07 67 29 07 87
+                </a>
+              </div>
+            </div>
+          )}
+
+          {step === 1 && selectedNeed && (
             <form onSubmit={handleStep1Submit} noValidate>
+              {/* Rappel du choix + bouton Modifier */}
+              <div
+                style={{
+                  display: "flex",
+                  alignItems: "center",
+                  justifyContent: "space-between",
+                  gap: "10px",
+                  background: "#ECFDF5",
+                  border: "1px solid #A7F3D0",
+                  borderRadius: "10px",
+                  padding: "8px 12px",
+                  marginBottom: "16px",
+                  fontSize: "13px",
+                  color: "#065F46",
+                }}
+              >
+                <span>
+                  ✓ Priorité : <strong>{selectedNeed}</strong>
+                </span>
+                <button
+                  type="button"
+                  onClick={() => setSelectedNeed("")}
+                  style={{
+                    background: "transparent",
+                    border: "none",
+                    color: "#047857",
+                    fontWeight: 700,
+                    fontSize: "12.5px",
+                    textDecoration: "underline",
+                    cursor: "pointer",
+                    padding: 0,
+                  }}
+                >
+                  Modifier
+                </button>
+              </div>
+
               <div className="rdv-tunnel-card__head">
                 <img
                   src="/partenaires/step-contact.jpg"
@@ -492,8 +756,8 @@ export function RdvFunnel() {
                   </h2>
                   <p className="rdv-tunnel-card__desc">
                     {prefillLoaded || entreprise
-                      ? "Vos informations ont été pré-remplies pour vous faire gagner du temps. Vérifiez votre numéro mobile pour afficher les créneaux disponibles."
-                      : "Indiquez vos coordonnées ci-dessous pour consulter immédiatement les créneaux disponibles de 15 minutes."}
+                      ? "Vos informations ont été pré-remplies. Indiquez uniquement votre numéro mobile pour recevoir votre code d'accès au planning."
+                      : "Indiquez vos coordonnées ci-dessous pour consulter immédiatement les créneaux disponibles."}
                   </p>
                 </div>
               </div>
@@ -577,11 +841,26 @@ export function RdvFunnel() {
                   inputMode="tel"
                   autoComplete="tel"
                   required
+                  autoFocus
                   className="rdv-input"
                   placeholder="06 12 34 56 78"
                   value={telephone}
                   onChange={(e) => setTelephone(e.target.value)}
                 />
+                <div
+                  style={{
+                    marginTop: "7px",
+                    fontSize: "12px",
+                    color: "#047857",
+                    background: "#F0FDF4",
+                    border: "1px solid #BBF7D0",
+                    borderRadius: "8px",
+                    padding: "6px 10px",
+                    lineHeight: 1.35,
+                  }}
+                >
+                  🔒 Utilisé uniquement pour l&apos;envoi de votre code d&apos;accès SMS et votre appel de 10&nbsp;min. <strong>Zéro spam • Jamais partagé.</strong>
+                </div>
               </div>
 
               {errorMessage && (
