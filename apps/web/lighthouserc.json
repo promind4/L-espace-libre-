@@ -4,7 +4,7 @@
       "url": [
         "http://localhost:3000/",
         "http://localhost:3000/zones/bordeaux",
-        "http://localhost:3000/zones/mont-de-marsan",
+        "http://localhost:3000/zones/merignac",
         "http://localhost:3000/services/debarras-maison-appartement",
         "http://localhost:3000/blog/prix-debarras-gironde-2026"
       ],

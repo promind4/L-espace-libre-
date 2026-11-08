@@ -19,7 +19,7 @@ const ROUTES_INDEXABLES = [
   "/",
   "/zones",
   "/zones/bordeaux",
-  "/zones/mont-de-marsan",
+  "/zones/merignac",
   "/services",
   "/services/debarras-maison-appartement",
   "/services/nettoyage-extreme-diogene",
@@ -78,7 +78,7 @@ test.describe("SEO infrastructure — robots et sitemap", () => {
     expect(res.status()).toBe(200);
     const body = await res.text();
     expect(body).toContain("/zones/bordeaux");
-    expect(body).toContain("/zones/mont-de-marsan");
+    expect(body).toContain("/zones/merignac");
     expect(body).toContain("/services/debarras-maison-appartement");
     expect(body).toContain("/blog/prix-debarras-gironde-2026");
     // Le sitemap ne doit PAS exposer /admin
