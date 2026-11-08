@@ -1,6 +1,6 @@
 "use client";
 
-import { useState, useEffect, type FormEvent } from "react";
+import { useState, useEffect, useRef, type FormEvent } from "react";
 import { useSearchParams } from "next/navigation";
 import { BUSINESS } from "@/config/business";
 
@@ -199,6 +199,18 @@ export function RdvFunnel() {
 
   const [isSubmitting, setIsSubmitting] = useState(false);
   const [errorMessage, setErrorMessage] = useState("");
+
+  const reviewsRef = useRef<HTMLDivElement>(null);
+
+  const scrollReviews = (direction: "left" | "right") => {
+    if (reviewsRef.current) {
+      const scrollAmount = reviewsRef.current.clientWidth * 0.85;
+      reviewsRef.current.scrollBy({
+        left: direction === "right" ? scrollAmount : -scrollAmount,
+        behavior: "smooth",
+      });
+    }
+  };
 
   // Pré-remplissage automatique depuis le lien de l'e-mail (?ref={id} ou ?t={base64})
   // Remplit : Prénom, Nom, Email professionnel, Entreprise, Ville.
@@ -1017,40 +1029,8 @@ export function RdvFunnel() {
         </div>
       </main>
 
-      {/* ===== BANDEAU D'AVIS CLIENTS VÉRIFIÉS ===== */}
-      <section className="rdv-reviews" aria-label="Avis clients vérifiés">
-        <div className="rdv-reviews__header">
-          <div className="rdv-reviews__badge">
-            <StarRating rating={4.8} />
-            <span>4.8 / 5 &bull; Avis clients vérifiés</span>
-          </div>
-          <h2 className="rdv-reviews__title">
-            Ce que constatent les professionnels après leur bilan
-          </h2>
-          <p className="rdv-reviews__subtitle">
-            Retours d&apos;expérience concrets de professionnels accompagnés par nos conseillers partenaires agréés.
-          </p>
-        </div>
-
-        <div className="rdv-reviews__grid">
-          {APC_REVIEWS.map((rev, i) => (
-            <div key={i} className="rdv-review-card">
-              <div className="rdv-review-card__stars">
-                <StarRating rating={rev.rating} />
-              </div>
-              <p className="rdv-review-card__quote">
-                «&nbsp;{rev.quote}&nbsp;»
-              </p>
-              <div className="rdv-review-card__meta">
-                <span className="rdv-review-card__author">{rev.name}</span>
-              </div>
-            </div>
-          ))}
-        </div>
-      </section>
-
-      {/* ===== LES 4 PILIERS (ICÔNES ILLUSTRÉES IDENTIQUES AU MAIL) ===== */}
-      <section style={{ padding: "56px 20px 32px" }}>
+      {/* ===== 1. LES 4 PILIERS (POINTS DE RÉASSURANCE) ===== */}
+      <section style={{ padding: "48px 20px 24px" }} aria-label="Points de réassurance">
         <div className="rdv-benefits-grid">
           {BENEFITS.map((b, i) => (
             <div key={i} className="rdv-benefit-card">
@@ -1066,6 +1046,63 @@ export function RdvFunnel() {
               </div>
             </div>
           ))}
+        </div>
+      </section>
+
+      {/* ===== 2. BANDEAU D'AVIS CLIENTS VÉRIFIÉS ===== */}
+      <section className="rdv-reviews" aria-label="Avis clients vérifiés">
+        <div className="rdv-reviews__header">
+          <div className="rdv-reviews__badge">
+            <StarRating rating={4.8} />
+            <span>4.8 / 5 &bull; Avis clients vérifiés</span>
+          </div>
+          <h2 className="rdv-reviews__title">
+            Ce que constatent les professionnels après leur bilan
+          </h2>
+          <p className="rdv-reviews__subtitle">
+            Retours d&apos;expérience concrets de professionnels accompagnés par nos conseillers partenaires agréés.
+          </p>
+        </div>
+
+        <div className="rdv-reviews__carousel-wrap">
+          <div ref={reviewsRef} className="rdv-reviews__grid">
+            {APC_REVIEWS.map((rev, i) => (
+              <div key={i} className="rdv-review-card">
+                <div className="rdv-review-card__stars">
+                  <StarRating rating={rev.rating} />
+                </div>
+                <p className="rdv-review-card__quote">
+                  «&nbsp;{rev.quote}&nbsp;»
+                </p>
+                <div className="rdv-review-card__meta">
+                  <span className="rdv-review-card__author">{rev.name}</span>
+                </div>
+              </div>
+            ))}
+          </div>
+
+          {/* Navigation flèches sur mobile pour faire défiler les avis */}
+          <div className="rdv-reviews__controls">
+            <button
+              type="button"
+              className="rdv-reviews__nav-btn"
+              onClick={() => scrollReviews("left")}
+              aria-label="Avis précédent"
+            >
+              ←
+            </button>
+            <span className="rdv-reviews__hint">
+              4 avis vérifiés • Défiler
+            </span>
+            <button
+              type="button"
+              className="rdv-reviews__nav-btn"
+              onClick={() => scrollReviews("right")}
+              aria-label="Avis suivant"
+            >
+              →
+            </button>
+          </div>
         </div>
       </section>
 
