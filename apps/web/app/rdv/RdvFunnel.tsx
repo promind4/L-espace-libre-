@@ -5,39 +5,35 @@ import { useSearchParams } from "next/navigation";
 import { BUSINESS } from "@/config/business";
 
 const PARTNERS = [
-  { name: "AXA", src: "/partenaires/Logo-AXA.png", height: 32 },
-  { name: "Generali", src: "/partenaires/Logo-GENERALI.png", height: 32 },
-  { name: "SwissLife", src: "/partenaires/Logo-SWISSLIFE.png", height: 30 },
-  { name: "Harmonie Mutuelle", src: "/partenaires/Logo-HARMONIE-MUTUELLE.svg", height: 32 },
-  { name: "Groupe MNCAP", src: "/partenaires/Logo-MNCAP.png", height: 28 },
-  { name: "Cardif BNP Paribas", src: "/partenaires/Logo-CARDIF.png", height: 26 },
-  { name: "Prépar-Vie", src: "/partenaires/prepar-vie-e1744285402573.png", height: 26 },
-  { name: "Mutlog", src: "/partenaires/Logo-MUTLOG.png", height: 28 },
+  { name: "AXA", src: "/partenaires/Logo-AXA.svg", height: 34 },
+  { name: "Generali", src: "/partenaires/Logo-GENERALI.svg", height: 34 },
+  { name: "SwissLife", src: "/partenaires/Logo-SWISSLIFE.svg", height: 32 },
+  { name: "Harmonie Mutuelle", src: "/partenaires/Logo-HARMONIE-MUTUELLE.svg", height: 34 },
+  { name: "Groupe MNCAP", src: "/partenaires/Logo-MNCAP.svg", height: 30 },
+  { name: "Cardif BNP Paribas", src: "/partenaires/Logo-CARDIF.svg", height: 28 },
+  { name: "Prépar-Vie", src: "/partenaires/Logo-PREPAR-VIE.png", height: 28 },
+  { name: "Mutlog", src: "/partenaires/Logo-MUTLOG.png", height: 30 },
 ];
 
 const APC_REVIEWS = [
   {
     name: "Corentin D.",
-    role: "Artisan BTP",
-    saving: "80 € / mois d'économie",
-    quote: "80 € par mois d'économie, très satisfait.",
+    stars: "★★★★★",
+    quote: "80 € par mois d'économie, très satisfait du bilan.",
   },
   {
     name: "Arnaud D.",
-    role: "Entreprise BTP",
-    saving: "9 000 € d'économie",
+    stars: "★★★★½",
     quote: "9 000 € d'économie qui me permettent de financer des travaux. Échange fluide et conseiller réactif.",
   },
   {
     name: "Thibault C.",
-    role: "Dirigeant d'entreprise",
-    saving: "Plus de 10 000 € d'économie",
-    quote: "Plus de 10 000 € d'économie, foncez chez Assurément Pas Cher.",
+    stars: "★★★★☆",
+    quote: "Plus de 10 000 € d'économie sur nos contrats professionnels, un accompagnement très sérieux.",
   },
   {
     name: "Jessica C.",
-    role: "Artisan indépendant",
-    saving: "3 800 € d'économie",
+    stars: "★★★★★",
     quote: "3 800 € d'économie, accompagnement au top merci à Sébastien.",
   },
 ];
@@ -381,22 +377,14 @@ export function RdvFunnel() {
               />
             </a>
             <div>
-              <div className="rdv-topbar__title">Kesiah &amp; Partenaires • L&apos;Espace Libre</div>
+              <div className="rdv-topbar__title">L&apos;Espace Libre Pros &bull; Pôle BTP</div>
               <div className="rdv-topbar__subtitle">
-                RC Décennale &amp; Mutuelle TNS
+                RC Décennale &amp; Mutuelle • Partenaire Cabinet APC (ORIAS)
               </div>
             </div>
           </div>
 
           <div className="rdv-topbar__actions">
-            <a
-              href="https://www.lespace-libre.fr"
-              target="_blank"
-              rel="noopener noreferrer"
-              className="rdv-topbar__site-link"
-            >
-              <span>Site principal</span>
-            </a>
             <a
               href="tel:+33767290787"
               className="rdv-topbar__phone"
@@ -471,30 +459,17 @@ export function RdvFunnel() {
           </p>
         </div>
 
-        {/* Indicateur de progression */}
+        {/* Indicateur de progression en 2 points simples */}
         <div className="rdv-stepper" role="navigation" aria-label="Étapes de réservation">
           <div
             className={`rdv-step-pill ${
-              step === 1
+              step <= 2
                 ? "rdv-step-pill--active"
                 : "rdv-step-pill--done"
             }`}
           >
-            <span className="rdv-step-pill__num">{step > 1 ? "✓" : "1"}</span>
-            <span className="rdv-step-pill__label">Vos infos</span>
-          </div>
-
-          <div
-            className={`rdv-step-pill ${
-              step === 2
-                ? "rdv-step-pill--active"
-                : step > 2
-                ? "rdv-step-pill--done"
-                : ""
-            }`}
-          >
-            <span className="rdv-step-pill__num">{step > 2 ? "✓" : "2"}</span>
-            <span className="rdv-step-pill__label">Accès SMS</span>
+            <span className="rdv-step-pill__num">{step > 2 ? "✓" : "1"}</span>
+            <span className="rdv-step-pill__label">Formulaire</span>
           </div>
 
           <div
@@ -502,8 +477,8 @@ export function RdvFunnel() {
               step === 3 ? "rdv-step-pill--active" : ""
             }`}
           >
-            <span className="rdv-step-pill__num">3</span>
-            <span className="rdv-step-pill__label">Planning</span>
+            <span className="rdv-step-pill__num">2</span>
+            <span className="rdv-step-pill__label">Accès au planning</span>
           </div>
         </div>
 
@@ -606,7 +581,7 @@ export function RdvFunnel() {
                 ))}
               </div>
 
-              {/* Frise sobre sans émoticône */}
+              {/* Frise sobre en 2 temps */}
               <div
                 style={{
                   fontSize: "12.5px",
@@ -615,7 +590,7 @@ export function RdvFunnel() {
                   padding: "8px 0",
                 }}
               >
-                1. Choix du contrat · 2. Accès par code SMS · 3. Choix du créneau
+                1. Choix de votre contrat &bull; 2. Accès direct au planning
               </div>
 
               <div className="rdv-direct-call-box" style={{ marginTop: "16px" }}>
@@ -821,19 +796,12 @@ export function RdvFunnel() {
           {step === 2 && (
             <form onSubmit={handleStep2Submit} noValidate>
               <div className="rdv-tunnel-card__head">
-                <img
-                  src="/partenaires/step-sms.jpg"
-                  alt="Validation SMS"
-                  width={64}
-                  height={64}
-                  className="rdv-tunnel-card__illust"
-                />
                 <div>
                   <h2 className="rdv-tunnel-card__title">
-                    2. Débloquez le planning avec votre code SMS
+                    Votre code d&apos;accès au planning
                   </h2>
                   <p className="rdv-tunnel-card__desc">
-                    Pour éviter les faux rendez-vous, un code d&apos;accès à 6 chiffres vient d&apos;être envoyé au{" "}
+                    Pour afficher les créneaux disponibles, saisissez le code à 6 chiffres envoyé au{" "}
                     <strong>{formattedPhone || telephone}</strong>.
                   </p>
                 </div>
@@ -897,16 +865,9 @@ export function RdvFunnel() {
           {step === 3 && (
             <div>
               <div className="rdv-tunnel-card__head">
-                <img
-                  src="/partenaires/step-calendar.jpg"
-                  alt="Planning officiel"
-                  width={64}
-                  height={64}
-                  className="rdv-tunnel-card__illust"
-                />
                 <div>
                   <h2 className="rdv-tunnel-card__title">
-                    3. Sélectionnez votre date et votre horaire
+                    Sélectionnez votre date et votre horaire
                   </h2>
                   <p className="rdv-tunnel-card__desc">
                     Choisissez librement votre créneau de 15 minutes dans le
@@ -970,31 +931,30 @@ export function RdvFunnel() {
         </div>
       </main>
 
-      {/* ===== BANDEAU D'AVIS CLIENTS APC VÉRIFIÉS ===== */}
+      {/* ===== BANDEAU D'AVIS CLIENTS VÉRIFIÉS ===== */}
       <section className="rdv-reviews" aria-label="Avis clients vérifiés">
         <div className="rdv-reviews__header">
           <div className="rdv-reviews__badge">
-            <span style={{ color: "#EAB308", letterSpacing: "1px" }}>★★★★★</span>
-            <span>4.9 / 5 • Avis clients vérifiés</span>
+            <span style={{ color: "#EAB308", letterSpacing: "1px" }}>★★★★½</span>
+            <span>4.8 / 5 &bull; Avis clients vérifiés</span>
           </div>
           <h2 className="rdv-reviews__title">
             Ce que constatent les professionnels après leur bilan
           </h2>
           <p className="rdv-reviews__subtitle">
-            Retours d&apos;expérience concrets de professionnels accompagnés par nos conseillers partenaires APC.
+            Retours d&apos;expérience concrets de professionnels accompagnés par nos conseillers partenaires agréés.
           </p>
         </div>
 
         <div className="rdv-reviews__grid">
           {APC_REVIEWS.map((rev, i) => (
             <div key={i} className="rdv-review-card">
-              <div className="rdv-review-card__stars">★★★★★</div>
+              <div className="rdv-review-card__stars">{rev.stars}</div>
               <p className="rdv-review-card__quote">
                 «&nbsp;{rev.quote}&nbsp;»
               </p>
               <div className="rdv-review-card__meta">
                 <span className="rdv-review-card__author">{rev.name}</span>
-                <span className="rdv-review-card__saving">{rev.saving}</span>
               </div>
             </div>
           ))}
