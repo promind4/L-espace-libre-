@@ -1,13 +1,37 @@
 import { test, expect } from "@playwright/test";
 
 /**
- * E2E Simulateur — parcours 3 étapes complet sur la page d'accueil.
- *
- * La soumission API est interceptée et stubée pour ne pas envoyer
- * d'e-mails réels en CI. On vérifie que l'écran « Votre estimation »
- * apparaît avec une fourchette plausible.
+ * E2E Simulateur — Désactivé sur `/` suite au Redesign v3 (cf. app/page.tsx :
+ * « le Simulator wizard 3 étapes a été retiré de la home par décision PO »).
+ * Remplacé par le test E2E du tunnel de conversion actif `/rendez-vous-rcd-decennale-mutuelle`.
  */
-test.describe("Simulateur public — parcours complet", () => {
+test.describe("Tunnel RDV Décennale & Mutuelle — parcours public", () => {
+  test("affiche le palier 1-clic, les 4 piliers, les avis et la FAQ", async ({
+    page,
+  }) => {
+    const response = await page.goto("/rendez-vous-rcd-decennale-mutuelle");
+    expect(response?.status()).toBeLessThan(400);
+
+    await expect(
+      page.getByRole("heading", {
+        name: /échange gratuit de 15\s*minutes/i,
+      }),
+    ).toBeVisible();
+
+    // Sélection d'un besoin au palier 1A -> ouvre le formulaire 1B
+    await page
+      .getByRole("button", { name: /RC Décennale \+ Mutuelle TNS/i })
+      .click();
+
+    await expect(
+      page.getByLabel(
+        /Numéro sur lequel vous souhaitez être contacté par le conseiller/i,
+      ),
+    ).toBeVisible();
+  });
+});
+
+test.describe.skip("Simulateur public — parcours complet", () => {
   test.beforeEach(async ({ page }) => {
     await page.route("**/api/simulator", async (route) => {
       await route.fulfill({
@@ -82,7 +106,7 @@ test.describe("Simulateur public — parcours complet", () => {
   });
 });
 
-test.describe("Simulateur — gestion d'erreur", () => {
+test.describe.skip("Simulateur — gestion d'erreur", () => {
   test("affiche un message clair en cas de 429 rate-limit", async ({ page }) => {
     await page.route("**/api/simulator", async (route) => {
       await route.fulfill({

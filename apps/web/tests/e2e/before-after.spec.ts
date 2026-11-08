@@ -1,11 +1,11 @@
 import { test, expect } from "@playwright/test";
 
 /**
- * E2E Slider Avant/Après — Constitution P2.3 :
- * test tactile sur mobile + clavier sur desktop.
+ * E2E Slider Avant/Après — Désactivé suite au Redesign v3 de la Home (cf. app/page.tsx).
+ * Le composant BeforeAfterStack n'est plus monté sur `/`.
  */
 
-test.describe("BeforeAfterStack — interaction tactile et clavier", () => {
+test.describe.skip("BeforeAfterStack — interaction tactile et clavier", () => {
   test("compteur visible et indique 1 sur 5", async ({ page }) => {
     await page.goto("/");
     await page.locator("section").filter({ hasText: /avant\s*\/\s*après/i }).first().scrollIntoViewIfNeeded();
@@ -54,7 +54,7 @@ test.describe("BeforeAfterStack — interaction tactile et clavier", () => {
   });
 });
 
-test.describe("BeforeAfterStack — tactile (mobile uniquement)", () => {
+test.describe.skip("BeforeAfterStack — tactile (mobile uniquement)", () => {
   test.skip(
     ({ browserName, isMobile }) => !isMobile,
     "Test uniquement pertinent sur appareil tactile",
