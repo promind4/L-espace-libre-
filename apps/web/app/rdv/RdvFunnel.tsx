@@ -202,7 +202,7 @@ export function RdvFunnel() {
 
   const reviewsRef = useRef<HTMLDivElement>(null);
 
-  // ===== Mesure du tunnel : GA4 (si configuré) + journal serveur Vercel =====
+  // ===== Mesure du tunnel : Umami (si configuré) + journal serveur Vercel =====
   const visitIdRef = useRef("");
   const seenOnce = useRef<Set<string>>(new Set());
   const live = useRef({
@@ -235,8 +235,10 @@ export function RdvFunnel() {
         ref: live.current.refId,
         ...props,
       });
-      const w = window as unknown as { gtag?: (...args: unknown[]) => void };
-      w.gtag?.("event", `rdv_${event}`, props);
+      const w = window as unknown as {
+        umami?: { track?: (name: string, data?: Record<string, unknown>) => void };
+      };
+      w.umami?.track?.(`rdv_${event}`, props);
       const sent =
         typeof navigator.sendBeacon === "function" &&
         navigator.sendBeacon("/api/rdv", new Blob([payload], { type: "application/json" }));

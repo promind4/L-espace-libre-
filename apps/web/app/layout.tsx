@@ -23,6 +23,16 @@ import { Footer } from "@/components/marketing/Footer";
  */
 const GA_ID = process.env["NEXT_PUBLIC_GA_MEASUREMENT_ID"];
 
+/**
+ * Umami — mesure d'audience open source, sans cookie.
+ * Actif seulement si `NEXT_PUBLIC_UMAMI_WEBSITE_ID` est défini dans Vercel.
+ * `NEXT_PUBLIC_UMAMI_SRC` pointe vers le script (Umami Cloud par défaut,
+ * ou l'adresse de votre instance auto-hébergée).
+ */
+const UMAMI_ID = process.env["NEXT_PUBLIC_UMAMI_WEBSITE_ID"];
+const UMAMI_SRC =
+  process.env["NEXT_PUBLIC_UMAMI_SRC"] || "https://cloud.umami.is/script.js";
+
 // `next/font/google` télécharge Inter AU BUILD et la sert depuis le
 // domaine local (pas de requête runtime vers Google — Constitution P4.4
 // respectée). Si vous préférez l'auto-hébergement manuel via
@@ -131,6 +141,13 @@ export default function RootLayout({
         <Header />
         {children}
         <Footer />
+        {UMAMI_ID && (
+          <Script
+            src={UMAMI_SRC}
+            data-website-id={UMAMI_ID}
+            strategy="afterInteractive"
+          />
+        )}
         {GA_ID && (
           <>
             {/*
