@@ -1914,52 +1914,192 @@ body:has([data-isolated-funnel]) footer:not(.rdv-footer) {
   margin-bottom: 16px;
 }
 
-/* Ruban partenaires sobre */
+/* Ruban partenaires avec défilement continu infini */
 .rdv-partners {
-  background: #fff;
+  background: #ffffff;
   border-top: 1px solid var(--cr-pearl-200);
   border-bottom: 1px solid var(--cr-pearl-200);
-  padding: 28px 20px;
+  padding: 22px 0 20px;
+  overflow: hidden;
 }
 
 .rdv-partners__inner {
-  max-width: 960px;
+  max-width: 1080px;
   margin: 0 auto;
   text-align: center;
+  padding: 0 16px;
 }
 
 .rdv-partners__label {
-  font-size: 11px;
+  font-size: 11.5px;
   font-weight: 700;
   text-transform: uppercase;
   letter-spacing: 0.12em;
   color: var(--cr-pearl-500);
-  margin-bottom: 18px;
+  margin-bottom: 16px;
 }
 
-.rdv-partners__grid {
-  display: flex;
-  flex-wrap: wrap;
-  align-items: center;
-  justify-content: center;
-  gap: 16px 28px;
+.rdv-marquee {
+  overflow: hidden;
+  width: 100%;
+  position: relative;
+  mask-image: linear-gradient(to right, transparent, black 6%, black 94%, transparent);
+  -webkit-mask-image: linear-gradient(to right, transparent, black 6%, black 94%, transparent);
 }
 
-.rdv-partners__item {
-  height: 40px;
+.rdv-marquee__track {
+  display: flex;
+  align-items: center;
+  gap: 24px;
+  width: max-content;
+  animation: rdv-marquee-anim 28s linear infinite;
+}
+
+.rdv-marquee:hover .rdv-marquee__track {
+  animation-play-state: paused;
+}
+
+@keyframes rdv-marquee-anim {
+  0% {
+    transform: translateX(0);
+  }
+  100% {
+    transform: translateX(-50%);
+  }
+}
+
+.rdv-marquee__item {
+  height: 54px;
+  min-width: 110px;
   display: flex;
   align-items: center;
   justify-content: center;
-  padding: 6px 14px;
-  background: #fff;
+  padding: 8px 20px;
+  background: #ffffff;
   border: 1px solid var(--cr-pearl-200);
-  border-radius: 10px;
+  border-radius: 12px;
+  box-shadow: 0 2px 6px rgba(12, 31, 51, 0.03);
+  flex-shrink: 0;
+  transition: transform 0.2s ease, box-shadow 0.2s ease, border-color 0.2s ease;
 }
 
-.rdv-partners__img {
-  max-height: 24px;
+.rdv-marquee__item:hover {
+  transform: translateY(-2px);
+  box-shadow: 0 6px 16px rgba(12, 31, 51, 0.08);
+  border-color: var(--cr-pearl-300);
+}
+
+.rdv-marquee__img {
+  max-height: 32px;
+  max-width: 120px;
   width: auto;
   object-fit: contain;
+  display: block;
+}
+
+/* Banderole d'avis clients vérifiés APC */
+.rdv-reviews {
+  padding: 44px 20px 24px;
+  max-width: 1040px;
+  margin: 0 auto;
+  width: 100%;
+}
+
+.rdv-reviews__header {
+  text-align: center;
+  margin-bottom: 24px;
+}
+
+.rdv-reviews__badge {
+  display: inline-flex;
+  align-items: center;
+  gap: 8px;
+  background: #FEF9C3;
+  border: 1px solid #FDE047;
+  color: #854D0E;
+  padding: 5px 14px;
+  border-radius: 999px;
+  font-size: 12.5px;
+  font-weight: 700;
+  margin-bottom: 8px;
+}
+
+.rdv-reviews__title {
+  font-size: 22px;
+  font-weight: 800;
+  color: var(--cr-navy-950);
+  margin: 0 0 6px;
+}
+
+.rdv-reviews__subtitle {
+  font-size: 13.5px;
+  color: var(--cr-pearl-500);
+  margin: 0;
+}
+
+.rdv-reviews__grid {
+  display: grid;
+  grid-template-columns: repeat(4, 1fr);
+  gap: 16px;
+}
+
+.rdv-review-card {
+  background: #ffffff;
+  border: 1px solid var(--cr-pearl-200);
+  border-radius: 16px;
+  padding: 20px 18px;
+  box-shadow: 0 2px 8px rgba(12, 31, 51, 0.04);
+  display: flex;
+  flex-direction: column;
+  justify-content: space-between;
+  gap: 12px;
+  transition: transform 0.2s ease, box-shadow 0.2s ease;
+}
+
+.rdv-review-card:hover {
+  transform: translateY(-2px);
+  box-shadow: 0 8px 20px rgba(12, 31, 51, 0.08);
+}
+
+.rdv-review-card__stars {
+  color: #EAB308;
+  font-size: 15px;
+  letter-spacing: 2px;
+}
+
+.rdv-review-card__quote {
+  font-size: 13.5px;
+  color: #1E293B;
+  line-height: 1.45;
+  margin: 0;
+  flex-grow: 1;
+}
+
+.rdv-review-card__meta {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  gap: 8px;
+  border-top: 1px solid #F1F5F9;
+  padding-top: 12px;
+  margin-top: 4px;
+}
+
+.rdv-review-card__author {
+  font-size: 13px;
+  font-weight: 700;
+  color: var(--cr-navy-950);
+}
+
+.rdv-review-card__saving {
+  font-size: 11px;
+  font-weight: 700;
+  color: #047857;
+  background: #ECFDF5;
+  border: 1px solid #A7F3D0;
+  padding: 3px 8px;
+  border-radius: 6px;
+  white-space: nowrap;
 }
 
 /* Grille 4 avantages avec icônes illustrées du mail */
@@ -2111,21 +2251,29 @@ body:has([data-isolated-funnel]) footer:not(.rdv-footer) {
     padding: 7px 12px;
   }
   .rdv-partners {
-    padding: 16px 12px;
+    padding: 18px 0 16px;
   }
   .rdv-partners__label {
     margin-bottom: 12px;
-    font-size: 10px;
+    font-size: 10.5px;
   }
-  .rdv-partners__grid {
-    gap: 8px 10px;
+  .rdv-marquee__track {
+    gap: 16px;
   }
-  .rdv-partners__item {
-    height: 32px;
-    padding: 4px 10px;
+  .rdv-marquee__item {
+    height: 46px;
+    min-width: 95px;
+    padding: 6px 14px;
   }
-  .rdv-partners__img {
-    max-height: 18px;
+  .rdv-marquee__img {
+    max-height: 26px;
+    max-width: 95px;
+  }
+  .rdv-reviews {
+    padding: 28px 14px 16px;
+  }
+  .rdv-reviews__grid {
+    grid-template-columns: 1fr;
   }
   .rdv-stage {
     padding: 20px 14px 36px;

@@ -5,13 +5,41 @@ import { useSearchParams } from "next/navigation";
 import { BUSINESS } from "@/config/business";
 
 const PARTNERS = [
-  { name: "AXA", src: "/partenaires/Logo-AXA.png", width: 70, height: 24 },
-  { name: "Generali", src: "/partenaires/Logo-GENERALI.png", width: 80, height: 24 },
-  { name: "SwissLife", src: "/partenaires/Logo-SWISSLIFE.png", width: 85, height: 24 },
-  { name: "Harmonie Mutuelle", src: "/partenaires/Logo-HARMONIE-MUTUELLE.png", width: 100, height: 24 },
-  { name: "Prépar-Vie", src: "/partenaires/prepar-vie-e1744285402573.png", width: 85, height: 24 },
-  { name: "Cardif BNP Paribas", src: "/partenaires/Logo-CARDIF.png", width: 80, height: 24 },
-  { name: "Mutlog", src: "/partenaires/Logo-MUTLOG.png", width: 75, height: 24 },
+  { name: "AXA", src: "/partenaires/Logo-AXA.png", height: 32 },
+  { name: "Generali", src: "/partenaires/Logo-GENERALI.png", height: 32 },
+  { name: "SwissLife", src: "/partenaires/Logo-SWISSLIFE.png", height: 30 },
+  { name: "Harmonie Mutuelle", src: "/partenaires/Logo-HARMONIE-MUTUELLE.svg", height: 32 },
+  { name: "Groupe MNCAP", src: "/partenaires/Logo-MNCAP.png", height: 28 },
+  { name: "Cardif BNP Paribas", src: "/partenaires/Logo-CARDIF.png", height: 26 },
+  { name: "Prépar-Vie", src: "/partenaires/prepar-vie-e1744285402573.png", height: 26 },
+  { name: "Mutlog", src: "/partenaires/Logo-MUTLOG.png", height: 28 },
+];
+
+const APC_REVIEWS = [
+  {
+    name: "Corentin D.",
+    role: "Artisan BTP",
+    saving: "80 € / mois d'économie",
+    quote: "80 € par mois d'économie, très satisfait.",
+  },
+  {
+    name: "Arnaud D.",
+    role: "Entreprise BTP",
+    saving: "9 000 € d'économie",
+    quote: "9 000 € d'économie qui me permettent de financer des travaux. Échange fluide et conseiller réactif.",
+  },
+  {
+    name: "Thibault C.",
+    role: "Dirigeant d'entreprise",
+    saving: "Plus de 10 000 € d'économie",
+    quote: "Plus de 10 000 € d'économie, foncez chez Assurément Pas Cher.",
+  },
+  {
+    name: "Jessica C.",
+    role: "Artisan indépendant",
+    saving: "3 800 € d'économie",
+    quote: "3 800 € d'économie, accompagnement au top merci à Sébastien.",
+  },
 ];
 
 const BENEFITS = [
@@ -352,19 +380,10 @@ export function RdvFunnel() {
                 style={{ objectFit: "contain", width: "42px", height: "42px", display: "block" }}
               />
             </a>
-            <div className="rdv-topbar__avatar">
-              <img
-                src="/partenaires/step-contact.jpg"
-                alt="Kesiah & Partenaires"
-                width={38}
-                height={38}
-                style={{ objectFit: "cover", width: "38px", height: "38px" }}
-              />
-            </div>
             <div>
               <div className="rdv-topbar__title">Kesiah &amp; Partenaires • L&apos;Espace Libre</div>
               <div className="rdv-topbar__subtitle">
-                RC Décennale &amp; Mutuelle TNS • {ville ? `${ville} & France entière` : "Nouvelle-Aquitaine & France entière"}
+                RC Décennale &amp; Mutuelle TNS
               </div>
             </div>
           </div>
@@ -403,25 +422,28 @@ export function RdvFunnel() {
         </div>
       </header>
 
-      {/* ===== BANDEAU PARTENAIRES COMPAGNIES (Juste sous le header) ===== */}
+      {/* ===== BANDEAU PARTENAIRES AVEC DÉFILEMENT CONTINU ===== */}
       <section
         className="rdv-partners"
         aria-label="Compagnies d'assurance comparées"
       >
         <div className="rdv-partners__inner">
           <div className="rdv-partners__label">
-            Comparatif réalisé auprès des compagnies de premier plan
+            Comparatif indépendant réalisé auprès des compagnies de premier plan
           </div>
-          <div className="rdv-partners__grid">
-            {PARTNERS.map((p) => (
-              <div key={p.name} className="rdv-partners__item" title={p.name}>
-                <img
-                  src={p.src}
-                  alt={p.name}
-                  className="rdv-partners__img"
-                />
-              </div>
-            ))}
+          <div className="rdv-marquee">
+            <div className="rdv-marquee__track">
+              {[...PARTNERS, ...PARTNERS].map((p, idx) => (
+                <div key={`${p.name}-${idx}`} className="rdv-marquee__item" title={p.name}>
+                  <img
+                    src={p.src}
+                    alt={p.name}
+                    className="rdv-marquee__img"
+                    style={{ height: `${p.height}px` }}
+                  />
+                </div>
+              ))}
+            </div>
           </div>
         </div>
       </section>
@@ -429,11 +451,6 @@ export function RdvFunnel() {
       {/* ===== ZONE PRINCIPALE : TUNNEL EN 3 ÉTAPES ===== */}
       <main className="rdv-stage">
         <div className="rdv-stage__header">
-          <span className="rdv-stage__pill">
-            {entreprise
-              ? `Dossier préparé pour ${entreprise}${ville ? ` (${ville})` : ""}`
-              : "Artisans & Dirigeants du BTP"}
-          </span>
           <h1 className="rdv-stage__title">
             Accédez à votre créneau d&apos;échange gratuit de 15&nbsp;minutes.
           </h1>
@@ -450,7 +467,7 @@ export function RdvFunnel() {
               fontWeight: 500,
             }}
           >
-            7 compagnies comparées • Sans engagement • Démarches de résiliation 100% prises en charge
+            8 compagnies comparées • Sans engagement • Démarches de résiliation 100% prises en charge
           </p>
         </div>
 
@@ -500,13 +517,6 @@ export function RdvFunnel() {
           {step === 1 && !selectedNeed && (
             <div>
               <div className="rdv-tunnel-card__head" style={{ marginBottom: "18px" }}>
-                <img
-                  src="/partenaires/step-contact.jpg"
-                  alt="Votre priorité"
-                  width={64}
-                  height={64}
-                  className="rdv-tunnel-card__illust"
-                />
                 <div>
                   <h2 className="rdv-tunnel-card__title">
                     Quel contrat souhaitez-vous vérifier en priorité&nbsp;?
@@ -659,13 +669,6 @@ export function RdvFunnel() {
               </div>
 
               <div className="rdv-tunnel-card__head">
-                <img
-                  src="/partenaires/step-contact.jpg"
-                  alt="Vos coordonnées"
-                  width={64}
-                  height={64}
-                  className="rdv-tunnel-card__illust"
-                />
                 <div>
                   <h2 className="rdv-tunnel-card__title">
                     1. Accédez au planning des consultants
@@ -966,6 +969,37 @@ export function RdvFunnel() {
           )}
         </div>
       </main>
+
+      {/* ===== BANDEAU D'AVIS CLIENTS APC VÉRIFIÉS ===== */}
+      <section className="rdv-reviews" aria-label="Avis clients vérifiés">
+        <div className="rdv-reviews__header">
+          <div className="rdv-reviews__badge">
+            <span style={{ color: "#EAB308", letterSpacing: "1px" }}>★★★★★</span>
+            <span>4.9 / 5 • Avis clients vérifiés</span>
+          </div>
+          <h2 className="rdv-reviews__title">
+            Ce que constatent les professionnels après leur bilan
+          </h2>
+          <p className="rdv-reviews__subtitle">
+            Retours d&apos;expérience concrets de professionnels accompagnés par nos conseillers partenaires APC.
+          </p>
+        </div>
+
+        <div className="rdv-reviews__grid">
+          {APC_REVIEWS.map((rev, i) => (
+            <div key={i} className="rdv-review-card">
+              <div className="rdv-review-card__stars">★★★★★</div>
+              <p className="rdv-review-card__quote">
+                «&nbsp;{rev.quote}&nbsp;»
+              </p>
+              <div className="rdv-review-card__meta">
+                <span className="rdv-review-card__author">{rev.name}</span>
+                <span className="rdv-review-card__saving">{rev.saving}</span>
+              </div>
+            </div>
+          ))}
+        </div>
+      </section>
 
       {/* ===== LES 4 PILIERS (ICÔNES ILLUSTRÉES IDENTIQUES AU MAIL) ===== */}
       <section style={{ padding: "56px 20px 32px" }}>
