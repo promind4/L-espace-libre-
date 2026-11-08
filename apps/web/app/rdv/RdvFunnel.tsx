@@ -38,16 +38,14 @@ const APC_REVIEWS = [
   },
 ];
 
-function StarRating({
-  rating,
-  idPrefix = "star",
-}: {
-  rating: number;
-  idPrefix?: string;
-}) {
+const STAR_PATH =
+  "M9.049 2.927c.3-.921 1.603-.921 1.902 0l1.07 3.292a1 1 0 00.95.69h3.462c.969 0 1.371 1.24.588 1.81l-2.8 2.034a1 1 0 00-.364 1.118l1.07 3.292c.3.921-.755 1.688-1.54 1.118l-2.8-2.034a1 1 0 00-1.175 0l-2.8 2.034c-.784.57-1.838-.197-1.539-1.118l1.07-3.292a1 1 0 00-.364-1.118L2.98 8.72c-.783-.57-.38-1.81.588-1.81h3.461a1 1 0 00.951-.69l1.07-3.292z";
+
+function StarRating({ rating }: { rating: number }) {
   const stars = [];
   for (let i = 1; i <= 5; i++) {
     if (rating >= i) {
+      // Étoile pleine (dorée)
       stars.push(
         <svg
           key={i}
@@ -58,33 +56,57 @@ function StarRating({
           aria-hidden="true"
           style={{ display: "inline-block", verticalAlign: "middle" }}
         >
-          <path d="M9.049 2.927c.3-.921 1.603-.921 1.902 0l1.07 3.292a1 1 0 00.95.69h3.462c.969 0 1.371 1.24.588 1.81l-2.8 2.034a1 1 0 00-.364 1.118l1.07 3.292c.3.921-.755 1.688-1.54 1.118l-2.8-2.034a1 1 0 00-1.175 0l-2.8 2.034c-.784.57-1.838-.197-1.539-1.118l1.07-3.292a1 1 0 00-.364-1.118L2.98 8.72c-.783-.57-.38-1.81.588-1.81h3.461a1 1 0 00.951-.69l1.07-3.292z" />
+          <path d={STAR_PATH} />
         </svg>
       );
     } else if (rating >= i - 0.5) {
-      const gradId = `${idPrefix}-half-${i}`;
+      // Demi-étoile : étoile grise en fond, demi-étoile dorée rognée à 50% par dessus (aucun bug de fraction de texte)
       stars.push(
-        <svg
+        <span
           key={i}
-          width="16"
-          height="16"
-          viewBox="0 0 20 20"
+          style={{
+            position: "relative",
+            display: "inline-block",
+            width: "16px",
+            height: "16px",
+            verticalAlign: "middle",
+          }}
           aria-hidden="true"
-          style={{ display: "inline-block", verticalAlign: "middle" }}
         >
-          <defs>
-            <linearGradient id={gradId}>
-              <stop offset="50%" stopColor="#F59E0B" />
-              <stop offset="50%" stopColor="#CBD5E1" />
-            </linearGradient>
-          </defs>
-          <path
-            fill={`url(#${gradId})`}
-            d="M9.049 2.927c.3-.921 1.603-.921 1.902 0l1.07 3.292a1 1 0 00.95.69h3.462c.969 0 1.371 1.24.588 1.81l-2.8 2.034a1 1 0 00-.364 1.118l1.07 3.292c.3.921-.755 1.688-1.54 1.118l-2.8-2.034a1 1 0 00-1.175 0l-2.8 2.034c-.784.57-1.838-.197-1.539-1.118l1.07-3.292a1 1 0 00-.364-1.118L2.98 8.72c-.783-.57-.38-1.81.588-1.81h3.461a1 1 0 00.951-.69l1.07-3.292z"
-          />
-        </svg>
+          <svg
+            width="16"
+            height="16"
+            viewBox="0 0 20 20"
+            fill="#CBD5E1"
+            style={{ display: "block" }}
+          >
+            <path d={STAR_PATH} />
+          </svg>
+          <span
+            style={{
+              position: "absolute",
+              top: 0,
+              left: 0,
+              width: "50%",
+              height: "100%",
+              overflow: "hidden",
+              display: "block",
+            }}
+          >
+            <svg
+              width="16"
+              height="16"
+              viewBox="0 0 20 20"
+              fill="#F59E0B"
+              style={{ display: "block" }}
+            >
+              <path d={STAR_PATH} />
+            </svg>
+          </span>
+        </span>
       );
     } else {
+      // Étoile vide (grise)
       stars.push(
         <svg
           key={i}
@@ -95,13 +117,13 @@ function StarRating({
           aria-hidden="true"
           style={{ display: "inline-block", verticalAlign: "middle" }}
         >
-          <path d="M9.049 2.927c.3-.921 1.603-.921 1.902 0l1.07 3.292a1 1 0 00.95.69h3.462c.969 0 1.371 1.24.588 1.81l-2.8 2.034a1 1 0 00-.364 1.118l1.07 3.292c.3.921-.755 1.688-1.54 1.118l-2.8-2.034a1 1 0 00-1.175 0l-2.8 2.034c-.784.57-1.838-.197-1.539-1.118l1.07-3.292a1 1 0 00-.364-1.118L2.98 8.72c-.783-.57-.38-1.81.588-1.81h3.461a1 1 0 00.951-.69l1.07-3.292z" />
+          <path d={STAR_PATH} />
         </svg>
       );
     }
   }
   return (
-    <span style={{ display: "inline-flex", gap: "2px", alignItems: "center" }}>
+    <span style={{ display: "inline-flex", gap: "3px", alignItems: "center" }}>
       {stars}
     </span>
   );
@@ -117,7 +139,7 @@ const BENEFITS = [
   {
     img: "/partenaires/32d71011efa18a4d478ec3a49e3b12a0.png",
     eyebrow: "Votre temps",
-    title: "Un appel court de 10 min",
+    title: "Un appel court de 15 min",
     text: "Pas besoin d'y consacrer votre soirée. Choisissez le créneau exact qui vous arrange dans le planning officiel.",
   },
   {
@@ -137,10 +159,10 @@ const BENEFITS = [
 const FAQ_ITEMS = [
   {
     q: "Comment se déroule l'étude comparative ?",
-    a: "Lors d'un court échange téléphonique de 10 minutes, un conseiller dédié analyse vos garanties actuelles (RC Décennale, Mutuelle TNS ou Prévoyance). Il compare ensuite vos tarifs auprès de nos 8 compagnies partenaires pour identifier vos économies potentielles, sans modifier le niveau de votre couverture.",
+    a: "Lors d'un court échange téléphonique de 15 minutes, un conseiller dédié analyse vos garanties actuelles (RC Décennale, Mutuelle TNS ou Prévoyance). Il compare ensuite vos tarifs auprès de nos 8 compagnies partenaires pour identifier vos économies potentielles, sans modifier le niveau de votre couverture.",
   },
   {
-    q: "Ce point téléphonique de 10 minutes m'engage-t-il à quelque chose ?",
+    q: "Ce point téléphonique de 15 minutes m'engage-t-il à quelque chose ?",
     a: "Non, <strong>aucun engagement ni frais</strong>. Cet échange est 100% gratuit. Vous recevez votre étude comparative chiffrée et restez entièrement libre de donner suite ou non.",
   },
   {
@@ -149,7 +171,7 @@ const FAQ_ITEMS = [
   },
   {
     q: "Dois-je préparer des documents pour ce premier échange ?",
-    a: "Aucun document n'est obligatoire pour ce premier point de 10 minutes. Avoir simplement en tête le nom de votre assureur actuel ou votre cotisation approximative permet d'affiner instantanément le montant de vos économies.",
+    a: "Aucun document n'est obligatoire pour ce premier point de 15 minutes. Avoir simplement en tête le nom de votre assureur actuel ou votre cotisation approximative permet d'affiner instantanément le montant de vos économies.",
   },
 ];
 
@@ -492,15 +514,26 @@ export function RdvFunnel() {
           <div className="rdv-partners__label">
             Comparatif indépendant réalisé auprès des compagnies de premier plan
           </div>
-          <div className="rdv-marquee">
-            <div className="rdv-marquee__track">
+          <div
+            className="rdv-marquee"
+            style={{ pointerEvents: "none", userSelect: "none" }}
+          >
+            <div
+              className="rdv-marquee__track"
+              style={{ pointerEvents: "none" }}
+            >
               {[...PARTNERS, ...PARTNERS].map((p, idx) => (
-                <div key={`${p.name}-${idx}`} className="rdv-marquee__item" title={p.name}>
+                <div
+                  key={`${p.name}-${idx}`}
+                  className="rdv-marquee__item"
+                  title={p.name}
+                  style={{ pointerEvents: "none" }}
+                >
                   <img
                     src={p.src}
                     alt={p.name}
                     className="rdv-marquee__img"
-                    style={{ height: `${p.height}px` }}
+                    style={{ height: `${p.height}px`, pointerEvents: "none" }}
                   />
                 </div>
               ))}
@@ -513,7 +546,7 @@ export function RdvFunnel() {
       <main className="rdv-stage">
         <div className="rdv-stage__header">
           <h1 className="rdv-stage__title">
-            Accédez à votre créneau d&apos;échange gratuit de 10&nbsp;minutes.
+            Accédez à votre créneau d&apos;échange gratuit de 15&nbsp;minutes.
           </h1>
           <p className="rdv-stage__subtitle">
             Vérifiez immédiatement combien vous pouvez économiser sur votre
@@ -588,7 +621,7 @@ export function RdvFunnel() {
                   {
                     id: "RC Décennale + Mutuelle TNS",
                     title: "RC Décennale + Mutuelle TNS",
-                    sub: "Étude globale de vos 2 contrats professionnels (10 min)",
+                    sub: "Étude globale de vos 2 contrats professionnels (15 min)",
                   },
                   {
                     id: "RC Décennale BTP",
@@ -790,7 +823,7 @@ export function RdvFunnel() {
 
               <div className="rdv-field" style={{ marginBottom: "22px" }}>
                 <label className="rdv-label" htmlFor="rdv-tel">
-                  Numéro de téléphone mobile sur lequel vous souhaitez être joint par le conseiller
+                  Numéro sur lequel vous souhaitez être contacté par le conseiller
                 </label>
                 <input
                   id="rdv-tel"
@@ -812,7 +845,7 @@ export function RdvFunnel() {
                     lineHeight: 1.35,
                   }}
                 >
-                  Ce numéro sert exclusivement à convenir de votre échange téléphonique de 10 minutes avec votre conseiller. Zéro spam, aucun démarchage commercial tiers.
+                  Ce numéro sert exclusivement à convenir de votre échange téléphonique de 15 minutes avec votre conseiller. Zéro spam, aucun démarchage commercial tiers.
                 </p>
               </div>
 
@@ -923,7 +956,7 @@ export function RdvFunnel() {
                     Sélectionnez votre date et votre horaire
                   </h2>
                   <p className="rdv-tunnel-card__desc">
-                    Choisissez librement votre créneau de 10 minutes dans le
+                    Choisissez librement votre créneau de 15 minutes dans le
                     planning en temps réel de nos consultants, puis cliquez sur{" "}
                     <strong>Confirmer</strong>.
                   </p>
@@ -988,7 +1021,7 @@ export function RdvFunnel() {
       <section className="rdv-reviews" aria-label="Avis clients vérifiés">
         <div className="rdv-reviews__header">
           <div className="rdv-reviews__badge">
-            <StarRating rating={4.8} idPrefix="badge" />
+            <StarRating rating={4.8} />
             <span>4.8 / 5 &bull; Avis clients vérifiés</span>
           </div>
           <h2 className="rdv-reviews__title">
@@ -1003,7 +1036,7 @@ export function RdvFunnel() {
           {APC_REVIEWS.map((rev, i) => (
             <div key={i} className="rdv-review-card">
               <div className="rdv-review-card__stars">
-                <StarRating rating={rev.rating} idPrefix={`rev-${i}`} />
+                <StarRating rating={rev.rating} />
               </div>
               <p className="rdv-review-card__quote">
                 «&nbsp;{rev.quote}&nbsp;»
