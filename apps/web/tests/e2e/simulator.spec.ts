@@ -14,7 +14,7 @@ test.describe("Tunnel RDV Décennale & Mutuelle — parcours public", () => {
 
     await expect(
       page.getByRole("heading", {
-        name: /échange gratuit de 10\s*minutes/i,
+        name: /échange gratuit de 15\s*minutes/i,
       }),
     ).toBeVisible();
 

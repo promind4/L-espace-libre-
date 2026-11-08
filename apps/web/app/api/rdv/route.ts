@@ -281,6 +281,7 @@ export async function POST(req: NextRequest) {
       vdi = "NTUMBA-Keziah",
       website = "", // honeypot
       ref = "",
+      variant = "",
     } = body;
 
     // Honeypot anti-bot
@@ -355,7 +356,9 @@ export async function POST(req: NextRequest) {
         await updateCockpitProspectStatus(cleanRef, { statut_email: "CLIQUE" });
       }
 
-      const subject = `👀 [CLIC PROSPECT BTP] ${
+      const subject = `👀 [CLIC PROSPECT BTP${
+        variant === "A" || variant === "B" ? ` ${variant}` : ""
+      }] ${
         resolvedSte || "Artisan"
       }${resolvedVille ? ` (${resolvedVille})` : ""}${
         cleanRef ? ` — Dossier #${cleanRef}` : ""
@@ -653,7 +656,7 @@ export async function POST(req: NextRequest) {
             <p style="margin: 4px 0 0; color: #E6FBF5; font-size: 13px;">Interlocuteur : ${vdi}</p>
           </div>
           <div style="padding: 22px 24px; border: 1px solid #E2E8F0; border-top: none; border-radius: 0 0 10px 10px;">
-            <p style="margin-top: 0; font-weight: bold; color: #0E8F70;">Le rendez-vous téléphonique de 10 minutes a été réservé avec succès sur le planning des consultants APC :</p>
+            <p style="margin-top: 0; font-weight: bold; color: #0E8F70;">Le rendez-vous téléphonique de 15 minutes a été réservé avec succès sur le planning des consultants APC :</p>
             <ul style="list-style: none; padding: 0; line-height: 1.8;">
               ${cleanRef ? `<li><strong>Dossier Cockpit :</strong> #${cleanRef}</li>` : ""}
               <li><strong>Entreprise :</strong> ${entreprise || "Non précisé"}</li>

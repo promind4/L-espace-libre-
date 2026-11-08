@@ -139,7 +139,7 @@ const BENEFITS = [
   {
     img: "/partenaires/32d71011efa18a4d478ec3a49e3b12a0.png",
     eyebrow: "Votre temps",
-    title: "Un appel court de 10 min",
+    title: "Un appel court de 15 min",
     text: "Pas besoin d'y consacrer votre soirée. Choisissez le créneau exact qui vous arrange dans le planning officiel.",
   },
   {
@@ -159,10 +159,10 @@ const BENEFITS = [
 const FAQ_ITEMS = [
   {
     q: "Comment se déroule l'étude comparative ?",
-    a: "Lors d'un court échange téléphonique de 10 minutes, un conseiller dédié analyse vos garanties actuelles (RC Décennale, Mutuelle TNS ou Prévoyance). Il compare ensuite vos tarifs auprès des compagnies partenaires du cabinet APC pour identifier vos économies potentielles, sans modifier le niveau de votre couverture.",
+    a: "Lors d'un court échange téléphonique de 15 minutes, un conseiller dédié analyse vos garanties actuelles (RC Décennale, Mutuelle TNS ou Prévoyance). Il compare ensuite vos tarifs auprès des compagnies partenaires du cabinet APC pour identifier vos économies potentielles, sans modifier le niveau de votre couverture.",
   },
   {
-    q: "Ce point téléphonique de 10 minutes m'engage-t-il à quelque chose ?",
+    q: "Ce point téléphonique de 15 minutes m'engage-t-il à quelque chose ?",
     a: "Non, <strong>aucun engagement ni frais</strong>. Cet échange est 100% gratuit. Vous recevez votre étude comparative chiffrée et restez entièrement libre de donner suite ou non.",
   },
   {
@@ -171,7 +171,7 @@ const FAQ_ITEMS = [
   },
   {
     q: "Dois-je préparer des documents pour ce premier échange ?",
-    a: "Aucun document n'est obligatoire pour ce premier point de 10 minutes. Avoir simplement en tête le nom de votre assureur actuel ou votre cotisation approximative permet d'affiner instantanément le montant de vos économies.",
+    a: "Aucun document n'est obligatoire pour ce premier point de 15 minutes. Avoir simplement en tête le nom de votre assureur actuel ou votre cotisation approximative permet d'affiner instantanément le montant de vos économies.",
   },
 ];
 
@@ -207,6 +207,7 @@ export function RdvFunnel() {
   const seenOnce = useRef<Set<string>>(new Set());
   const live = useRef({
     refId: "",
+    variant: "",
     step: 1 as 1 | 2 | 3,
     entreprise: "",
     prenom: "",
@@ -233,12 +234,16 @@ export function RdvFunnel() {
         event,
         visitId: visitIdRef.current,
         ref: live.current.refId,
+        ...(live.current.variant ? { variant: live.current.variant } : {}),
         ...props,
       });
       const w = window as unknown as {
         umami?: { track?: (name: string, data?: Record<string, unknown>) => void };
       };
-      w.umami?.track?.(`rdv_${event}`, props);
+      w.umami?.track?.(`rdv_${event}`, {
+        ...props,
+        ...(live.current.variant ? { variant: live.current.variant } : {}),
+      });
       const sent =
         typeof navigator.sendBeacon === "function" &&
         navigator.sendBeacon("/api/rdv", new Blob([payload], { type: "application/json" }));
@@ -321,6 +326,8 @@ export function RdvFunnel() {
 
     async function loadPrefillAndTrack() {
       live.current.refId = qRef;
+      const qVariant = (searchParams.get("v") || "").toUpperCase();
+      live.current.variant = qVariant === "A" || qVariant === "B" ? qVariant : "";
       track("page_view", { hasRef: Boolean(qRef), hasToken: Boolean(rawToken) }, true);
       let fetchedSte = qSte;
       let fetchedPrenom = qPrenom;
@@ -379,6 +386,7 @@ export function RdvFunnel() {
               telephone: fetchedTel,
               email: fetchedEmail,
               ref: qRef,
+              variant: live.current.variant,
             }),
           }).catch(() => {});
         }
@@ -704,7 +712,7 @@ export function RdvFunnel() {
       <main className="rdv-stage">
         <div className="rdv-stage__header">
           <h1 className="rdv-stage__title">
-            Accédez à votre créneau d&apos;échange gratuit de 10&nbsp;minutes.
+            Accédez à votre créneau d&apos;échange gratuit de 15&nbsp;minutes.
           </h1>
           <p className="rdv-stage__subtitle">
             Vérifiez immédiatement combien vous pouvez économiser sur votre
@@ -779,7 +787,7 @@ export function RdvFunnel() {
                   {
                     id: "RC Décennale + Mutuelle TNS",
                     title: "RC Décennale + Mutuelle TNS",
-                    sub: "Étude globale de vos 2 contrats professionnels (10 min)",
+                    sub: "Étude globale de vos 2 contrats professionnels (15 min)",
                   },
                   {
                     id: "RC Décennale BTP",
@@ -1012,7 +1020,7 @@ export function RdvFunnel() {
                     lineHeight: 1.35,
                   }}
                 >
-                  Un code de confirmation vous sera envoyé par SMS. Ce numéro sert uniquement à confirmer votre demande et à vous appeler pour un échange de 10 minutes avec votre conseiller. Aucun démarchage tiers. Si vous quittez la page, nous conservons ce numéro pour vous recontacter à ce sujet ; pour le faire supprimer, écrivez à kesiah@lespace-libre.fr.
+                  Un code de confirmation vous sera envoyé par SMS. Ce numéro sert uniquement à confirmer votre demande et à vous appeler pour un échange de 15 minutes avec votre conseiller. Aucun démarchage tiers. Si vous quittez la page, nous conservons ce numéro pour vous recontacter à ce sujet ; pour le faire supprimer, écrivez à kesiah@lespace-libre.fr.
                 </p>
               </div>
 
@@ -1124,7 +1132,7 @@ export function RdvFunnel() {
                     Sélectionnez votre date et votre horaire
                   </h2>
                   <p className="rdv-tunnel-card__desc">
-                    Choisissez librement votre créneau de 10 minutes dans le
+                    Choisissez librement votre créneau de 15 minutes dans le
                     planning en temps réel de nos consultants, puis cliquez sur{" "}
                     <strong>Confirmer</strong>.
                   </p>
