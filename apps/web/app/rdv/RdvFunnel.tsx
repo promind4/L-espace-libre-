@@ -18,25 +18,94 @@ const PARTNERS = [
 const APC_REVIEWS = [
   {
     name: "Corentin D.",
-    stars: "★★★★★",
+    rating: 5,
     quote: "80 € par mois d'économie, très satisfait du bilan.",
   },
   {
     name: "Arnaud D.",
-    stars: "★★★★½",
+    rating: 4.5,
     quote: "9 000 € d'économie qui me permettent de financer des travaux. Échange fluide et conseiller réactif.",
   },
   {
     name: "Thibault C.",
-    stars: "★★★★☆",
+    rating: 4,
     quote: "Plus de 10 000 € d'économie sur nos contrats professionnels, un accompagnement très sérieux.",
   },
   {
     name: "Jessica C.",
-    stars: "★★★★★",
+    rating: 5,
     quote: "3 800 € d'économie, accompagnement au top merci à Sébastien.",
   },
 ];
+
+function StarRating({
+  rating,
+  idPrefix = "star",
+}: {
+  rating: number;
+  idPrefix?: string;
+}) {
+  const stars = [];
+  for (let i = 1; i <= 5; i++) {
+    if (rating >= i) {
+      stars.push(
+        <svg
+          key={i}
+          width="16"
+          height="16"
+          viewBox="0 0 20 20"
+          fill="#F59E0B"
+          aria-hidden="true"
+          style={{ display: "inline-block", verticalAlign: "middle" }}
+        >
+          <path d="M9.049 2.927c.3-.921 1.603-.921 1.902 0l1.07 3.292a1 1 0 00.95.69h3.462c.969 0 1.371 1.24.588 1.81l-2.8 2.034a1 1 0 00-.364 1.118l1.07 3.292c.3.921-.755 1.688-1.54 1.118l-2.8-2.034a1 1 0 00-1.175 0l-2.8 2.034c-.784.57-1.838-.197-1.539-1.118l1.07-3.292a1 1 0 00-.364-1.118L2.98 8.72c-.783-.57-.38-1.81.588-1.81h3.461a1 1 0 00.951-.69l1.07-3.292z" />
+        </svg>
+      );
+    } else if (rating >= i - 0.5) {
+      const gradId = `${idPrefix}-half-${i}`;
+      stars.push(
+        <svg
+          key={i}
+          width="16"
+          height="16"
+          viewBox="0 0 20 20"
+          aria-hidden="true"
+          style={{ display: "inline-block", verticalAlign: "middle" }}
+        >
+          <defs>
+            <linearGradient id={gradId}>
+              <stop offset="50%" stopColor="#F59E0B" />
+              <stop offset="50%" stopColor="#CBD5E1" />
+            </linearGradient>
+          </defs>
+          <path
+            fill={`url(#${gradId})`}
+            d="M9.049 2.927c.3-.921 1.603-.921 1.902 0l1.07 3.292a1 1 0 00.95.69h3.462c.969 0 1.371 1.24.588 1.81l-2.8 2.034a1 1 0 00-.364 1.118l1.07 3.292c.3.921-.755 1.688-1.54 1.118l-2.8-2.034a1 1 0 00-1.175 0l-2.8 2.034c-.784.57-1.838-.197-1.539-1.118l1.07-3.292a1 1 0 00-.364-1.118L2.98 8.72c-.783-.57-.38-1.81.588-1.81h3.461a1 1 0 00.951-.69l1.07-3.292z"
+          />
+        </svg>
+      );
+    } else {
+      stars.push(
+        <svg
+          key={i}
+          width="16"
+          height="16"
+          viewBox="0 0 20 20"
+          fill="#CBD5E1"
+          aria-hidden="true"
+          style={{ display: "inline-block", verticalAlign: "middle" }}
+        >
+          <path d="M9.049 2.927c.3-.921 1.603-.921 1.902 0l1.07 3.292a1 1 0 00.95.69h3.462c.969 0 1.371 1.24.588 1.81l-2.8 2.034a1 1 0 00-.364 1.118l1.07 3.292c.3.921-.755 1.688-1.54 1.118l-2.8-2.034a1 1 0 00-1.175 0l-2.8 2.034c-.784.57-1.838-.197-1.539-1.118l1.07-3.292a1 1 0 00-.364-1.118L2.98 8.72c-.783-.57-.38-1.81.588-1.81h3.461a1 1 0 00.951-.69l1.07-3.292z" />
+        </svg>
+      );
+    }
+  }
+  return (
+    <span style={{ display: "inline-flex", gap: "2px", alignItems: "center" }}>
+      {stars}
+    </span>
+  );
+}
 
 const BENEFITS = [
   {
@@ -48,7 +117,7 @@ const BENEFITS = [
   {
     img: "/partenaires/32d71011efa18a4d478ec3a49e3b12a0.png",
     eyebrow: "Votre temps",
-    title: "Un appel court de 15 min",
+    title: "Un appel court de 10 min",
     text: "Pas besoin d'y consacrer votre soirée. Choisissez le créneau exact qui vous arrange dans le planning officiel.",
   },
   {
@@ -67,16 +136,20 @@ const BENEFITS = [
 
 const FAQ_ITEMS = [
   {
-    q: "Pourquoi y a-t-il une étape de confirmation par SMS ?",
-    a: "Le code SMS à 6 chiffres permet de sécuriser votre réservation de créneau auprès de notre pôle de consultants partenaires (APC) et de valider votre demande conformément au RGPD, sans démarchage non sollicité.",
+    q: "Comment se déroule l'étude comparative ?",
+    a: "Lors d'un court échange téléphonique de 10 minutes, un conseiller dédié analyse vos garanties actuelles (RC Décennale, Mutuelle TNS ou Prévoyance). Il compare ensuite vos tarifs auprès de nos 8 compagnies partenaires pour identifier vos économies potentielles, sans modifier le niveau de votre couverture.",
   },
   {
-    q: "Ce point téléphonique de 15 minutes m'engage-t-il à quelque chose ?",
-    a: "Non, <strong>aucun engagement ni frais</strong>. Cet échange sert uniquement à comparer vos contrats actuels (RC Décennale, Mutuelle TNS, Prévoyance) avec les barèmes négociés auprès des compagnies partenaires.",
+    q: "Ce point téléphonique de 10 minutes m'engage-t-il à quelque chose ?",
+    a: "Non, <strong>aucun engagement ni frais</strong>. Cet échange est 100% gratuit. Vous recevez votre étude comparative chiffrée et restez entièrement libre de donner suite ou non.",
   },
   {
-    q: "Qui s'occupe de résilier mon contrat actuel si je change ?",
-    a: "Vous n'avez aucun courrier à envoyer. Si vous validez une proposition plus avantageuse, <strong>100% des démarches de résiliation</strong> sont prises en charge sans aucune coupure de couverture pour vos chantiers.",
+    q: "Qui s'occupe de résilier mon contrat actuel si je trouve une meilleure offre ?",
+    a: "Vous n'avez aucune démarche administrative à accomplir ni aucun courrier à envoyer. Si vous décidez de changer, <strong>100% des formalités de résiliation sont prises en charge</strong> auprès de votre ancien assureur, sans coupure de garantie pour vos chantiers.",
+  },
+  {
+    q: "Dois-je préparer des documents pour ce premier échange ?",
+    a: "Aucun document n'est obligatoire pour ce premier point de 10 minutes. Avoir simplement en tête le nom de votre assureur actuel ou votre cotisation approximative permet d'affiner instantanément le montant de vos économies.",
   },
 ];
 
@@ -388,7 +461,7 @@ export function RdvFunnel() {
             <a
               href="tel:+33767290787"
               className="rdv-topbar__phone"
-              title="Appeler directement Kesiah"
+              title="Nous appeler directement"
             >
               <span>07 67 29 07 87</span>
             </a>
@@ -440,7 +513,7 @@ export function RdvFunnel() {
       <main className="rdv-stage">
         <div className="rdv-stage__header">
           <h1 className="rdv-stage__title">
-            Accédez à votre créneau d&apos;échange gratuit de 15&nbsp;minutes.
+            Accédez à votre créneau d&apos;échange gratuit de 10&nbsp;minutes.
           </h1>
           <p className="rdv-stage__subtitle">
             Vérifiez immédiatement combien vous pouvez économiser sur votre
@@ -592,16 +665,6 @@ export function RdvFunnel() {
               >
                 1. Choix de votre contrat &bull; 2. Accès direct au planning
               </div>
-
-              <div className="rdv-direct-call-box" style={{ marginTop: "16px" }}>
-                <div className="rdv-direct-call-box__text">
-                  <strong>Vous êtes sur chantier ou pressé ?</strong>
-                  <span>Faites le point directement par téléphone avec Kesiah :</span>
-                </div>
-                <a href="tel:+33767290787" className="rdv-direct-call-box__btn">
-                  Appeler le 07 67 29 07 87
-                </a>
-              </div>
             </div>
           )}
 
@@ -727,7 +790,7 @@ export function RdvFunnel() {
 
               <div className="rdv-field" style={{ marginBottom: "22px" }}>
                 <label className="rdv-label" htmlFor="rdv-tel">
-                  Votre numéro de téléphone mobile (pour recevoir votre accès au planning)
+                  Numéro de téléphone mobile sur lequel vous souhaitez être joint par le conseiller
                 </label>
                 <input
                   id="rdv-tel"
@@ -749,7 +812,7 @@ export function RdvFunnel() {
                     lineHeight: 1.35,
                   }}
                 >
-                  Ce numéro sert uniquement à l&apos;envoi de votre code d&apos;accès par SMS et à votre échange téléphonique de 10 minutes. Aucun démarchage commercial.
+                  Ce numéro sert exclusivement à convenir de votre échange téléphonique de 10 minutes avec votre conseiller. Zéro spam, aucun démarchage commercial tiers.
                 </p>
               </div>
 
@@ -777,18 +840,8 @@ export function RdvFunnel() {
                   margin: "12px 0 0",
                 }}
               >
-                Gratuit et sans engagement • Un code d&apos;accès par SMS sécurise votre créneau.
+                Gratuit et sans engagement • Vos coordonnées restent strictement confidentielles.
               </p>
-
-              <div className="rdv-direct-call-box">
-                <div className="rdv-direct-call-box__text">
-                  <strong>Vous êtes sur chantier ou pressé ?</strong>
-                  <span>Faites le point directement par téléphone avec Kesiah :</span>
-                </div>
-                <a href="tel:+33767290787" className="rdv-direct-call-box__btn">
-                  Appeler le 07 67 29 07 87
-                </a>
-              </div>
             </form>
           )}
 
@@ -870,7 +923,7 @@ export function RdvFunnel() {
                     Sélectionnez votre date et votre horaire
                   </h2>
                   <p className="rdv-tunnel-card__desc">
-                    Choisissez librement votre créneau de 15 minutes dans le
+                    Choisissez librement votre créneau de 10 minutes dans le
                     planning en temps réel de nos consultants, puis cliquez sur{" "}
                     <strong>Confirmer</strong>.
                   </p>
@@ -935,7 +988,7 @@ export function RdvFunnel() {
       <section className="rdv-reviews" aria-label="Avis clients vérifiés">
         <div className="rdv-reviews__header">
           <div className="rdv-reviews__badge">
-            <span style={{ color: "#EAB308", letterSpacing: "1px" }}>★★★★½</span>
+            <StarRating rating={4.8} idPrefix="badge" />
             <span>4.8 / 5 &bull; Avis clients vérifiés</span>
           </div>
           <h2 className="rdv-reviews__title">
@@ -949,7 +1002,9 @@ export function RdvFunnel() {
         <div className="rdv-reviews__grid">
           {APC_REVIEWS.map((rev, i) => (
             <div key={i} className="rdv-review-card">
-              <div className="rdv-review-card__stars">{rev.stars}</div>
+              <div className="rdv-review-card__stars">
+                <StarRating rating={rev.rating} idPrefix={`rev-${i}`} />
+              </div>
               <p className="rdv-review-card__quote">
                 «&nbsp;{rev.quote}&nbsp;»
               </p>

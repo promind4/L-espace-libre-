@@ -1955,9 +1955,6 @@ body:has([data-isolated-funnel]) footer:not(.rdv-footer) {
   animation: rdv-marquee-anim 28s linear infinite;
 }
 
-.rdv-marquee:hover .rdv-marquee__track {
-  animation-play-state: paused;
-}
 
 @keyframes rdv-marquee-anim {
   0% {
