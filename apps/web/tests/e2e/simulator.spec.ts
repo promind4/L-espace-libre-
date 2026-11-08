@@ -14,7 +14,7 @@ test.describe("Tunnel RDV Décennale & Mutuelle — parcours public", () => {
 
     await expect(
       page.getByRole("heading", {
-        name: /échange gratuit de 15\s*minutes/i,
+        name: /échange gratuit de 10\s*minutes/i,
       }),
     ).toBeVisible();
 
@@ -24,9 +24,7 @@ test.describe("Tunnel RDV Décennale & Mutuelle — parcours public", () => {
       .click();
 
     await expect(
-      page.getByLabel(
-        /Numéro sur lequel vous souhaitez être contacté par le conseiller/i,
-      ),
+      page.getByLabel(/Votre numéro de mobile/i),
     ).toBeVisible();
   });
 });

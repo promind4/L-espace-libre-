@@ -139,7 +139,7 @@ const BENEFITS = [
   {
     img: "/partenaires/32d71011efa18a4d478ec3a49e3b12a0.png",
     eyebrow: "Votre temps",
-    title: "Un appel court de 15 min",
+    title: "Un appel court de 10 min",
     text: "Pas besoin d'y consacrer votre soirée. Choisissez le créneau exact qui vous arrange dans le planning officiel.",
   },
   {
@@ -159,10 +159,10 @@ const BENEFITS = [
 const FAQ_ITEMS = [
   {
     q: "Comment se déroule l'étude comparative ?",
-    a: "Lors d'un court échange téléphonique de 15 minutes, un conseiller dédié analyse vos garanties actuelles (RC Décennale, Mutuelle TNS ou Prévoyance). Il compare ensuite vos tarifs auprès des compagnies partenaires du cabinet APC pour identifier vos économies potentielles, sans modifier le niveau de votre couverture.",
+    a: "Lors d'un court échange téléphonique de 10 minutes, un conseiller dédié analyse vos garanties actuelles (RC Décennale, Mutuelle TNS ou Prévoyance). Il compare ensuite vos tarifs auprès des compagnies partenaires du cabinet APC pour identifier vos économies potentielles, sans modifier le niveau de votre couverture.",
   },
   {
-    q: "Ce point téléphonique de 15 minutes m'engage-t-il à quelque chose ?",
+    q: "Ce point téléphonique de 10 minutes m'engage-t-il à quelque chose ?",
     a: "Non, <strong>aucun engagement ni frais</strong>. Cet échange est 100% gratuit. Vous recevez votre étude comparative chiffrée et restez entièrement libre de donner suite ou non.",
   },
   {
@@ -171,7 +171,7 @@ const FAQ_ITEMS = [
   },
   {
     q: "Dois-je préparer des documents pour ce premier échange ?",
-    a: "Aucun document n'est obligatoire pour ce premier point de 15 minutes. Avoir simplement en tête le nom de votre assureur actuel ou votre cotisation approximative permet d'affiner instantanément le montant de vos économies.",
+    a: "Aucun document n'est obligatoire pour ce premier point de 10 minutes. Avoir simplement en tête le nom de votre assureur actuel ou votre cotisation approximative permet d'affiner instantanément le montant de vos économies.",
   },
 ];
 
@@ -201,6 +201,59 @@ export function RdvFunnel() {
   const [errorMessage, setErrorMessage] = useState("");
 
   const reviewsRef = useRef<HTMLDivElement>(null);
+
+  // ===== Mesure du tunnel : GA4 (si configuré) + journal serveur Vercel =====
+  const visitIdRef = useRef("");
+  const seenOnce = useRef<Set<string>>(new Set());
+  const live = useRef({
+    refId: "",
+    step: 1 as 1 | 2 | 3,
+    entreprise: "",
+    prenom: "",
+    nom: "",
+    email: "",
+    telephone: "",
+  });
+
+  function track(
+    event: string,
+    props: Record<string, string | number | boolean> = {},
+    once = false
+  ) {
+    try {
+      if (once) {
+        if (seenOnce.current.has(event)) return;
+        seenOnce.current.add(event);
+      }
+      if (!visitIdRef.current) {
+        visitIdRef.current = Math.random().toString(36).slice(2, 10);
+      }
+      const payload = JSON.stringify({
+        step: "event",
+        event,
+        visitId: visitIdRef.current,
+        ref: live.current.refId,
+        ...props,
+      });
+      const w = window as unknown as { gtag?: (...args: unknown[]) => void };
+      w.gtag?.("event", `rdv_${event}`, props);
+      const sent =
+        typeof navigator.sendBeacon === "function" &&
+        navigator.sendBeacon("/api/rdv", new Blob([payload], { type: "application/json" }));
+      if (!sent) {
+        fetch("/api/rdv", {
+          method: "POST",
+          headers: { "Content-Type": "application/json" },
+          body: payload,
+          keepalive: true,
+        }).catch(() => {});
+      }
+    } catch {
+      // la mesure ne doit jamais casser le parcours
+    }
+  }
+
+  live.current = { ...live.current, refId, step, entreprise, prenom, nom, email, telephone };
 
   const scrollReviews = (direction: "left" | "right") => {
     if (reviewsRef.current) {
@@ -265,6 +318,8 @@ export function RdvFunnel() {
     }
 
     async function loadPrefillAndTrack() {
+      live.current.refId = qRef;
+      track("page_view", { hasRef: Boolean(qRef), hasToken: Boolean(rawToken) }, true);
       let fetchedSte = qSte;
       let fetchedPrenom = qPrenom;
       let fetchedNom = qNom;
@@ -331,6 +386,89 @@ export function RdvFunnel() {
     loadPrefillAndTrack();
   }, [searchParams]);
 
+  // Brouillon local : un visiteur qui revient retrouve ses coordonnées
+  useEffect(() => {
+    try {
+      const raw = localStorage.getItem("rdv_draft");
+      if (!raw) return;
+      const d = JSON.parse(raw) as {
+        prenom?: string;
+        nom?: string;
+        email?: string;
+        telephone?: string;
+      };
+      setPrenom((v) => v || d.prenom || "");
+      setNom((v) => v || d.nom || "");
+      setEmail((v) => v || d.email || "");
+      setTelephone((v) => v || d.telephone || "");
+    } catch {
+      // stockage indisponible : on continue sans brouillon
+    }
+  }, []);
+
+  useEffect(() => {
+    try {
+      if (prenom || nom || email || telephone) {
+        localStorage.setItem("rdv_draft", JSON.stringify({ prenom, nom, email, telephone }));
+      }
+    } catch {
+      // stockage indisponible
+    }
+  }, [prenom, nom, email, telephone]);
+
+  // Abandon : le numéro saisi n'est plus perdu si le visiteur quitte la page avant d'envoyer
+  useEffect(() => {
+    function onLeave() {
+      const l = live.current;
+      const digits = l.telephone.replace(/\D/g, "");
+      if (l.step !== 1 || digits.length < 9 || seenOnce.current.has("abandon")) return;
+      seenOnce.current.add("abandon");
+      try {
+        const payload = JSON.stringify({
+          step: "abandon",
+          entreprise: l.entreprise,
+          prenom: l.prenom,
+          nom: l.nom,
+          email: l.email,
+          telephone: l.telephone,
+          ref: l.refId,
+        });
+        navigator.sendBeacon?.("/api/rdv", new Blob([payload], { type: "application/json" }));
+        track("abandon", { atStep: l.step });
+      } catch {
+        // ignoré
+      }
+    }
+    function onVisibility() {
+      if (document.visibilityState === "hidden") onLeave();
+    }
+    document.addEventListener("visibilitychange", onVisibility);
+    window.addEventListener("pagehide", onLeave);
+    return () => {
+      document.removeEventListener("visibilitychange", onVisibility);
+      window.removeEventListener("pagehide", onLeave);
+    };
+    // eslint-disable-next-line react-hooks/exhaustive-deps
+  }, []);
+
+  // Mesure : étapes 2 et 3 atteintes, profondeur de défilement
+  useEffect(() => {
+    if (step > 1) track("step_view", { step });
+    // eslint-disable-next-line react-hooks/exhaustive-deps
+  }, [step]);
+
+  useEffect(() => {
+    function onScroll() {
+      const h = document.documentElement;
+      if ((h.scrollTop + window.innerHeight) / h.scrollHeight > 0.75) {
+        track("scroll_75", {}, true);
+      }
+    }
+    window.addEventListener("scroll", onScroll, { passive: true });
+    return () => window.removeEventListener("scroll", onScroll);
+    // eslint-disable-next-line react-hooks/exhaustive-deps
+  }, []);
+
   // Écoute de la confirmation du calendrier HubSpot APC en Étape 3
   useEffect(() => {
     function handleHubSpotMessage(event: MessageEvent) {
@@ -340,6 +478,7 @@ export function RdvFunnel() {
         event.data.meetingBookSucceeded
       ) {
         setBookingConfirmed(true);
+        track("booking_confirmed");
         fetch("/api/rdv", {
           method: "POST",
           headers: { "Content-Type": "application/json" },
@@ -364,8 +503,10 @@ export function RdvFunnel() {
   async function handleStep1Submit(e: FormEvent) {
     e.preventDefault();
     setErrorMessage("");
+    track("step1_submit");
 
     if (!prenom.trim() || !nom.trim() || !email.trim() || !telephone.trim()) {
+      track("step1_error", { reason: "champs_manquants" });
       setErrorMessage("Merci de compléter vos 4 champs de coordonnées.");
       return;
     }
@@ -389,6 +530,7 @@ export function RdvFunnel() {
 
       const data = await res.json();
       if (!res.ok || !data.ok) {
+        track("step1_error", { reason: String(data.error || "api") });
         setErrorMessage(
           data.message ||
             "Vérifiez votre numéro de téléphone mobile et votre adresse e-mail."
@@ -396,10 +538,12 @@ export function RdvFunnel() {
         return;
       }
 
+      track("step1_ok");
       if (data.respondentUuid) setRespondentUuid(data.respondentUuid);
       if (data.formattedPhone) setFormattedPhone(data.formattedPhone);
       setStep(2);
     } catch {
+      track("step1_error", { reason: "reseau" });
       setErrorMessage(
         "Une erreur réseau est survenue. Veuillez réessayer dans un instant."
       );
@@ -412,6 +556,7 @@ export function RdvFunnel() {
   async function handleStep2Submit(e: FormEvent) {
     e.preventDefault();
     setErrorMessage("");
+    track("sms_submit");
 
     if (!codeSms.trim() || codeSms.trim().length < 4) {
       setErrorMessage("Veuillez saisir le code reçu par SMS sur votre téléphone.");
@@ -438,6 +583,7 @@ export function RdvFunnel() {
 
       const data = await res.json();
       if (!res.ok || !data.ok) {
+        track("sms_invalid");
         setErrorMessage(
           data.message ||
             "Code SMS incorrect. Vérifiez les chiffres reçus par SMS."
@@ -445,6 +591,7 @@ export function RdvFunnel() {
         return;
       }
 
+      track("sms_ok");
       if (data.calendarUrl) {
         setCalendarUrl(data.calendarUrl);
       }
@@ -490,6 +637,7 @@ export function RdvFunnel() {
           <div className="rdv-topbar__actions">
             <a
               href="tel:+33767290787"
+              onClick={() => track("call_click", { where: "header" })}
               className="rdv-topbar__phone"
               title="Nous appeler directement"
             >
@@ -554,7 +702,7 @@ export function RdvFunnel() {
       <main className="rdv-stage">
         <div className="rdv-stage__header">
           <h1 className="rdv-stage__title">
-            Accédez à votre créneau d&apos;échange gratuit de 15&nbsp;minutes.
+            Accédez à votre créneau d&apos;échange gratuit de 10&nbsp;minutes.
           </h1>
           <p className="rdv-stage__subtitle">
             Vérifiez immédiatement combien vous pouvez économiser sur votre
@@ -573,27 +721,27 @@ export function RdvFunnel() {
           </p>
         </div>
 
-        {/* Indicateur de progression en 2 points simples */}
+        {/* Indicateur de progression en 3 étapes annoncées dès le départ */}
         <div className="rdv-stepper" role="navigation" aria-label="Étapes de réservation">
-          <div
-            className={`rdv-step-pill ${
-              step <= 2
-                ? "rdv-step-pill--active"
-                : "rdv-step-pill--done"
-            }`}
-          >
-            <span className="rdv-step-pill__num">{step > 2 ? "✓" : "1"}</span>
-            <span className="rdv-step-pill__label">Formulaire</span>
-          </div>
-
-          <div
-            className={`rdv-step-pill ${
-              step === 3 ? "rdv-step-pill--active" : ""
-            }`}
-          >
-            <span className="rdv-step-pill__num">2</span>
-            <span className="rdv-step-pill__label">Accès au planning</span>
-          </div>
+          {[
+            { n: 1, label: "Coordonnées" },
+            { n: 2, label: "Code SMS" },
+            { n: 3, label: "Planning" },
+          ].map(({ n, label }) => (
+            <div
+              key={n}
+              className={`rdv-step-pill ${
+                step === n
+                  ? "rdv-step-pill--active"
+                  : step > n
+                  ? "rdv-step-pill--done"
+                  : ""
+              }`}
+            >
+              <span className="rdv-step-pill__num">{step > n ? "✓" : n}</span>
+              <span className="rdv-step-pill__label">{label}</span>
+            </div>
+          ))}
         </div>
 
         {/* CARTE DU TUNNEL */}
@@ -619,7 +767,7 @@ export function RdvFunnel() {
               {(prefillLoaded || entreprise) && (
                 <div className="rdv-prefill-banner" style={{ marginBottom: "16px" }}>
                   <span>
-                    Dossier <strong>{entreprise || `#${refId}`}</strong> identifié — cliquez sur votre priorité ci-dessous :
+                    {prenom ? <>Bonjour <strong>{prenom}</strong>, choisissez votre priorité ci-dessous :</> : "Choisissez votre priorité ci-dessous :"}
                   </span>
                 </div>
               )}
@@ -629,7 +777,7 @@ export function RdvFunnel() {
                   {
                     id: "RC Décennale + Mutuelle TNS",
                     title: "RC Décennale + Mutuelle TNS",
-                    sub: "Étude globale de vos 2 contrats professionnels (15 min)",
+                    sub: "Étude globale de vos 2 contrats professionnels (10 min)",
                   },
                   {
                     id: "RC Décennale BTP",
@@ -645,7 +793,10 @@ export function RdvFunnel() {
                   <button
                     key={opt.id}
                     type="button"
-                    onClick={() => setSelectedNeed(opt.id)}
+                    onClick={() => {
+                      setSelectedNeed(opt.id);
+                      track("need_selected", { need: opt.id });
+                    }}
                     style={{
                       display: "flex",
                       alignItems: "center",
@@ -704,7 +855,7 @@ export function RdvFunnel() {
                   padding: "8px 0",
                 }}
               >
-                1. Choix de votre contrat &bull; 2. Accès direct au planning
+                1. Choix du contrat &bull; 2. Code SMS &bull; 3. Choix du créneau
               </div>
             </div>
           )}
@@ -732,7 +883,10 @@ export function RdvFunnel() {
                 </span>
                 <button
                   type="button"
-                  onClick={() => setSelectedNeed("")}
+                  onClick={() => {
+                    setSelectedNeed("");
+                    track("need_changed");
+                  }}
                   style={{
                     background: "transparent",
                     border: "none",
@@ -754,8 +908,8 @@ export function RdvFunnel() {
                   </h2>
                   <p className="rdv-tunnel-card__desc">
                     {prefillLoaded || entreprise
-                      ? "Vos informations ont été pré-remplies. Indiquez uniquement votre numéro mobile pour recevoir votre code d'accès au planning."
-                      : "Indiquez vos coordonnées ci-dessous pour consulter immédiatement les créneaux disponibles."}
+                      ? "Vos informations sont pré-remplies. Indiquez votre numéro de mobile : un code de confirmation vous sera envoyé par SMS, puis vous choisirez votre créneau."
+                      : "Indiquez vos coordonnées : un code de confirmation vous sera envoyé par SMS, puis vous choisirez votre créneau."}
                   </p>
                 </div>
               </div>
@@ -763,7 +917,7 @@ export function RdvFunnel() {
               {(prefillLoaded || entreprise) && (
                 <div className="rdv-prefill-banner">
                   <span>
-                    Dossier <strong>{entreprise || `#${refId}`}</strong> identifié — vérifiez ou complétez vos informations ci-dessous.
+                    {prenom ? <>Bonjour <strong>{prenom}</strong>, vérifiez vos informations ci-dessous.</> : "Vérifiez ou complétez vos informations ci-dessous."}
                   </span>
                 </div>
               )}
@@ -831,7 +985,7 @@ export function RdvFunnel() {
 
               <div className="rdv-field" style={{ marginBottom: "22px" }}>
                 <label className="rdv-label" htmlFor="rdv-tel">
-                  Numéro sur lequel vous souhaitez être contacté par le conseiller
+                  Votre numéro de mobile (code SMS, puis appel du conseiller)
                 </label>
                 <input
                   id="rdv-tel"
@@ -843,7 +997,10 @@ export function RdvFunnel() {
                   className="rdv-input"
                   placeholder="06 12 34 56 78"
                   value={telephone}
-                  onChange={(e) => setTelephone(e.target.value)}
+                  onChange={(e) => {
+                    setTelephone(e.target.value);
+                    track("phone_typing", {}, true);
+                  }}
                 />
                 <p
                   style={{
@@ -853,7 +1010,7 @@ export function RdvFunnel() {
                     lineHeight: 1.35,
                   }}
                 >
-                  Ce numéro sert exclusivement à convenir de votre échange téléphonique de 15 minutes avec votre conseiller. Zéro spam, aucun démarchage commercial tiers.
+                  Un code de confirmation vous sera envoyé par SMS. Ce numéro sert uniquement à confirmer votre demande et à vous appeler pour un échange de 10 minutes avec votre conseiller. Aucun démarchage tiers. Si vous quittez la page, nous conservons ce numéro pour vous recontacter à ce sujet ; pour le faire supprimer, écrivez à kesiah@lespace-libre.fr.
                 </p>
               </div>
 
@@ -946,6 +1103,7 @@ export function RdvFunnel() {
                   className="rdv-back-link"
                   onClick={() => {
                     setErrorMessage("");
+                    track("sms_back");
                     setStep(1);
                   }}
                 >
@@ -964,7 +1122,7 @@ export function RdvFunnel() {
                     Sélectionnez votre date et votre horaire
                   </h2>
                   <p className="rdv-tunnel-card__desc">
-                    Choisissez librement votre créneau de 15 minutes dans le
+                    Choisissez librement votre créneau de 10 minutes dans le
                     planning en temps réel de nos consultants, puis cliquez sur{" "}
                     <strong>Confirmer</strong>.
                   </p>
@@ -1012,6 +1170,7 @@ export function RdvFunnel() {
                     )}&phone=${encodeURIComponent(formattedPhone || telephone)}`
                   }
                   title="Planning des consultants APC"
+                  onLoad={() => track("calendar_loaded", {}, true)}
                   style={{
                     width: "100%",
                     height: "700px",
@@ -1209,7 +1368,7 @@ export function RdvFunnel() {
               <div className="rdv-footer__col">
                 <h3 className="rdv-footer__heading">Contact direct</h3>
                 <p className="rdv-footer__phone">
-                  <a href="tel:+33767290787">07 67 29 07 87</a>
+                  <a href="tel:+33767290787" onClick={() => track("call_click", { where: "footer" })}>07 67 29 07 87</a>
                 </p>
                 <a
                   href="mailto:kesiah@lespace-libre.fr"

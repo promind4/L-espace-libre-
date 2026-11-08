@@ -240,6 +240,12 @@ const TALLY_HEADERS = {
     "Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/131.0.0.0 Safari/537.36",
 };
 
+function esc(value: unknown): string {
+  return String(value ?? "").replace(/[&<>"']/g, (c) =>
+    ({ "&": "&amp;", "<": "&lt;", ">": "&gt;", '"': "&quot;", "'": "&#39;" }[c] as string)
+  );
+}
+
 async function sleep(ms: number) {
   return new Promise((resolve) => setTimeout(resolve, ms));
 }
@@ -247,6 +253,22 @@ async function sleep(ms: number) {
 export async function POST(req: NextRequest) {
   try {
     const body = await req.json();
+
+    // Journal de mesure du tunnel (consultable dans Vercel > Logs, filtre "RDV_EVENT")
+    if (body?.step === "event") {
+      const name = String(body.event || "");
+      if (/^[a-z0-9_]{1,40}$/.test(name)) {
+        const props: Record<string, string> = {};
+        for (const [k, v] of Object.entries(body as Record<string, unknown>)) {
+          if (k === "step" || k === "event") continue;
+          if (/^[A-Za-z0-9_]{1,30}$/.test(k) && ["string", "number", "boolean"].includes(typeof v)) {
+            props[k] = String(v).slice(0, 80);
+          }
+        }
+        console.log("[RDV_EVENT]", JSON.stringify({ event: name, ...props }));
+      }
+      return NextResponse.json({ ok: true });
+    }
     const {
       step = "1",
       entreprise = "",
@@ -272,6 +294,37 @@ export async function POST(req: NextRequest) {
     const cleanPhone = formatPhoneE164(String(telephone || "").trim());
     const cleanRef = String(ref || "").trim();
     const respondentUuid = existingRespondentUuid || crypto.randomUUID();
+
+    // =========================================================================
+    // ABANDON : numéro saisi mais formulaire non envoyé (visiteur parti avant l'étape 1)
+    // =========================================================================
+    if (step === "abandon") {
+      if (cleanPhone.replace(/\D/g, "").length < 9) {
+        return NextResponse.json({ ok: true });
+      }
+      const nomAffiche = esc(entreprise || `${cleanPrenom} ${cleanNom}`.trim() || "Visiteur");
+      await sendAlertNotification({
+        subject: `📞 [NUMÉRO LAISSÉ - FORMULAIRE NON ENVOYÉ] ${String(entreprise || `${cleanPrenom} ${cleanNom}`.trim() || "Visiteur").slice(0, 60)} (${cleanPhone.slice(0, 20)})${cleanRef ? ` — Dossier #${cleanRef.slice(0, 12)}` : ""}`,
+        htmlContent: `
+        <div style="font-family: Arial, sans-serif; max-width: 560px; margin: 0 auto; color: #0F172A;">
+          <div style="background: #92400E; color: #fff; padding: 18px 24px; border-radius: 10px 10px 0 0;">
+            <h2 style="margin: 0; font-size: 18px;">📞 Un visiteur a tapé son numéro puis a quitté la page</h2>
+          </div>
+          <div style="padding: 22px 24px; border: 1px solid #E2E8F0; border-top: none; border-radius: 0 0 10px 10px;">
+            <ul style="list-style: none; padding: 0; line-height: 1.8;">
+              ${cleanRef ? `<li><strong>Dossier :</strong> #${esc(cleanRef)}</li>` : ""}
+              <li><strong>Entreprise :</strong> ${nomAffiche}</li>
+              <li><strong>Nom :</strong> ${esc(cleanPrenom)} ${esc(cleanNom)}</li>
+              <li><strong>Téléphone :</strong> <a href="tel:${esc(cleanPhone)}" style="color: #0E8F70; font-weight: bold;">${esc(cleanPhone)}</a></li>
+              <li><strong>E-mail :</strong> ${esc(cleanEmail)}</li>
+              <li><strong>Heure :</strong> ${new Date().toLocaleString("fr-FR", { timeZone: "Europe/Paris" })}</li>
+            </ul>
+            <p style="font-size: 12px; color: #64748B; margin-bottom: 0;">Le visiteur n'a pas reçu de code SMS. Information affichée sur la page : son numéro est conservé pour le recontacter.</p>
+          </div>
+        </div>`,
+      });
+      return NextResponse.json({ ok: true });
+    }
 
     // =========================================================================
     // ÉTAPE CLIC : Notification instantanée quand un prospect consulte la page
@@ -600,7 +653,7 @@ export async function POST(req: NextRequest) {
             <p style="margin: 4px 0 0; color: #E6FBF5; font-size: 13px;">Interlocuteur : ${vdi}</p>
           </div>
           <div style="padding: 22px 24px; border: 1px solid #E2E8F0; border-top: none; border-radius: 0 0 10px 10px;">
-            <p style="margin-top: 0; font-weight: bold; color: #0E8F70;">Le rendez-vous téléphonique de 15 minutes a été réservé avec succès sur le planning des consultants APC :</p>
+            <p style="margin-top: 0; font-weight: bold; color: #0E8F70;">Le rendez-vous téléphonique de 10 minutes a été réservé avec succès sur le planning des consultants APC :</p>
             <ul style="list-style: none; padding: 0; line-height: 1.8;">
               ${cleanRef ? `<li><strong>Dossier Cockpit :</strong> #${cleanRef}</li>` : ""}
               <li><strong>Entreprise :</strong> ${entreprise || "Non précisé"}</li>
