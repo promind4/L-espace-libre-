@@ -57,3 +57,5 @@ mission_lespace_libre.md
 # Données personnelles de prospects : ne jamais versionner
 apps/web/app/api/rdv/prospects-prefill.json
 **/prospects*.json
+# Dossier d audit contenant des secrets en clair
+DOSSIER_AUDIT_COMPLET_POUR_CLAUDE.md
