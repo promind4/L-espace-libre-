@@ -53,3 +53,7 @@ ICONOGRAPHY.md
 colors_and_type.css
 meta.md
 mission_lespace_libre.md
+
+# Données personnelles de prospects : ne jamais versionner
+apps/web/app/api/rdv/prospects-prefill.json
+**/prospects*.json

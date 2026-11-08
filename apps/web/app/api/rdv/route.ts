@@ -3,7 +3,6 @@ import { Resend } from "resend";
 import crypto from "crypto";
 import http from "http";
 import https from "https";
-import prospectsPrefillData from "./prospects-prefill.json";
 
 type ProspectRecord = {
   id?: number;
@@ -16,13 +15,17 @@ type ProspectRecord = {
   ville?: string;
 };
 
-const PROSPECTS_PREFILL = prospectsPrefillData as Record<string, ProspectRecord>;
-
 export const runtime = "nodejs";
 export const dynamic = "force-dynamic";
 
 const COCKPIT_BASE_URL =
   process.env["COCKPIT_API_URL"] || "http://84.235.229.203:8088";
+
+// Jeton partagé exigé par le Cockpit (variable d'environnement Vercel, jamais dans le code)
+function cockpitHeaders(extra: Record<string, string> = {}): Record<string, string> {
+  const token = process.env["COCKPIT_API_TOKEN"] || "";
+  return token ? { ...extra, "X-Cockpit-Token": token } : extra;
+}
 
 /**
  * Helper HTTP/HTTPS résilient (évite l'erreur UNABLE_TO_VERIFY_LEAF_SIGNATURE
@@ -84,14 +87,10 @@ const httpsRequest = httpRequest;
 async function fetchCockpitProspect(refId: string): Promise<ProspectRecord | null> {
   const clean = String(refId || "").trim();
   if (!/^\d+$/.test(clean)) return null;
-  const localHit = PROSPECTS_PREFILL[clean];
-  if (localHit) {
-    return localHit;
-  }
   try {
     const res = await httpRequest(
       `${COCKPIT_BASE_URL}/api/public/rdv/${clean}`,
-      { method: "GET", timeoutMs: 2500 }
+      { method: "GET", headers: cockpitHeaders(), timeoutMs: 2500 }
     );
     if (res.ok && res.text) {
       return JSON.parse(res.text);
@@ -114,7 +113,7 @@ async function updateCockpitProspectStatus(
   try {
     await httpRequest(`${COCKPIT_BASE_URL}/api/prospects/${clean}`, {
       method: "PATCH",
-      headers: { "Content-Type": "application/json" },
+      headers: cockpitHeaders({ "Content-Type": "application/json" }),
       body: JSON.stringify(updates),
       timeoutMs: 3500,
     });
@@ -132,7 +131,16 @@ export async function GET(req: NextRequest) {
   if (!prospect) {
     return NextResponse.json({ ok: false, prospect: null }, { status: 404 });
   }
-  return NextResponse.json({ ok: true, prospect });
+  // Réponse publique : jamais d'e-mail ni de téléphone (les identifiants `ref` se suivent et sont devinables)
+  return NextResponse.json({
+    ok: true,
+    prospect: {
+      nom_entreprise: prospect.nom_entreprise || "",
+      dirigeant_prenom: prospect.dirigeant_prenom || "",
+      dirigeant_nom: prospect.dirigeant_nom || "",
+      ville: prospect.ville || "",
+    },
+  });
 }
 
 /**
@@ -147,9 +155,7 @@ async function sendAlertNotification({
   subject: string;
   htmlContent: string;
 }): Promise<void> {
-  const resendKey =
-    process.env["RESEND_API_KEY"] ||
-    ["re", "FfoGSvUW", "GgcuuwMc1XyqHFU4Q3dXdVzP"].join("_");
+  const resendKey = process.env["RESEND_API_KEY"] || "";
 
   if (resendKey) {
     try {
@@ -171,9 +177,11 @@ async function sendAlertNotification({
   }
 
   // Repli sur Brevo (1 seul destinataire car kesiah@lespace-libre.fr redirige déjà vers flowmind303@gmail.com)
-  const brevoApiKey =
-    process.env["BREVO_API_KEY"] ||
-    ["xkeysib", "80c7f6fd95e845f68f89793c5599aa43d0b2367401a8229ed73c047f087f6768", "UtYOGlxazYHT5l8e"].join("-");
+  const brevoApiKey = process.env["BREVO_API_KEY"] || "";
+  if (!brevoApiKey) {
+    console.error("[ALERT NOTIFICATION SKIPPED] RESEND_API_KEY et BREVO_API_KEY absents ou en échec");
+    return;
+  }
 
   try {
     const brevoPayload = {

@@ -115,13 +115,11 @@ export default function PrivacyPolicyPage() {
                 Origine des données collectées (Article 14 du RGPD)
               </h3>
               <p style={{ margin: 0, color: "#14532D", fontSize: "14.5px" }}>
-                Dans le cadre de nos campagnes d&apos;information et de mise en relation d&apos;artisans avec notre pôle de consultants partenaires (APC), les coordonnées professionnelles (raison sociale, nom/prénom du dirigeant, e-mail de contact professionnel, téléphone d&apos;entreprise) <strong>ont été collectées exclusivement à partir des registres légaux publics et des bases de données ouvertes d&apos;entreprises</strong> :
+                Dans le cadre de nos campagnes d&apos;information et de mise en relation d&apos;artisans avec le cabinet de courtage partenaire Assurément Pas Cher (APC, ORIAS n°&nbsp;16&nbsp;001&nbsp;495), nous utilisons des données professionnelles provenant de deux types de sources publiques :
               </p>
               <ul style={{ margin: "8px 0 0 0", paddingLeft: "20px", color: "#14532D", fontSize: "14px" }}>
-                <li><strong>Le répertoire national SIRENE / INSEE</strong> (base légale publique des établissements et entreprises de France) ;</li>
-                <li><strong>L&apos;Annuaire des Entreprises publiques</strong> (plateforme officielle data.gouv.fr / INPI) ;</li>
-                <li><strong>Les registres publics des métiers et du commerce</strong> (RNE / RCS) ;</li>
-                <li><strong>Les sites internet professionnels publics</strong> et annuaires publics consultables librement en ligne.</li>
+                <li><strong>Informations sur l&apos;entreprise</strong> (raison sociale, activité, nom du dirigeant, ville, qualification RGE) : registres publics, à savoir le répertoire SIRENE / INSEE, l&apos;Annuaire des Entreprises (data.gouv.fr / INPI), le Registre national des entreprises (RNE) et l&apos;annuaire ADEME des professionnels RGE ;</li>
+                <li><strong>Coordonnées de contact</strong> (e-mail professionnel, téléphone de l&apos;entreprise) : relevées sur le <strong>site internet de l&apos;entreprise</strong> ou dans des <strong>annuaires professionnels publics</strong> consultables librement en ligne. Ces coordonnées ne figurent pas dans les registres SIRENE / INSEE.</li>
               </ul>
             </div>
 

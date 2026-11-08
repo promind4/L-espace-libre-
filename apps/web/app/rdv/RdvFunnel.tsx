@@ -159,7 +159,7 @@ const BENEFITS = [
 const FAQ_ITEMS = [
   {
     q: "Comment se déroule l'étude comparative ?",
-    a: "Lors d'un court échange téléphonique de 15 minutes, un conseiller dédié analyse vos garanties actuelles (RC Décennale, Mutuelle TNS ou Prévoyance). Il compare ensuite vos tarifs auprès de nos 8 compagnies partenaires pour identifier vos économies potentielles, sans modifier le niveau de votre couverture.",
+    a: "Lors d'un court échange téléphonique de 15 minutes, un conseiller dédié analyse vos garanties actuelles (RC Décennale, Mutuelle TNS ou Prévoyance). Il compare ensuite vos tarifs auprès des compagnies partenaires du cabinet APC pour identifier vos économies potentielles, sans modifier le niveau de votre couverture.",
   },
   {
     q: "Ce point téléphonique de 15 minutes m'engage-t-il à quelque chose ?",
@@ -268,7 +268,7 @@ export function RdvFunnel() {
       let fetchedSte = qSte;
       let fetchedPrenom = qPrenom;
       let fetchedNom = qNom;
-      let fetchedTel = qTel;
+      const fetchedTel = qTel;
       let fetchedEmail = qEmail;
 
       if (qRef && /^\d+$/.test(qRef.trim())) {
@@ -297,11 +297,7 @@ export function RdvFunnel() {
                 setEmail(p.email);
                 fetchedEmail = p.email;
               }
-              // Le téléphone n'est PAS pré-rempli dans le champ input (laissé au prospect),
-              // mais on le conserve en interne pour l'alerte de clic destinée à Kesiah.
-              if (!fetchedTel && p.telephone) {
-                fetchedTel = p.telephone;
-              }
+              // Le téléphone n'est plus exposé au navigateur : l'alerte de clic le récupère côté serveur.
               setPrefillLoaded(true);
             }
           }
@@ -486,7 +482,7 @@ export function RdvFunnel() {
             <div>
               <div className="rdv-topbar__title">L&apos;Espace Libre Pros &bull; Pôle BTP</div>
               <div className="rdv-topbar__subtitle">
-                RC Décennale &amp; Mutuelle • Partenaire Cabinet APC (ORIAS)
+                RC Décennale &amp; Mutuelle • Partenaire du cabinet de courtage APC (ORIAS 16 001 495)
               </div>
             </div>
           </div>
@@ -524,7 +520,7 @@ export function RdvFunnel() {
       >
         <div className="rdv-partners__inner">
           <div className="rdv-partners__label">
-            Comparatif indépendant réalisé auprès des compagnies de premier plan
+            Compagnies partenaires du cabinet de courtage Assurément Pas Cher
           </div>
           <div
             className="rdv-marquee"
@@ -1050,17 +1046,17 @@ export function RdvFunnel() {
       </section>
 
       {/* ===== 2. BANDEAU D'AVIS CLIENTS VÉRIFIÉS ===== */}
-      <section className="rdv-reviews" aria-label="Avis clients vérifiés">
+      <section className="rdv-reviews" aria-label="Avis clients du cabinet APC">
         <div className="rdv-reviews__header">
           <div className="rdv-reviews__badge">
             <StarRating rating={4.8} />
-            <span>4.8 / 5 &bull; Avis clients vérifiés</span>
+            <span>4.8 / 5 &bull; Avis clients du cabinet APC</span>
           </div>
           <h2 className="rdv-reviews__title">
             Ce que constatent les professionnels après leur bilan
           </h2>
           <p className="rdv-reviews__subtitle">
-            Retours d&apos;expérience concrets de professionnels accompagnés par nos conseillers partenaires agréés.
+            Avis publiés par des clients du cabinet de courtage Assurément Pas Cher (APC), partenaire de L&apos;Espace Libre.
           </p>
         </div>
 
@@ -1092,7 +1088,7 @@ export function RdvFunnel() {
               ←
             </button>
             <span className="rdv-reviews__hint">
-              4 avis vérifiés • Défiler
+              4 avis clients APC • Défiler
             </span>
             <button
               type="button"
@@ -1184,7 +1180,7 @@ export function RdvFunnel() {
                     L&apos;Espace Libre • Kesiah &amp; Partenaires
                   </div>
                   <div className="rdv-footer__brand-sub">
-                    Pôle Partenaires &amp; Courtage Assurance BTP (RC Décennale, Mutuelle TNS, Prévoyance)
+                    Apporteur d&apos;affaires indépendant, partenaire du cabinet de courtage Assurément Pas Cher (ORIAS 16 001 495) — RC Décennale, Mutuelle TNS, Prévoyance
                   </div>
                 </div>
               </a>
