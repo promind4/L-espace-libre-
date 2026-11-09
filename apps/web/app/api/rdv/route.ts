@@ -282,6 +282,8 @@ export async function POST(req: NextRequest) {
       website = "", // honeypot
       ref = "",
       variant = "",
+      trafic = "",
+      delai_envoi_s = -1,
     } = body;
 
     // Honeypot anti-bot
@@ -356,8 +358,17 @@ export async function POST(req: NextRequest) {
         await updateCockpitProspectStatus(cleanRef, { statut_email: "CLIQUE" });
       }
 
-      const subject = `👀 [CLIC PROSPECT BTP${
-        variant === "A" || variant === "B" ? ` ${variant}` : ""
+      const etiquetteTrafic =
+        trafic === "humain_confirme"
+          ? "✅ HUMAIN"
+          : trafic === "robot_probable"
+          ? "🤖 ROBOT PROBABLE"
+          : trafic === "sans_interaction"
+          ? "❔ SANS INTERACTION"
+          : "";
+      const delaiMin = Number(delai_envoi_s) >= 0 ? Math.round(Number(delai_envoi_s) / 60) : -1;
+      const subject = `${etiquetteTrafic ? `${etiquetteTrafic} ` : ""}👀 [CLIC PROSPECT BTP${
+        ["A", "B", "C"].includes(String(variant)) ? ` ${variant}` : ""
       }] ${
         resolvedSte || "Artisan"
       }${resolvedVille ? ` (${resolvedVille})` : ""}${
@@ -381,6 +392,7 @@ export async function POST(req: NextRequest) {
               ${resolvedPhone ? `<li><strong>Téléphone direct :</strong> <a href="tel:${resolvedPhone}" style="color: #0E8F70; font-weight: bold;">${resolvedPhone}</a></li>` : ""}
               ${resolvedEmail ? `<li><strong>Email :</strong> ${resolvedEmail}</li>` : ""}
               <li><strong>Heure :</strong> ${new Date().toLocaleString("fr-FR", { timeZone: "Europe/Paris" })}</li>
+              ${etiquetteTrafic ? `<li><strong>Visite :</strong> ${esc(etiquetteTrafic)}${delaiMin >= 0 ? ` (page ouverte ${delaiMin} min après l'envoi du mail)` : ""}</li>` : ""}
             </ul>
             <p style="font-size: 12px; color: #64748B; margin-bottom: 0;">Restez attentif, le prospect est actuellement sur la page de réservation (ses coordonnées ont été pré-remplies automatiquement).</p>
           </div>

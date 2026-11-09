@@ -175,6 +175,16 @@ const FAQ_ITEMS = [
   },
 ];
 
+/** Tranche lisible du délai entre l'envoi du mail et l'ouverture de la page. */
+function trancheDelai(secondes: number): string {
+  if (secondes < 0) return "inconnu";
+  if (secondes < 60) return "moins_1min";
+  if (secondes < 600) return "1_10min";
+  if (secondes < 3600) return "10_60min";
+  if (secondes < 86400) return "1_24h";
+  return "plus_24h";
+}
+
 export function RdvFunnel() {
   const searchParams = useSearchParams();
 
@@ -204,10 +214,14 @@ export function RdvFunnel() {
 
   // ===== Mesure du tunnel : Umami (si configuré) + journal serveur Vercel =====
   const visitIdRef = useRef("");
+  const clicRef = useRef<{ cle: string; corps: Record<string, unknown> } | null>(null);
   const seenOnce = useRef<Set<string>>(new Set());
   const live = useRef({
     refId: "",
     variant: "",
+    // Qualification de la visite : robot_probable | a_confirmer | humain_confirme
+    trafic: "a_confirmer",
+    delaiEnvoiS: -1,
     step: 1 as 1 | 2 | 3,
     entreprise: "",
     prenom: "",
@@ -235,6 +249,7 @@ export function RdvFunnel() {
         visitId: visitIdRef.current,
         ref: live.current.refId,
         ...(live.current.variant ? { variant: live.current.variant } : {}),
+        trafic: live.current.trafic,
         ...props,
       });
       const w = window as unknown as {
@@ -243,6 +258,7 @@ export function RdvFunnel() {
       w.umami?.track?.(`rdv_${event}`, {
         ...props,
         ...(live.current.variant ? { variant: live.current.variant } : {}),
+        trafic: live.current.trafic,
       });
       const sent =
         typeof navigator.sendBeacon === "function" &&
@@ -327,8 +343,28 @@ export function RdvFunnel() {
     async function loadPrefillAndTrack() {
       live.current.refId = qRef;
       const qVariant = (searchParams.get("v") || "").toUpperCase();
-      live.current.variant = qVariant === "A" || qVariant === "B" ? qVariant : "";
-      track("page_view", { hasRef: Boolean(qRef), hasToken: Boolean(rawToken) }, true);
+      live.current.variant = ["A", "B", "C"].includes(qVariant) ? qVariant : "";
+      // Délai entre l'envoi du mail (paramètre e = horodatage d'envoi) et l'ouverture de la page
+      const envoi = Number(searchParams.get("e") || 0);
+      const delaiS = envoi > 0 ? Math.round(Date.now() / 1000 - envoi) : -1;
+      const raisons: string[] = [];
+      if (delaiS >= 0 && delaiS < 60) raisons.push("ouvert_moins_de_60s_apres_envoi");
+      if (navigator.webdriver) raisons.push("navigateur_automatise");
+      if (/headless|bot|crawler|spider|scanner|preview|phantom/i.test(navigator.userAgent)) {
+        raisons.push("user_agent_robot");
+      }
+      if (raisons.length) live.current.trafic = "robot_probable";
+      live.current.delaiEnvoiS = delaiS;
+      track(
+        "page_view",
+        {
+          hasRef: Boolean(qRef),
+          hasToken: Boolean(rawToken),
+          delai_envoi: trancheDelai(delaiS),
+          ...(raisons.length ? { raison_robot: raisons.join(",") } : {}),
+        },
+        true
+      );
       let fetchedSte = qSte;
       let fetchedPrenom = qPrenom;
       let fetchedNom = qNom;
@@ -370,31 +406,98 @@ export function RdvFunnel() {
         }
       }
 
-      // Notification de clic prospect instantanée (une alerte par session)
+      // Alerte de clic : préparée ici, envoyée une fois la visite qualifiée
+      // (premier geste humain, 20 s sans interaction, ou départ de la page)
       if (qRef || fetchedSte || fetchedEmail || fetchedTel) {
-        const trackingKey = `rdv_click_sent_${qRef || fetchedEmail || "visit"}`;
-        if (typeof window !== "undefined" && !sessionStorage.getItem(trackingKey)) {
-          sessionStorage.setItem(trackingKey, "1");
-          fetch("/api/rdv", {
-            method: "POST",
-            headers: { "Content-Type": "application/json" },
-            body: JSON.stringify({
-              step: "clic",
-              entreprise: fetchedSte,
-              prenom: fetchedPrenom,
-              nom: fetchedNom,
-              telephone: fetchedTel,
-              email: fetchedEmail,
-              ref: qRef,
-              variant: live.current.variant,
-            }),
-          }).catch(() => {});
-        }
+        clicRef.current = {
+          cle: `rdv_click_sent_${qRef || fetchedEmail || "visit"}`,
+          corps: {
+            step: "clic",
+            entreprise: fetchedSte,
+            prenom: fetchedPrenom,
+            nom: fetchedNom,
+            telephone: fetchedTel,
+            email: fetchedEmail,
+            ref: qRef,
+            variant: live.current.variant,
+          },
+        };
+        if (live.current.trafic === "humain_confirme") envoyerAlerteClic("humain_confirme");
       }
     }
 
     loadPrefillAndTrack();
   }, [searchParams]);
+
+  // ===== Qualification humain / robot =====
+  function envoyerAlerteClic(trafic: string, viaBeacon = false) {
+    const c = clicRef.current;
+    if (!c) return;
+    try {
+      if (sessionStorage.getItem(c.cle)) return;
+      sessionStorage.setItem(c.cle, "1");
+    } catch {
+      if (seenOnce.current.has("alerte_clic")) return;
+    }
+    seenOnce.current.add("alerte_clic");
+    const corps = JSON.stringify({ ...c.corps, trafic, delai_envoi_s: live.current.delaiEnvoiS });
+    if (viaBeacon && typeof navigator.sendBeacon === "function") {
+      navigator.sendBeacon("/api/rdv", new Blob([corps], { type: "application/json" }));
+    } else {
+      fetch("/api/rdv", {
+        method: "POST",
+        headers: { "Content-Type": "application/json" },
+        body: corps,
+        keepalive: true,
+      }).catch(() => {});
+    }
+  }
+
+  useEffect(() => {
+    const debut = Date.now();
+    function gesteHumain() {
+      if (live.current.trafic === "humain_confirme") return;
+      live.current.trafic = "humain_confirme";
+      track("human_confirmed", { apres_s: Math.round((Date.now() - debut) / 1000) }, true);
+      const w = window as unknown as {
+        umami?: { identify?: (data: Record<string, unknown>) => void };
+      };
+      try {
+        w.umami?.identify?.({ trafic: "humain_confirme" });
+      } catch {
+        // version d'Umami sans identify
+      }
+      envoyerAlerteClic("humain_confirme");
+      retirer();
+    }
+    function defilement() {
+      if (window.scrollY > 150) gesteHumain();
+    }
+    const evts: (keyof WindowEventMap)[] = ["pointerdown", "touchstart", "keydown", "wheel"];
+    function retirer() {
+      evts.forEach((e) => window.removeEventListener(e, gesteHumain));
+      window.removeEventListener("scroll", defilement);
+    }
+    evts.forEach((e) => window.addEventListener(e, gesteHumain, { passive: true }));
+    window.addEventListener("scroll", defilement, { passive: true });
+    const minuteur = window.setTimeout(() => {
+      if (live.current.trafic !== "humain_confirme") {
+        envoyerAlerteClic(live.current.trafic === "robot_probable" ? "robot_probable" : "sans_interaction");
+      }
+    }, 20000);
+    function depart() {
+      if (live.current.trafic !== "humain_confirme") {
+        envoyerAlerteClic(live.current.trafic === "robot_probable" ? "robot_probable" : "sans_interaction", true);
+      }
+    }
+    window.addEventListener("pagehide", depart);
+    return () => {
+      retirer();
+      window.clearTimeout(minuteur);
+      window.removeEventListener("pagehide", depart);
+    };
+    // eslint-disable-next-line react-hooks/exhaustive-deps
+  }, []);
 
   // Brouillon local : un visiteur qui revient retrouve ses coordonnées
   useEffect(() => {
