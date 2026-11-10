@@ -32,6 +32,9 @@ const GA_ID = process.env["NEXT_PUBLIC_GA_MEASUREMENT_ID"];
 const UMAMI_ID = process.env["NEXT_PUBLIC_UMAMI_WEBSITE_ID"];
 const UMAMI_SRC =
   process.env["NEXT_PUBLIC_UMAMI_SRC"] || "https://cloud.umami.is/script.js";
+// Instance auto-hébergée : script et mesures relayés par le site (voir next.config.mjs, /m/*)
+const UMAMI_PROXY =
+  Boolean(process.env["NEXT_PUBLIC_UMAMI_SRC"]) && !/umami\.is/.test(UMAMI_SRC);
 
 // `next/font/google` télécharge Inter AU BUILD et la sert depuis le
 // domaine local (pas de requête runtime vers Google — Constitution P4.4
@@ -143,8 +146,9 @@ export default function RootLayout({
         <Footer />
         {UMAMI_ID && (
           <Script
-            src={UMAMI_SRC}
+            src={UMAMI_PROXY ? "/m/s.js" : UMAMI_SRC}
             data-website-id={UMAMI_ID}
+            {...(UMAMI_PROXY ? { "data-host-url": "/m" } : {})}
             strategy="afterInteractive"
           />
         )}

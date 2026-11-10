@@ -1,3 +1,18 @@
+/**
+ * Umami auto-hébergé : le site relaie lui-même le script et les mesures sous sa propre adresse
+ * (/m/s.js et /m/api/send). Pour le navigateur tout vient de lespace-libre.fr, ce qui évite
+ * l'essentiel des blocages par les bloqueurs de publicité. Actif seulement si
+ * NEXT_PUBLIC_UMAMI_SRC pointe vers une instance auto-hébergée (pas Umami Cloud).
+ */
+const UMAMI_ORIGIN = (() => {
+  try {
+    const u = new URL(process.env.NEXT_PUBLIC_UMAMI_SRC || "");
+    return u.hostname.endsWith("umami.is") ? null : u.origin;
+  } catch {
+    return null;
+  }
+})();
+
 /** @type {import('next').NextConfig} */
 const nextConfig = {
   eslint: {
@@ -28,6 +43,12 @@ const nextConfig = {
         source: "/rdv/:id",
         destination: "/rdv?id=:id",
       },
+      ...(UMAMI_ORIGIN
+        ? [
+            { source: "/m/s.js", destination: `${UMAMI_ORIGIN}/script.js` },
+            { source: "/m/api/send", destination: `${UMAMI_ORIGIN}/api/send` },
+          ]
+        : []),
     ];
   },
   async headers() {
